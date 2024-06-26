@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJGRVF45YV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-CJGRVF45YV')
+    </script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="4474c623-06d8-4a2d-983e-4f64e8361dd5"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>funget</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  </head>
+  <body>
+    <main
+      x-data="{
+        client_id: 'fitbit/client_id',
+        client_id_value: localStorage.getItem('fitbit/client_id') || '',
+        client_secret: 'fitbit/client_secret',
+        client_secret_value: localStorage.getItem('fitbit/client_secret') || '',
+        access_token: 'fitbit/access_token',
+        access_token_value: localStorage.getItem('fitbit/access_token') || '',
+        refresh_token: 'fitbit/refresh_token',
+        refresh_token_value: localStorage.getItem('fitbit/refresh_token') || '',
+        msg: '回復ボタンを押すと、デモ用の設定が回復されます',
+        updateValue() {
+          this.client_id_value = '23PFRB'
+          this.client_secret_value = '25ae1009c6dfd4d138d0313fc101ceb0'
+          this.access_token_value = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1BGUkIiLCJzdWIiOiJCVDZTRkQiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJlY2cgcnNldCByb3h5IHJudXQgcnBybyByc2xlIHJjZiByYWN0IHJsb2MgcnJlcyByd2VpIHJociBydGVtIiwiZXhwIjoxNzIyNTkzNzAxLCJpYXQiOjE3MjI1NjQ5MDF9.vqUycfIt4xRBe4AEnbjRuhIvATRE6BK1duPZldBDRi0'
+          this.refresh_token_value = '6a0a675b4139a783d91bf3d57a8c8e4541687e698df67279baf01885b373e9a6'
+
+          localStorage.setItem(this.client_id, btoa(this.client_id_value));
+          localStorage.setItem(this.client_secret, btoa(this.client_secret_value));
+          localStorage.setItem(this.access_token, btoa(this.access_token_value));
+          localStorage.setItem(this.refresh_token, btoa(this.refresh_token_value));
+          setTimeout(() => {
+            this.msg = '設定を回復しました'
+          }, 100);
+        },
+        clear() {
+          localStorage.removeItem(this.client_id);
+          localStorage.removeItem(this.client_secret);
+          localStorage.removeItem(this.access_token);
+          localStorage.removeItem(this.refresh_token);
+          this.client_id_value = '';
+          this.client_secret_value = '';
+          this.access_token_value = '';
+          this.refresh_token_value = '';
+          setTimeout(() => {
+            this.msg = '設定を削除しました'
+          }, 100);
+        }
+      }">
+      <div class="content">
+        <h1>Fitbit API トークンデモ</h1>
+        <div class="wrapper">
+          <p x-text="client_id"></p>
+          <input type="text" x-model="client_id_value" placeholder="入力してください" />
+        </div>
+        <div class="wrapper">
+          <p x-text="client_secret"></p>
+          <input type="text" x-model="client_secret_value" placeholder="入力してください" />
+        </div>
+        <div class="wrapper">
+          <p x-text="access_token"></p>
+          <input type="text" x-model="access_token_value" placeholder="入力してください" />
+        </div>
+        <div class="wrapper">
+          <p x-text="refresh_token"></p>
+          <input type="text" x-model="refresh_token_value" placeholder="入力してください" />
+        </div>
+        <div><p x-text="msg"></p></div>
+      </div>
+      <div class="button-box">
+        <button x-on:click="updateValue">回復</button>
+        <button x-on:click="clear">削除</button>
+      </div>
+      <p>
+        このデータは制作者のデータです
+        <br />
+        数日後にトークンは削除されます
+        <br />
+        不正な使い方をしないでください
+      </p>
+      <br />
+      <h2>説明リンク</h2>
+      <p>分かる人だけ操作してください</p>
+      <div class="links">
+        <a href="index.html">アプリ本体</a>
+        <a href="fitbit.html">APIキー設定</a>
+        <a href="demo1853.html">demo1853.html</a>
+        <a href="https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/">getting-started | fitbit developer</a>
+      </div>
+    </main>
+    <style>
+      .wrapper {
+        display: flex;
+        margin: 10px 0;
+        height: 30px;
+      }
+      .wrapper p {
+        width: 160px;
+        line-height: 0;
+      }
+      .wrapper input {
+        width: 200px;
+      }
+      .button-box {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+      button {
+        width: calc(50% - 5px);
+        height: 40px;
+        font-size: 20px;
+      }
+      .links a {
+        font-size: 20px;
+        display: block;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJGRVF45YV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-CJGRVF45YV')
+    </script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="4474c623-06d8-4a2d-983e-4f64e8361dd5"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>funget</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  </head>
+  <body>
+    <main
+      x-data="{
+        client_id: 'fitbit/client_id',
+        client_id_value: atob(localStorage.getItem('fitbit/client_id')) || '',
+        client_secret: 'fitbit/client_secret',
+        client_secret_value: atob(localStorage.getItem('fitbit/client_secret')) || '',
+        access_token: 'fitbit/access_token',
+        access_token_value: atob(localStorage.getItem('fitbit/access_token')) || '',
+        refresh_token: 'fitbit/refresh_token',
+        refresh_token_value: atob(localStorage.getItem('fitbit/refresh_token')) || '',
+        msg: 'APIトークン を入力して、保存をクリックしてください',
+        link: false,
+        updateValue() {
+          if(this.client_id_value && this.client_secret_value && this.access_token_value && this.refresh_token_value) {
+            localStorage.setItem(this.client_id, btoa(this.client_id_value));
+            localStorage.setItem(this.client_secret, btoa(this.client_secret_value));
+            localStorage.setItem(this.access_token, btoa(this.access_token_value));
+            localStorage.setItem(this.refresh_token, btoa(this.refresh_token_value));
+            setTimeout(() => {
+              this.msg = 'APIトークン を保存しました、アプリに移動できます';
+              this.link = true;
+            }, 100);
+          } else {
+            this.msg = 'APIトークン を保存できませんでした、全ての値を入力してください';
+          }
+        },
+        clear() {
+          localStorage.removeItem(this.client_id);
+          localStorage.removeItem(this.client_secret);
+          localStorage.removeItem(this.access_token);
+          localStorage.removeItem(this.refresh_token);
+          this.client_id_value = '';
+          this.client_secret_value = '';
+          this.access_token_value = '';
+          this.refresh_token_value = '';
+          this.msg = '全ての APIトークン を削除しました';
+        }
+      }">
+      <div class="content">
+        <h1>Fitbit API トークン設定</h1>
+        <div><p class="message" x-text="msg"></p></div>
+        <div class="wrapper">
+          <p x-text="client_id.slice(7)"></p>
+          <input type="text" x-model="client_id_value" placeholder="入力してください" />
+        </div>
+        <div class="wrapper">
+          <p x-text="client_secret.slice(7)"></p>
+          <input type="text" x-model="client_secret_value" placeholder="入力してください" />
+        </div>
+        <div class="wrapper">
+          <p x-text="access_token.slice(7)"></p>
+          <input type="text" x-model="access_token_value" placeholder="入力してください" />
+        </div>
+        <div class="wrapper">
+          <p x-text="refresh_token.slice(7)"></p>
+          <input type="text" x-model="refresh_token_value" placeholder="入力してください" />
+        </div>
+      </div>
+      <div class="links">
+        <a href="#" @click="updateValue">保存</a>
+        <a href="#" @click="clear">削除</a>
+        <a href="index.html">アプリに戻る</a>
+      </div>
+      <a href="https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/">Fitbit API ドキュメント | fitbit developer</a>
+    </main>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      h1 {
+        margin-bottom: 0;
+        font-size: 26px;
+      }
+      .wrapper {
+        display: flex;
+        margin: 10px 0;
+        height: 30px;
+      }
+      .wrapper p {
+        width: 120px;
+        line-height: 0;
+      }
+      .wrapper input {
+        width: calc(100% - 120px);
+      }
+      button {
+        width: calc(50% - 5px);
+        height: 40px;
+        font-size: 20px;
+      }
+      .link {
+        display: block;
+        margin-top: 20px;
+        font-size: 26px;
+      }
+      .links {
+        margin: 20px 0;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .links a {
+        color: #000;
+        text-decoration: none;
+        padding: 10px 0 10px;
+        height: 20px;
+        font-size: 16px;
+        display: block;
+        width: calc((100% / 3) - 10px);
+        text-align: center;
+        border: 2px solid black;
+        font-weight: bold;
+      }
+      .links a:nth-of-type(1) {
+        background: #5e5;
+      }
+      .links a:nth-of-type(2) {
+        background: #faa;
+      }
+      .links a:nth-of-type(3) {
+        background: #8bf;
+      }
+      .message {
+        font-size: 20px;
+        font-weight: bold;
+        background: #ff0;
+        padding: 10px 10px 5px 10px;
+        margin-top: 10px;
+        border: 2px solid #000;
+      }
+    </style>
+  </body>
+</html>
