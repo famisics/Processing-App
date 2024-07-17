@@ -2,11 +2,11 @@ ArrayList<Button> LIST_Button = new ArrayList<Button>();
 
 class Button {
   boolean isShow = true;
-  int x, y, w, h;
+  float x, y, w, h;
   String label, id, type;
   color bg;
   // ボタンのx, yはそこを中心として描画される
-  Button(int x, int y, int w, int h, color bg, String label, String type, String id) {
+  Button(float x, float y, float w, float h, color bg, String label, String type, String id) {
     this.x = x;
     this.y = y;
     this.w = w;

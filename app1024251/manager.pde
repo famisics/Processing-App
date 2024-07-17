@@ -16,6 +16,7 @@ int mode = 0; // モード0で初期化
 
 PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
 PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_ipinfo;
+PShape SVG_01d, SVG_02d, SVG_03d, SVG_04d, SVG_09d, SVG_10d, SVG_11d, SVG_13d, SVG_50d;
 
 // API
 String APIKEY_openWeatherMap;
@@ -48,6 +49,17 @@ void boot() {
   SVG_fit = loadShape("src/svg/fit.svg");
   SVG_funbus = loadShape("src/svg/bus.svg");
   SVG_ipinfo = loadShape("src/svg/dns.svg");
+
+  // 天気アイコンの初期化
+  SVG_01d = loadShape("src/svg/weather/01d.svg");
+  SVG_02d = loadShape("src/svg/weather/02d.svg");
+  SVG_03d = loadShape("src/svg/weather/03d.svg");
+  SVG_04d = loadShape("src/svg/weather/04d.svg");
+  SVG_09d = loadShape("src/svg/weather/09d.svg");
+  SVG_10d = loadShape("src/svg/weather/10d.svg");
+  SVG_11d = loadShape("src/svg/weather/11d.svg");
+  SVG_13d = loadShape("src/svg/weather/13d.svg");
+  SVG_50d = loadShape("src/svg/weather/50d.svg");
   
   // config.json
   JSONObject json = loadJSONObject("src/config.json");
@@ -129,7 +141,7 @@ void cmode(int i) {
   }
   mode = i;
 }
-void addButton(int x, int y, int w, int h, color bg, String label, String type, String id) {
+void addButton(float x, float y, float w, float h, color bg, String label, String type, String id) {
   LIST_Button.add(new Button(x, y, w, h, bg, label, type, id));
 }
 
