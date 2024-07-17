@@ -1,5 +1,5 @@
 class API {
-  void getWeather() {
+  void getWeather() { // Open Weather Map から天気情報を取得
     println("Fetching weather data...");
     JSONObject JSON_response = loadJSONObject("https://api.openweathermap.org/data/2.5/forecast?id=2130188&lang=ja&appid=" + APIKEY_openWeatherMap);
     JSONArray JSON_array = JSON_response.getJSONArray("list");
@@ -16,7 +16,7 @@ class API {
     // TODO: 配列に収めて返す
     // return JSON_response;
   }
-  void getFunbus(String query) {
+  void getFunbus(String query) { // Google Spreadsheet から時刻表を取得
     JSONArray JSON_response = loadJSONArray("https://script.google.com/macros/s/AKfycbzPPgVR4BJUqDBR8y_rjYMIGvnoHTwA6yCPkHiTZkQ1Ificv62GSwsUYM2dBcNujpqVag/exec/" + query);
     println(JSON_response);
     for(int i = 0; i < JSON_response.size(); i++) {
@@ -28,5 +28,11 @@ class API {
       println(id + " [" + code + "] " + start + " -> " + end);
     }
     // return JSON_response;
+  }
+  void getFitbit() { // Fitbit APIから運動データを取得
+    
+  }
+  void getIP() { // IPアドレスから接続先のプロバイダを取得
+
   }
 }
