@@ -20,7 +20,7 @@ class Button {
     if (isShow) {
       fill(bg);
       rect(x - w / 2, y - h / 2, w, h);
-      textFont(FONT_meiryo, 32);
+      textFont(FONT_noto, 32);
       textAlign(CENTER, CENTER);
       fill(0);
       text(label, x, y);

@@ -12,9 +12,10 @@ IpinfoScene IpinfoScene;
 
 int mode = 0; // モード0で初期化
 
-// フォント
+// 素材
 
-PFont FONT_meiryo, FONT_jetbrains;
+PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
+PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_ipinfo;
 
 // API
 String APIKEY_openWeatherMap;
@@ -38,7 +39,15 @@ void boot() {
   
   // フォントの初期化
   FONT_meiryo = createFont("Meiryo UI", 32);
-  FONT_jetbrains = createFont("src/data/JetBrainsMono-VariableFont_wght.ttf", 32);
+  FONT_jetbrains = createFont("src/font/JetBrainsMono-Medium.ttf", 32);
+  FONT_noto = createFont("src/font/NotoSansJP-Medium.ttf", 32);
+
+  // アイコンの初期化
+  SVG_home = loadShape("src/svg/home.svg");
+  SVG_weather = loadShape("src/svg/weather.svg");
+  SVG_fit = loadShape("src/svg/fit.svg");
+  SVG_funbus = loadShape("src/svg/bus.svg");
+  SVG_ipinfo = loadShape("src/svg/dns.svg");
   
   // config.json
   JSONObject json = loadJSONObject("src/config.json");

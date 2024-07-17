@@ -1,8 +1,7 @@
 class IpinfoScene {
   void boot() {
-    CPT.header("IPInfo");
   }
   void update() {
-    
+    CPT.header("接続状態");
   }
 }

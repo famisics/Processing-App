@@ -1,8 +1,7 @@
 class FunbusScene {
   void boot() {
-    CPT.header("Funbus");
   }
   void update() {
-    
+    CPT.header("バス");
   }
 }
