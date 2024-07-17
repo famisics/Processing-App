@@ -72,8 +72,12 @@ class Manager {
         IpinfoScene.update();
         break;
     }
+    for (Button e : LIST_Button) {
+      e.update();
+    }
   }
   void cmode(int i) {
+    LIST_Button.clear();
     switch(i) {
       case 0:
         TitleScene.boot();
@@ -95,5 +99,26 @@ class Manager {
         break;
     }
     mode = i;
+  }
+  void addButton(int x, int y, int w, int h, color bg, String label, String id) {
+    LIST_Button.add(new Button(x, y, w, h, bg, label, id));
+  }
+}
+
+// デバッグ用
+
+void keyPressed() {
+  if (key == '0') {
+    Manager.cmode(0);
+  } else if (key == '1') {
+    Manager.cmode(1);
+  } else if (key == '2') {
+    Manager.cmode(2);
+  } else if (key == '3') {
+    Manager.cmode(3);
+  } else if (key == '4') {
+    Manager.cmode(4);
+  } else if (key == '5') {
+    Manager.cmode(5);
   }
 }

@@ -4,13 +4,12 @@ class TitleScene {
     fill(255);
     textSize(32);
     textAlign(CENTER);
+    textFont(FONT_meiryo, 32);
     text("ようこそ", 300, 600);
   }
   void update() {
-    for (int i = 0; i < 100; ++i) {
-      if (i > 95) {
-        cmode(1);
-      }
+    if (mousePressed) {
+      Manager.cmode(1);
     }
   }
 }

@@ -30,9 +30,8 @@ class API {
     // return JSON_response;
   }
   void getFitbit() { // Fitbit APIから運動データを取得
-    
   }
   void getIP() { // IPアドレスから接続先のプロバイダを取得
-
+    JSONObject JSON_response = loadJSONObject("https://ipinfo.io/?token="+APIKEY_ipinfo);
   }
 }
