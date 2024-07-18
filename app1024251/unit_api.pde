@@ -15,6 +15,9 @@ class API {
     }
     // TODO: 配列に収めて返す
     // return JSON_response;
+    //  !返す内容-------------------------------------
+    //  現在の天気
+    //  !--------------------------------------------
   }
   void getFunbus(String query) { // Google Spreadsheet から時刻表を取得
     JSONArray JSON_response = loadJSONArray("https://script.google.com/macros/s/AKfycbzPPgVR4BJUqDBR8y_rjYMIGvnoHTwA6yCPkHiTZkQ1Ificv62GSwsUYM2dBcNujpqVag/exec/" + query);
@@ -28,10 +31,19 @@ class API {
       println(id + " [" + code + "] " + start + " -> " + end);
     }
     // return JSON_response;
+    //  !返す内容-------------------------------------
+    //  現在の天気
+    //  !--------------------------------------------
   }
   void getFitbit() { // Fitbit APIから運動データを取得
+    //  !返す内容-------------------------------------
+    //  現在の天気
+    //  !--------------------------------------------
   }
   void getIP() { // IPアドレスから接続先のプロバイダを取得
     JSONObject JSON_response = loadJSONObject("https://ipinfo.io/?token="+APIKEY_ipinfo);
+    //  !返す内容-------------------------------------
+    //  IPアドレス、プロバイダ、地域
+    //  !--------------------------------------------
   }
 }
