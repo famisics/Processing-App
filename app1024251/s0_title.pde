@@ -7,7 +7,7 @@ class TitleScene {
     background(0);
     fill(255);
     textAlign(CENTER, CENTER);
-    textFont(FONT_noto, 96);
+    textFont(FONT_noto, 80);
     text("ようこそ\n( > ω <)//", 300, 500);
     rect(50, 800, 500 * (millis() - start) / 2000, 20);
     textFont(FONT_noto, 30);
