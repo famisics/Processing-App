@@ -9,13 +9,14 @@ WeatherScene WeatherScene;
 FitScene FitScene;
 FunbusScene FunbusScene;
 IpinfoScene IpinfoScene;
+SleepScene SleepScene;
 
 int mode = 0; // モード0で初期化
 
 // 素材
 
 PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
-PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_ipinfo;
+PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_ipinfo, SVG_sleep;
 PShape SVG_01d, SVG_02d, SVG_03d, SVG_04d, SVG_09d, SVG_10d, SVG_11d, SVG_13d, SVG_50d;
 
 // API
@@ -37,6 +38,7 @@ void boot() {
   FitScene = new FitScene();
   FunbusScene = new FunbusScene();
   IpinfoScene = new IpinfoScene();
+  SleepScene = new SleepScene();
   
   // フォントの初期化
   FONT_meiryo = createFont("Meiryo UI", 32);
@@ -44,11 +46,12 @@ void boot() {
   FONT_noto = createFont("src/font/NotoSansJP-Medium.ttf", 32);
 
   // アイコンの初期化
-  SVG_home = loadShape("src/svg/home.svg");
-  SVG_weather = loadShape("src/svg/weather.svg");
-  SVG_fit = loadShape("src/svg/fit.svg");
-  SVG_funbus = loadShape("src/svg/bus.svg");
-  SVG_ipinfo = loadShape("src/svg/dns.svg");
+  SVG_home = loadShape("src/svg/mode/home.svg");
+  SVG_weather = loadShape("src/svg/mode/weather.svg");
+  SVG_fit = loadShape("src/svg/mode/fit.svg");
+  SVG_funbus = loadShape("src/svg/mode/bus.svg");
+  SVG_ipinfo = loadShape("src/svg/mode/dns.svg");
+  SVG_sleep = loadShape("src/svg/mode/sleep.svg");
 
   // 天気アイコンの初期化
   SVG_01d = loadShape("src/svg/weather/01d.svg");
@@ -105,6 +108,9 @@ void update() {
     case 5 : // IP情報
       IpinfoScene.update();
       break;
+    case 6 : // 睡眠
+      SleepScene.update();
+      break;
   }
   for (Button e : LIST_Button) {
     e.update();
@@ -138,6 +144,9 @@ void cmode(int i) {
     case 5:
       IpinfoScene.boot();
       break;
+    case 6:
+      SleepScene.boot();
+      break;
   }
   mode = i;
 }
@@ -160,6 +169,8 @@ void keyPressed() {
     cmode(4);
   } else if (key == '5') {
     cmode(5);
+  } else if (key == '6') {
+    cmode(6);
   }
 }
 

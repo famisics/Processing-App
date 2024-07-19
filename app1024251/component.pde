@@ -16,26 +16,26 @@ class Component {
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 20);
     text("天気", 600 * 1 / 10, 1180);
-    text("健康", 600 * 3 / 10, 1180);
+    text("バス", 600 * 3 / 10, 1180);
     text("ホーム", 600 * 5 / 10, 1180);
-    text("バス", 600 * 7 / 10, 1180);
-    text("接続状態", 600 * 9 / 10, 1180);
+    text("健康", 600 * 7 / 10, 1180);
+    text("睡眠", 600 * 9 / 10, 1180);
     shape(SVG_weather, 600 * 1 / 10 - 25, 1110, 50, 50);
-    shape(SVG_fit, 600 * 3 / 10 - 25, 1110, 50, 50);
+    shape(SVG_funbus, 600 * 3 / 10 - 25, 1110, 50, 50);
     shape(SVG_home, 600 * 5 / 10 - 25, 1110, 50, 50);
-    shape(SVG_funbus, 600 * 7 / 10 - 25, 1110, 50, 50);
-    shape(SVG_ipinfo, 600 * 9 / 10 - 25, 1110, 50, 50);
+    shape(SVG_fit, 600 * 7 / 10 - 25, 1110, 50, 50);
+    shape(SVG_sleep, 600 * 9 / 10 - 25, 1110, 50, 50);
     if (MANAGER_isMousePressed && MANAGER_mouseY > 1100) {
       if (MANAGER_mouseX < 600 * 1 / 5) {
         MANAGER_nextmotion = "cmode,2";
       } else if (MANAGER_mouseX < 600 * 2 / 5) {
-        MANAGER_nextmotion = "cmode,3";
+        MANAGER_nextmotion = "cmode,4";
       } else if (MANAGER_mouseX < 600 * 3 / 5) {
         MANAGER_nextmotion = "cmode,1";
       } else if (MANAGER_mouseX < 600 * 4 / 5) {
-        MANAGER_nextmotion = "cmode,4";
+        MANAGER_nextmotion = "cmode,3";
       } else {
-        MANAGER_nextmotion = "cmode,5";
+        MANAGER_nextmotion = "cmode,6";
       }
       MANAGER_isMousePressed = false;
     }
