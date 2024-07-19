@@ -42,30 +42,30 @@ void boot() {
   
   // フォントの初期化
   FONT_meiryo = createFont("Meiryo UI", 32);
-  FONT_jetbrains = createFont("src/font/JetBrainsMono-Medium.ttf", 32);
-  FONT_noto = createFont("src/font/NotoSansJP-Medium.ttf", 32);
+  FONT_jetbrains = createFont("font/JetBrainsMono-Medium.ttf", 32);
+  FONT_noto = createFont("font/NotoSansJP-Medium.ttf", 32);
 
   // アイコンの初期化
-  SVG_home = loadShape("src/svg/mode/home.svg");
-  SVG_weather = loadShape("src/svg/mode/weather.svg");
-  SVG_fit = loadShape("src/svg/mode/fit.svg");
-  SVG_funbus = loadShape("src/svg/mode/bus.svg");
-  SVG_ipinfo = loadShape("src/svg/mode/dns.svg");
-  SVG_sleep = loadShape("src/svg/mode/sleep.svg");
+  SVG_home = loadShape("svg/mode/home.svg");
+  SVG_weather = loadShape("svg/mode/weather.svg");
+  SVG_fit = loadShape("svg/mode/fit.svg");
+  SVG_funbus = loadShape("svg/mode/bus.svg");
+  SVG_ipinfo = loadShape("svg/mode/dns.svg");
+  SVG_sleep = loadShape("svg/mode/sleep.svg");
 
   // 天気アイコンの初期化
-  SVG_01d = loadShape("src/svg/weather/01d.svg");
-  SVG_02d = loadShape("src/svg/weather/02d.svg");
-  SVG_03d = loadShape("src/svg/weather/03d.svg");
-  SVG_04d = loadShape("src/svg/weather/04d.svg");
-  SVG_09d = loadShape("src/svg/weather/09d.svg");
-  SVG_10d = loadShape("src/svg/weather/10d.svg");
-  SVG_11d = loadShape("src/svg/weather/11d.svg");
-  SVG_13d = loadShape("src/svg/weather/13d.svg");
-  SVG_50d = loadShape("src/svg/weather/50d.svg");
+  SVG_01d = loadShape("svg/weather/01d.svg");
+  SVG_02d = loadShape("svg/weather/02d.svg");
+  SVG_03d = loadShape("svg/weather/03d.svg");
+  SVG_04d = loadShape("svg/weather/04d.svg");
+  SVG_09d = loadShape("svg/weather/09d.svg");
+  SVG_10d = loadShape("svg/weather/10d.svg");
+  SVG_11d = loadShape("svg/weather/11d.svg");
+  SVG_13d = loadShape("svg/weather/13d.svg");
+  SVG_50d = loadShape("svg/weather/50d.svg");
   
   // config.json
-  JSONObject json = loadJSONObject("src/config.json");
+  JSONObject json = loadJSONObject("config.json");
   if (json != null) {
     APIKEY_openWeatherMap = json.getString("openWeatherMapApiKey");
     APIKEY_ipinfo = json.getString("ipinfoApiKey");
@@ -74,7 +74,7 @@ void boot() {
   }
   
   // 過去のデータ(userdata.json)
-  json = loadJSONObject("src/userdata.json");
+  json = loadJSONObject("userdata.json");
   if (json != null) {
     // TODO:something
   } else {
