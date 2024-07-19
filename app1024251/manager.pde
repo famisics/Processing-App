@@ -20,7 +20,7 @@ PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_ipinfo, SVG_sleep;
 PShape SVG_01d, SVG_02d, SVG_03d, SVG_04d, SVG_09d, SVG_10d, SVG_11d, SVG_13d, SVG_50d;
 
 // API
-String APIKEY_openWeatherMap;
+String APIKEY_openweathermap;
 String APIKEY_ipinfo;
 
 String MANAGER_nextmotion = ""; // 次に行う動作
@@ -44,7 +44,7 @@ void boot() {
   FONT_meiryo = createFont("Meiryo UI", 32);
   FONT_jetbrains = createFont("font/JetBrainsMono-Medium.ttf", 32);
   FONT_noto = createFont("font/NotoSansJP-Medium.ttf", 32);
-
+  
   // アイコンの初期化
   SVG_home = loadShape("svg/mode/home.svg");
   SVG_weather = loadShape("svg/mode/weather.svg");
@@ -52,7 +52,7 @@ void boot() {
   SVG_funbus = loadShape("svg/mode/bus.svg");
   SVG_ipinfo = loadShape("svg/mode/dns.svg");
   SVG_sleep = loadShape("svg/mode/sleep.svg");
-
+  
   // 天気アイコンの初期化
   SVG_01d = loadShape("svg/weather/01d.svg");
   SVG_02d = loadShape("svg/weather/02d.svg");
@@ -67,8 +67,8 @@ void boot() {
   // config.json
   JSONObject json = loadJSONObject("config.json");
   if (json != null) {
-    APIKEY_openWeatherMap = json.getString("openWeatherMapApiKey");
-    APIKEY_ipinfo = json.getString("ipinfoApiKey");
+    APIKEY_openweathermap = json.getString("openweathermapApikey");
+    APIKEY_ipinfo = json.getString("ipinfoApikey");
   } else {
     println("config.json not found");
   }
@@ -80,7 +80,7 @@ void boot() {
   } else {
     println("userdata.json not found");
   }
-  
+  println("done");
   // アプリの起動
   cmode(0);
 }
@@ -149,29 +149,10 @@ void cmode(int i) {
       break;
   }
   mode = i;
+  println("[cmode] mode: " + mode);
 }
 void addButton(float x, float y, float w, float h, color bg, String label, String type, String id) {
   LIST_Button.add(new Button(x, y, w, h, bg, label, type, id));
-}
-
-// デバッグ用
-
-void keyPressed() {
-  if (key == '0') {
-    cmode(0);
-  } else if (key == '1') {
-    cmode(1);
-  } else if (key == '2') {
-    cmode(2);
-  } else if (key == '3') {
-    cmode(3);
-  } else if (key == '4') {
-    cmode(4);
-  } else if (key == '5') {
-    cmode(5);
-  } else if (key == '6') {
-    cmode(6);
-  }
 }
 
 void mousePressed() {

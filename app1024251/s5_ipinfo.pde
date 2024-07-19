@@ -1,16 +1,22 @@
 class IpinfoScene {
+  String ip, region, loc, org = "";
   void boot() {
+    HashMap<String, String> ipinfo = API.getIpinfo();
+    ip = ipinfo.get("ip");
+    region = ipinfo.get("region");
+    loc = ipinfo.get("loc");
+    org = ipinfo.get("org");
   }
   void update() {
     CPT.header("接続状態");
     fill(255);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 64);
-    text("192.168.255.255", 300, 200);
+    text(ip, 300, 200);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 24);
-    text("地域　　　　　：　Hakodate, Hokkaido, JP", 50, 300);
-    text("座標　　　　　：　41.8158, 140.7669", 50, 350);
-    text("プロバイダー　：　AS2907 NII (SINET6)", 50, 400);
+    text("地域　　　　　：　" + region, 50, 300);
+    text("座標　　　　　：　" + loc, 50, 350);
+    text("プロバイダー　：　" + org, 50, 400);
   }
 }

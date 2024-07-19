@@ -10,18 +10,16 @@ class FitScene {
     textAlign(RIGHT, CENTER);
     textFont(FONT_noto, 48);
     text("歩", 500, 300);
-    for (int i = 0; i < 7; i++) {
-      drawSteps(i);
+    HashMap<String, String> fitbit = API.getFitbit();
+    for (int i = 0; i < 8; i++) {
+      drawSteps(i, fitbit.get(str(7-i)));
     }
   }
-  void drawSteps(int i) {
+  void drawSteps(int i, int steps) {
     fill(255);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 20);
-    String _day = str(6-i) + "日前";
-    if(i == 6){
-      _day = "今日";
-    }
+    String _day = str(7-i) + "日前";
     text(_day, 600 * (2 * i + 1) / 14, 830);
     text("雷雨", 600 * (2 * i + 1) / 14, 900);
     shape(SVG_11d, 600 * (2 * i + 1) / 14 - 50, 910, 100, 100);
