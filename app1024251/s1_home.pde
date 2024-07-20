@@ -10,11 +10,8 @@ class HomeScene {
     fill(255);
     textAlign(CENTER, CENTER);
     textFont(FONT_jetbrains, 96);
-    text(clock(), 300, 100);
+    text(API.getTime(), 300, 100);
     textFont(FONT_noto, 48);
     text("今日も元気に！", 300, 250);
-  }
-  String clock() {
-    return nf(hour(), 2) + ":" + nf(minute(), 2) + ":" + nf(second(), 2);
   }
 }

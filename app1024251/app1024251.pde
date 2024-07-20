@@ -29,14 +29,8 @@ void keyPressed() {
     case '5':
       cmode(5);
       break;
-    case '6':
+    case '6': 
       cmode(6);
-      break;
-    case 'f':
-      HashMap<String, String> fitbit = API.getFitbit();
-      for (String key : fitbit.keySet()) {
-        println(key + " " + fitbit.get(key));
-      }
       break;
   }
 }
