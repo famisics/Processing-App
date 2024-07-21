@@ -5,7 +5,7 @@ class IpinfoScene {
   }
   void update() {
     CPT.header("接続状態");
-    fill(255);
+    fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 64);
     text(ipinfo.get("ip"), 300, 200);

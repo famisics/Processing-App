@@ -4,15 +4,15 @@ class Component {
   void header(String i) {
     fill(20, 50, 50);
     rect(0, 0, 600, 100);
-    fill(255);
+    fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 48);
     text(i, 30, 50);
   }
   void footer() {
-    fill(50, 50, 100);
+    fill(150, 200, 200);
     rect(0, 1100, 600, 100);
-    fill(255);
+    fill(0);
     circle(300, 1150, 120);
     
     textAlign(CENTER, CENTER);

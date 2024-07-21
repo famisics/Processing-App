@@ -1,5 +1,6 @@
 void setup() {
-  background(0);
+  background(255);
+  stroke(150, 200, 200);
   print("initializing... ");
   size(600,1200); // Google Pixel 7 基準に指定
   boot();

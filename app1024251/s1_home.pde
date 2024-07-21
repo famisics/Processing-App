@@ -7,7 +7,7 @@ class HomeScene {
     addButton(300, 1000, 500, 100, color(255, 100, 255), "接続状態", "cmode", "5");
   }
   void update() {
-    fill(255);
+    fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_jetbrains, 96);
     text(API.getTime(), 300, 100);

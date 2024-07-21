@@ -1,14 +1,14 @@
 class TitleScene {
   int loadingTime = 500;
   // TODO:2000ぐらいにする
-
+  
   int start = 0;
   void boot() {
     this.start = millis();
   }
   void update() {
-    background(0);
-    fill(255);
+    background(255);
+    fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 80);
     text("ようこそ\n( > ω <)//", 300, 500);

@@ -22,7 +22,7 @@ class Button {
       rect(x - w / 2, y - h / 2, w, h);
       textFont(FONT_noto, 32);
       textAlign(CENTER, CENTER);
-      fill(0);
+      fill(255);
       text(label, x, y);
       if (type.equals("cmode") && MANAGER_isMousePressed && (MANAGER_mouseX > x - w / 2) && (MANAGER_mouseX < x + w / 2) && (MANAGER_mouseY > y - h / 2) && (MANAGER_mouseY < y + h / 2)) {
         MANAGER_nextmotion = type + "," + id;

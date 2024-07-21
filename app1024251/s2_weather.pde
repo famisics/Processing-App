@@ -10,7 +10,7 @@ class WeatherScene {
   }
   void update() {
     CPT.header("天気");
-    fill(255);
+    fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 96);
     text(NOW_weather, 300, 200);
@@ -21,7 +21,7 @@ class WeatherScene {
     }
   }
   void drawWeather(int i) {
-    fill(255);
+    fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 24);
     text(str((i + 1) * 3) + "時間後", 600 * (2 * i + 1) / 10, 830);
@@ -29,7 +29,7 @@ class WeatherScene {
     shape(SVG_11d, 600 * (2 * i + 1) / 10 - 50, 910, 100, 100);
     text("22.3℃", 600 * (2 * i + 1) / 10, 1040);
     if (i < 4) {
-      fill(255);
+      fill(0);
       rect(600 * (2 * i + 2) / 10 - 1, 800, 2, 280);
     }
   }

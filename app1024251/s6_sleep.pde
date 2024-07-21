@@ -3,7 +3,7 @@ class SleepScene {
   }
   void update() {
     CPT.header("睡眠");
-    fill(255);
+    fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_jetbrains, 110);
     text("26810", 300, 200);
@@ -15,11 +15,11 @@ class SleepScene {
     }
   }
   void drawSteps(int i) {
-    fill(255);
+    fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 20);
-    String _day = str(6-i) + "日前";
-    if(i == 6){
+    String _day = str(6 - i) + "日前";
+    if (i == 6) {
       _day = "今日";
     }
     text(_day, 600 * (2 * i + 1) / 14, 830);
@@ -27,7 +27,7 @@ class SleepScene {
     shape(SVG_11d, 600 * (2 * i + 1) / 14 - 50, 910, 100, 100);
     text("22.3℃", 600 * (2 * i + 1) / 14, 1040);
     if (i < 6) {
-      fill(255);
+      fill(0);
       rect(600 * (2 * i + 2) / 14 - 1, 800, 2, 280);
     }
   }

@@ -89,12 +89,12 @@ void boot() {
 void update() {
   if (isCmode) {
     if (cmodeCount < 2) {
-      fill(255);
-      rect(46, 496, 508, 208);
       fill(0);
+      rect(46, 496, 508, 208);
+      fill(255);
       rect(50, 500, 500, 200);
       textAlign(CENTER, CENTER);
-      fill(255);
+      fill(0);
       textFont(FONT_noto, 48);
       text("通信中…", 300, 600);
       cmodeCount++;
@@ -104,7 +104,7 @@ void update() {
       cmodeAction(cmodeTarget);
     }
   } else {
-    background(0);
+    background(255);
     if (!(mode == 0)) {
       CPT.footer();
     }

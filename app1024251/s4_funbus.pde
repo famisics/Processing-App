@@ -7,7 +7,7 @@ class FunbusScene {
   }
   void update() {
     CPT.header("バス");
-    fill(255);
+    fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 80);
     if (!funbus.get("this_code").equals("終バス済")) {
@@ -25,7 +25,7 @@ class FunbusScene {
   void busCard(String code, String start, String end, String destination, String remain, int yPoition) {
     fill(200, 200, 255);
     rect(50, yPoition - 50, 500, 200);
-    fill(0);
+    fill(255);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 30);
     text(code + " - " + destination + "行き", 100, yPoition);
