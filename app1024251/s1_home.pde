@@ -12,6 +12,15 @@ class HomeScene {
     textFont(FONT_jetbrains, 96);
     text(API.getTime(), 300, 100);
     textFont(FONT_noto, 48);
-    text("今日も元気に！", 300, 250);
+    // 時間帯に応じたメッセージ
+    if (Integer.parseInt(API.getTime().substring(0, 2)) >= 18) {
+      text("こんばんは！", 300, 250);
+    } else if (Integer.parseInt(API.getTime().substring(0, 2)) >= 12) {
+      text("こんにちは！", 300, 250);
+    } else if (Integer.parseInt(API.getTime().substring(0, 2)) >= 6) {
+      text("おはようございます！", 300, 250);
+    } else {
+      text("寝てください", 300, 250);
+    }
   }
 }
