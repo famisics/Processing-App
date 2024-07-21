@@ -4,7 +4,7 @@ class TitleScene {
 
   int start = 0;
   void boot() {
-    start = millis();
+    this.start = millis();
   }
   void update() {
     background(0);

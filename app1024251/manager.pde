@@ -26,6 +26,8 @@ String APIKEY_ipinfo;
 String MANAGER_nextmotion = ""; // 次に行う動作
 boolean MANAGER_isMousePressed = false;
 int MANAGER_mouseX, MANAGER_mouseY;
+boolean isCmode = false;
+int cmodeCount, cmodeTarget = 0;
 
 void boot() {
   // クラスの初期化
@@ -85,35 +87,53 @@ void boot() {
   cmode(0);
 }
 void update() {
-  background(0);
-  if (!(mode == 0)) {
-    CPT.footer();
-  }
-  switch(mode) {
-    case 0 : // タイトル
-      TitleScene.update();
-      break;
-    case 1 : // ホーム
-      HomeScene.update();
-      break;
-    case 2 : // 天気
-      WeatherScene.update();
-      break;
-    case 3 : // Fit
-      FitScene.update();
-      break;
-    case 4 : // Funbus
-      FunbusScene.update();
-      break;
-    case 5 : // IP情報
-      IpinfoScene.update();
-      break;
-    case 6 : // 睡眠
-      SleepScene.update();
-      break;
-  }
-  for (Button e : LIST_Button) {
-    e.update();
+  if (isCmode) {
+    if (cmodeCount < 2) {
+      fill(255);
+      rect(46, 496, 508, 208);
+      fill(0);
+      rect(50, 500, 500, 200);
+      textAlign(CENTER, CENTER);
+      fill(255);
+      textFont(FONT_noto, 48);
+      text("通信中…", 300, 600);
+      cmodeCount++;
+    } else {
+      cmodeCount = 0;
+      isCmode = false;
+      cmodeAction(cmodeTarget);
+    }
+  } else {
+    background(0);
+    if (!(mode == 0)) {
+      CPT.footer();
+    }
+    switch(mode) {
+      case 0 : // タイトル
+        TitleScene.update();
+        break;
+      case 1 : // ホーム
+        HomeScene.update();
+        break;
+      case 2 : // 天気
+        WeatherScene.update();
+        break;
+      case 3 : // Fit
+        FitScene.update();
+        break;
+      case 4 : // Funbus
+        FunbusScene.update();
+        break;
+      case 5 : // IP情報
+        IpinfoScene.update();
+        break;
+      case 6 : // 睡眠
+        SleepScene.update();
+        break;
+    }
+    for (Button e : LIST_Button) {
+      e.update();
+    }
   }
   if (!MANAGER_nextmotion.equals("")) {
     String[] query = split(MANAGER_nextmotion, ",");
@@ -125,6 +145,11 @@ void update() {
 }
 void cmode(int i) {
   LIST_Button.clear();
+  isCmode = true;
+  cmodeTarget = i;
+}
+void cmodeAction(int i) {
+  delay(100);
   switch(i) {
     case 0:
       TitleScene.boot();

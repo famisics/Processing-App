@@ -2,11 +2,11 @@ class WeatherScene {
   HashMap<String, String> weatherNow = new HashMap<String, String>();
   String NOW_weather, NOW_temp, NOW_pressure, NOW_wind = "";
   void boot() {
-    weatherNow = API.getWeatherNow();
-    NOW_weather = weatherNow.get("weather");
-    NOW_temp = weatherNow.get("temp");
-    NOW_pressure = weatherNow.get("pressure");
-    NOW_wind = weatherNow.get("wind");
+    this.weatherNow = API.getWeatherNow();
+    this.NOW_weather = weatherNow.get("weather");
+    this.NOW_temp = weatherNow.get("temp");
+    this.NOW_pressure = weatherNow.get("pressure");
+    this.NOW_wind = weatherNow.get("wind");
   }
   void update() {
     CPT.header("天気");

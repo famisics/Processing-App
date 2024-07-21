@@ -1,7 +1,7 @@
 class FitScene {
   HashMap<Integer, Integer> fitbit = new HashMap<Integer, Integer>();
   void boot() {
-    fitbit = API.getFitbit();
+    this.fitbit = API.getFitbit();
   }
   void update() {
     CPT.header("健康");
