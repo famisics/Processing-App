@@ -16,7 +16,7 @@ int mode = 0; // モード0で初期化
 // 素材
 
 PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
-PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_ipinfo, SVG_sleep;
+PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_sleep;
 PShape SVG_01d, SVG_02d, SVG_03d, SVG_04d, SVG_09d, SVG_10d, SVG_11d, SVG_13d, SVG_50d;
 
 // API
@@ -28,6 +28,7 @@ boolean MANAGER_isMousePressed = false;
 int MANAGER_mouseX, MANAGER_mouseY;
 boolean isCmode = false;
 int cmodeCount, cmodeTarget = 0;
+String cmodeText = "";
 
 void boot() {
   // クラスの初期化
@@ -52,7 +53,6 @@ void boot() {
   SVG_weather = loadShape("svg/mode/weather.svg");
   SVG_fit = loadShape("svg/mode/fit.svg");
   SVG_funbus = loadShape("svg/mode/bus.svg");
-  SVG_ipinfo = loadShape("svg/mode/dns.svg");
   SVG_sleep = loadShape("svg/mode/sleep.svg");
   
   // 天気アイコンの初期化
@@ -89,14 +89,16 @@ void boot() {
 void update() {
   if (isCmode) {
     if (cmodeCount < 2) {
-      fill(0);
-      rect(46, 496, 508, 208);
-      fill(255);
-      rect(50, 500, 500, 200);
-      textAlign(CENTER, CENTER);
-      fill(0);
-      textFont(FONT_noto, 48);
-      text("通信中…", 300, 600);
+      if (!cmodeText.equals("")) {
+        fill(0, 75, 75);
+        rect(45, 495, 510, 210);
+        fill(255);
+        rect(50, 500, 500, 200);
+        textAlign(CENTER, CENTER);
+        fill(0);
+        textFont(FONT_noto, 30);
+        text(cmodeText, 300, 600);
+      }
       cmodeCount++;
     } else {
       cmodeCount = 0;
@@ -147,6 +149,30 @@ void cmode(int i) {
   LIST_Button.clear();
   isCmode = true;
   cmodeTarget = i;
+  switch (i) {
+    case 0:
+      cmodeText = "";
+      break;
+    case 1:
+      cmodeText = "読み込み中";
+      break;
+    case 2:
+      cmodeText = "天気情報を取得中\n\nby Open Weather Map";
+      break;
+    case 3:
+      cmodeText = "歩数データを取得中\n\nby Fitbit API";
+      break;
+    case 4:
+      cmodeText = "バスデータを取得中\n\nby Google Apps Script";
+      break;
+    case 5:
+      cmodeText = "IPINFOを取得中\n\nby IPinfo.io";
+      break;
+    case 6:
+      cmodeText = "睡眠データを取得中\n\nby Fitbit API";
+      break;
+    
+  }
 }
 void cmodeAction(int i) {
   delay(100);

@@ -1,6 +1,6 @@
 void setup() {
   background(255);
-  stroke(150, 200, 200);
+  noStroke();
   print("initializing... ");
   size(600,1200); // Google Pixel 7 基準に指定
   boot();
@@ -30,7 +30,7 @@ void keyPressed() {
     case '5':
       cmode(5);
       break;
-    case '6' : 
+    case '6' :
       cmode(6);
       break;
     case ' ':

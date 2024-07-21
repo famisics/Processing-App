@@ -1,10 +1,10 @@
 class HomeScene {
   void boot() {
-    addButton(162.5, 512.5, 225, 225, color(255, 100, 100), "天気", "cmode", "2");
-    addButton(437.5, 512.5, 225, 225, color(0, 255, 0), "歩数", "cmode", "3");
-    addButton(162.5, 787.5, 225, 225, color(125, 225, 255), "バス", "cmode", "4");
-    addButton(437.5, 787.5, 225, 225, color(255, 255, 0), "睡眠", "cmode", "6");
-    addButton(300, 1000, 500, 100, color(255, 100, 255), "接続状態", "cmode", "5");
+    addButton(162.5, 512.5, 225, 225, color(3, 171, 106), "天気", "cmode", "2");
+    addButton(437.5, 512.5, 225, 225, color(28, 130, 173), "歩数", "cmode", "3");
+    addButton(162.5, 787.5, 225, 225, color(0, 51, 124), "バス", "cmode", "4");
+    addButton(437.5, 787.5, 225, 225, color(70, 30, 80), "睡眠", "cmode", "6");
+    addButton(300, 1000, 500, 100, color(50), "接続状態", "cmode", "5");
   }
   void update() {
     fill(0);

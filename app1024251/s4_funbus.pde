@@ -23,7 +23,12 @@ class FunbusScene {
     }
   }
   void busCard(String code, String start, String end, String destination, String remain, int yPoition) {
-    fill(200, 200, 255);
+    if (yPoition == 300) {
+      fill(255, 120, 120);
+    } else {
+      fill(100, 100, 255);
+    }
+    
     rect(50, yPoition - 50, 500, 200);
     fill(255);
     textAlign(LEFT, CENTER);

@@ -2,7 +2,7 @@
 
 class Component {
   void header(String i) {
-    fill(20, 50, 50);
+    fill(100, 175, 175);
     rect(0, 0, 600, 100);
     fill(0);
     textAlign(LEFT, CENTER);
@@ -10,13 +10,15 @@ class Component {
     text(i, 30, 50);
   }
   void footer() {
-    fill(150, 200, 200);
+    fill(200, 255, 255);
     rect(0, 1100, 600, 100);
-    fill(0);
+    fill(0, 75, 75);
+    rect(0, 1095, 600, 5);
     circle(300, 1150, 120);
     
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 20);
+    fill(0);
     text("天気", 600 * 1 / 10, 1180);
     text("バス", 600 * 3 / 10, 1180);
     text("歩数", 600 * 7 / 10, 1180);
@@ -25,7 +27,7 @@ class Component {
     shape(SVG_funbus, 600 * 3 / 10 - 25, 1110, 50, 50);
     shape(SVG_fit, 600 * 7 / 10 - 25, 1110, 50, 50);
     shape(SVG_sleep, 600 * 9 / 10 - 25, 1110, 50, 50);
-    fill(50, 50, 100);
+    fill(255);
     text("ホーム", 600 * 5 / 10, 1180);
     shape(SVG_home, 600 * 5 / 10 - 25, 1110, 50, 50);
     if (MANAGER_isMousePressed && MANAGER_mouseY > 1100) {
