@@ -1,5 +1,7 @@
 class FunbusScene {
+  String 
   void boot() {
+    HashMap<String, String> funbus = API.getFunbus();
   }
   void update() {
     CPT.header("バス");

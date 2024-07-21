@@ -58,21 +58,82 @@ class API {
   }
   // ? 返す内容 現在の天気{天気、気温}、予報天気{3,6,9,12,15時間後の天気、気温}
   
-  void getFunbus(String query) { // Google Spreadsheet から時刻表を取得
-    JSONArray JSON_response = loadJSONArray("https://script.google.com/macros/s/AKfycbwkkpTBgcCNkB4b4CXHOAGrlfRX93_-xu5dNFiPcbUBupgirZLlKr3deSvVFsEIQZaF3A/exec?query=" + query);
-    for (int i = 0; i < JSON_response.size(); i++) {
-      JSONObject JSON_item = JSON_response.getJSONObject(i);
-      String id = JSON_item.getString("id");
-      String code = JSON_item.getString("code");
-      String start = JSON_item.getString("start");
-      String end = JSON_item.getString("end");
-      println(id + " [" + code + "] " + start + " -> " + end);
-    }
-    // return JSON_response;
+  HashMap<String, String> getFunbus(String query) { // Google Spreadsheet から時刻表を取得
     //  !返す内容-------------------------------------
     //  次のバスの(ID、出発時刻、到着時刻、系統、＠＠行き(算出する))
     //  さらに次のバスまでの時間(BLANKの場合終バスとする)
     //  !--------------------------------------------
+    int timediff = millis() - CASHTIME_funbus;
+    if ((funbus.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
+      println("[API] getFunbus: returning CASHED_DATA... done with " + funbus.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
+      return funbus;
+    }
+    print("[API] getFunbus: FETCHING... ");
+    JSONArray JSON_response = loadJSONArray("https://script.google.com/macros/s/AKfycbxiZdc5U1ZC6rH3l1NnK89j9EIgf8M4VW48nU34dXAYfVpv3Z7QMv_nz9TcQRpMOmGmcg/exec?query=" + query);
+    
+    int thisId; // バスのID
+    
+    for (int i = 0; i < JSON_response.size(); i++) { // 次に出発するバスを探索
+      JSONObject JSON_item = JSON_response.getJSONObject(i);
+      String start = JSON_item.getString("start");
+      if (Integer.parseInt(start.substring(0, 2)) >= hour() && Integer.parseInt(start.substring(3, 5)) >= minute()) { // 時間または分のどちらかが現在時刻よりも小さくなるまでの最後のバスを返す
+        thisId = i; // このバスが次に出発するバス
+      } else {
+        break; // これ以降のバスは出発時刻が現在時刻よりも前なので、探索を打ち切る
+      }
+    }
+    
+    // 次に出発するバスの情報
+    funbus.put("this_code", JSON_response.getJSONObject(thisId).getString("code")); // 系統
+    funbus.put("this_start", JSON_response.getJSONObject(thisId).getString("start")); // 出発時刻
+    funbus.put("this_end", JSON_response.getJSONObject(thisId).getString("end")); // 到着時刻
+    funbus.put("this_destination", busDestination(JSON_response.getJSONObject(thisId).getString("code"))); // 行き先
+    funbus.put("this_untilnext", JSON_response.getJSONObject(thisId).getString("until_next")); // 次のバスまでの時間
+    
+    if (!(JSON_response.getJSONObject(thisId).getString("until_next").equals("0"))) { // 最終バスのとき、APIは0を返すため、そうでない場合「さらに次のバス」を取得する
+      funbus.put("next_code", JSON_response.getJSONObject(thisId + 1).getString("code"));
+      funbus.put("next_start", JSON_response.getJSONObject(thisId + 1).getString("start"));
+      funbus.put("next_end", JSON_response.getJSONObject(thisId + 1).getString("end"));
+      funbus.put("next_destination", busDestination(JSON_response.getJSONObject(thisId + 1).getString("code")));
+    } else { // 次のバスが最終バスのとき、終バスの表記を返す
+      funbus.put("next_code", "終バス");
+      funbus.put("next_start", "");
+      funbus.put("next_end", "");
+      funbus.put("next_destination", "");
+      
+    }
+    
+    CASHTIME_funbus = millis();
+    println("done with " + funbus.size() + " items at " + getTime());
+    
+    return funbus; // ? 返す内容 this_{系統, 出発時刻, 到着時刻, 行き先(算出する), 次のバスまで(APIから取得)} next_{系統, 出発時刻, 到着時刻, 行き先(算出する)}
+  }
+  String busDestination(String code, String query) { // 行き先を算出
+    if (query.equals("fromkmdtofun")) {
+      return "赤川";
+    }
+    String result;
+    switch() {
+      case "55A" :
+        result = "例外";
+        break;
+      case "55B" :
+        result = "例外";
+        break;
+      case "55F" :
+        result = "例外";
+        break;
+      case "55G" :
+        result = "例外";
+        break;
+      case "55H" :
+        result = "例外";
+        break;
+      default :
+      result = "<不明>";
+      break;	
+    }
+    return result;
   }
   
   HashMap<Integer, Integer> getFitbit() { // Fitbit APIから運動データを取得
