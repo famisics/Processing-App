@@ -1,8 +1,8 @@
 class SleepScene {
   HashMap<Integer, HashMap<String, String>> fitbit_sleep;
   void boot() {
-    fitbit_sleep = API.getFitbitSleep();
-    for(int i = 0; i < 8; i++) {
+    fitbit_sleep = API.getFitbitSleeps();
+    for (int i = 0; i < 8; i++) {
       String _day = i + "日前";
       if (i == 0) {
         _day = "今日";

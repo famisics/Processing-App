@@ -20,10 +20,6 @@ PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_sleep;
 PShape SVG_01d, SVG_02d, SVG_03d, SVG_04d, SVG_09d, SVG_10d, SVG_11d, SVG_13d, SVG_50d;
 PShape SVG_check, SVG_error;
 
-// API
-String APIKEY_openweathermap;
-String APIKEY_ipinfo;
-
 String MANAGER_nextmotion = ""; // 次に行う動作
 boolean MANAGER_isMousePressed = false;
 int MANAGER_mouseX, MANAGER_mouseY;
@@ -71,22 +67,22 @@ void boot() {
   SVG_check = loadShape("svg/status/check.svg");
   SVG_error = loadShape("svg/status/error.svg");
   
-  // config.json
-  JSONObject json = loadJSONObject("config.json");
+  // apikeys.json
+  JSONObject json = loadJSONObject("apikeys.json");
   if (json != null) {
-    APIKEY_openweathermap = json.getString("openweathermapApikey");
-    APIKEY_ipinfo = json.getString("ipinfoApikey");
+    API.setApikeys(json);
   } else {
-    println("config.json not found");
+    println("apikeys.json not found");
   }
-  
-  // 過去のデータ(userdata.json)
-  json = loadJSONObject("userdata.json");
+
+  // endpoints.json
+  json = loadJSONObject("endpoints.json");
   if (json != null) {
-    // TODO:something
+    API.setEndpoints(json);
   } else {
-    println("userdata.json not found");
+    println("endpoints.json not found");
   }
+
   println("done");
   // アプリの起動
   cmode(0);

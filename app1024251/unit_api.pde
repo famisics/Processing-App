@@ -13,6 +13,9 @@ class API {
   HashMap<Integer, HashMap<String, String>> fitbit_sleep = new HashMap<Integer, HashMap<String, String>>();
   HashMap<String, String> ipinfo = new HashMap<String, String>();
   
+  HashMap<String, String> apikeys = new HashMap<String, String>(); // API キーリスト
+  HashMap<String, String> endpoints = new HashMap<String, String>(); // API エンドポイントリスト
+  
   HashMap<String, String> getWeatherNow() { // Open Weather Map から天気情報を取得
     int timediff = millis() - CASHTIME_weatherNow;
     if ((weatherNow.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
@@ -20,7 +23,7 @@ class API {
       return weatherNow;
     }
     print("[API] getWeatherNow: FETCHING... ");
-    JSONObject JSON_response = loadJSONObject("https://api.openweathermap.org/data/2.5/weather?id=2130188&lang=ja&appid=" + APIKEY_openweathermap);
+    JSONObject JSON_response = loadJSONObject(endpoints.get("openweathermap_weather") + apikeys.get("openweathermap"));
     
     JSONArray JSON_weather = JSON_response.getJSONArray("weather");
     weatherNow.put("weather", JSON_weather.getJSONObject(0).getString("description")); // 天気
@@ -46,7 +49,7 @@ class API {
       println("[API] getWeatherForecast: CASH... done with " + weatherForecast.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
       // return weatherForecast;
     }
-    JSONObject JSON_response = loadJSONObject("https://api.openweathermap.org/data/2.5/forecast?id=2130188&lang=ja&appid=" + APIKEY_openweathermap);
+    JSONObject JSON_response = loadJSONObject(endpoints.get("openweathermap_forecast") + apikeys.get("openweathermap"));
     JSONArray JSON_array = JSON_response.getJSONArray("list");
     print("[API] getWeatherForecast: FETCHING... ");
     // for (int i = 0; i < JSON_array.size(); i++) {
@@ -70,7 +73,7 @@ class API {
       return funbus;
     }
     print("[API] getFunbus: FETCHING... ");
-    JSONArray JSON_response = loadJSONArray("https://script.google.com/macros/s/AKfycbxiZdc5U1ZC6rH3l1NnK89j9EIgf8M4VW48nU34dXAYfVpv3Z7QMv_nz9TcQRpMOmGmcg/exec?query=" + query);
+    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_funbus") + query);
     
     int thisId = 0; // バスのID
     
@@ -155,14 +158,14 @@ class API {
     return result;
   }
   
-  HashMap<Integer, Integer> getFitbit() { // Fitbit APIから運動データを取得
+  HashMap<Integer, Integer> getFitbitSteps() { // Fitbit APIから歩数データを取得
     int timediff = millis() - CASHTIME_fitbit;
     if ((fitbit.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      println("[API] getFitbit: returning CASHED_DATA... done with " + fitbit.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
+      println("[API] getFitbitSteps: returning CASHED_DATA... done with " + fitbit.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
       return fitbit;
     }
-    print("[API] getFitbit: FETCHING... ");
-    JSONArray JSON_response = loadJSONArray("https://script.google.com/macros/s/AKfycbwmGXmFjdVWGIXNF4x9wzYjA45KbolpM8tL-HKSzi2R9PRV4eESEF7k5pBl8fonICt9/exec");
+    print("[API] getFitbitSteps: FETCHING... ");
+    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_steps"));
     for (int i = 0; i < JSON_response.size(); i++) {
       JSONObject data = JSON_response.getJSONObject(i);
       fitbit.put((7 - i), int(data.getString("steps")));
@@ -173,14 +176,14 @@ class API {
     return fitbit; // ? 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
   }
   
-  HashMap<Integer, HashMap<String, String>> getFitbitSleep() { // Fitbit APIから運動データを取得
+  HashMap<Integer, HashMap<String, String>> getFitbitSleeps() { // Fitbit APIから運動データを取得
     int timediff = millis() - CASHTIME_fitbitSleep;
     if ((fitbit_sleep.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      println("[API] getFitbitSleep: returning CASHED_DATA... done with " + fitbit_sleep.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
+      println("[API] getFitbitSleeps: returning CASHED_DATA... done with " + fitbit_sleep.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
       return fitbit_sleep;
     }
-    print("[API] getFitbitSleep: FETCHING... ");
-    JSONArray JSON_response = loadJSONArray("https://script.google.com/macros/s/AKfycbxUuYwAbN9A9Bgg6Ue8GyphFRbYn9SL8D_zjViu3wRM01vhL4O43uv7S8pZRE-rz-an/exec");
+    print("[API] getFitbitSleeps: FETCHING... ");
+    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_sleeps"));
     for (int i = 0; i < JSON_response.size(); i++) {
       JSONObject data = JSON_response.getJSONObject(i);
       println(data);
@@ -204,7 +207,7 @@ class API {
       return ipinfo;
     }
     print("[API] getIpinfo: FETCHING... ");
-    JSONObject JSON_response = loadJSONObject("https://ipinfo.io/?token=" + APIKEY_ipinfo);
+    JSONObject JSON_response = loadJSONObject(endpoints.get("ipinfo") + apikeys.get("ipinfo"));
     ipinfo.put("ip",JSON_response.getString("ip"));
     ipinfo.put("region", JSON_response.getString("city") + ", " + JSON_response.getString("region") + ", " + JSON_response.getString("country")); // 天気の取得にこのデータを使えそうだけど、VPN使ってたりするとずれるのでやめておく
     ipinfo.put("loc", JSON_response.getString("loc"));
@@ -218,6 +221,18 @@ class API {
     // return getIpinfo().get("org").contains("AS2907 R"); // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
     return getIpinfo().get("org").contains("AS13335 C") || getIpinfo().get("org").contains("AS2907 R"); // TODO:一時的にCloudflareVPNで未来大かどうかを切り替える(デモ用)
     // TODO : flets - 光の場合を含める、家で使っている場合は誤作動するけど、うちはflets - 光ではないので問題ない
+  }
+  void setApikeys(JSONObject json) {
+    apikeys.put("openweathermap", json.getString("openweathermap"));
+    apikeys.put("ipinfo", json.getString("ipinfo"));
+  }
+  void setEndpoints(JSONObject json) {
+    endpoints.put("openweathermap_weather", json.getString("openweathermap_weather"));
+    endpoints.put("openweathermap_forecast", json.getString("openweathermap_forecast"));
+    endpoints.put("gas_funbus", json.getString("gas_funbus"));
+    endpoints.put("gas_steps", json.getString("gas_steps"));
+    endpoints.put("gas_sleeps", json.getString("gas_sleeps"));
+    endpoints.put("ipinfo", json.getString("ipinfo"));
   }
   String getTime() {
     return nf(hour(), 2) + ":" + nf(minute(), 2) + ":" + nf(second(), 2);
