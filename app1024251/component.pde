@@ -1,4 +1,4 @@
-// 使い回すコンポーネントを定義
+// ? 使い回すコンポーネントを定義
 
 class Component {
   void header(String i) {

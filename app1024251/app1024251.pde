@@ -11,7 +11,7 @@ void draw() {
   update();
 }
 
-// デバッグ用のキー
+// ! デバッグ用のキー
 void keyPressed() {
   switch(key) {
     case '0':
