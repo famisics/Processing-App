@@ -12,9 +12,9 @@ class FunbusScene {
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 20);
     if (query.equals("fromkmdtofun")) {
-      text("亀田支所前→未来大を表示中", 50, 150);
+      text("亀田支所前→未来大のバスを表示中", 50, 150);
     } else {
-      text("未来大→亀田支所前を表示中", 50, 150);
+      text("未来大→亀田支所前のバスを表示中", 50, 150);
     }
     if (!funbus.get("this_code").equals("終バス済")) {
       busCard(funbus.get("this_code"), funbus.get("this_start"), funbus.get("this_end"), funbus.get("this_destination"), remain(funbus.get("this_start")), 300);
@@ -47,7 +47,7 @@ class FunbusScene {
     } else {
       shape(SVG_off, 50, 1000, 50, 50);
     }
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 && MANAGER_mouseY < 1050 && MANAGER_mouseX > 50 && MANAGER_mouseX < 100) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 && MANAGER_mouseY < 1050 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
       changeFirstBus();
       MANAGER_isMousePressed = false;
     }

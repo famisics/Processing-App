@@ -13,13 +13,15 @@ class WeatherScene {
     CPT.header("天気");
     fill(0);
     textAlign(LEFT, TOP);
-    textFont(FONT_noto, 64);
+    textFont(FONT_noto, 42);
     text("現在の天気", 50, 150);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 96);
-    text(weatherNow.get("weather"), 300, 250);
-    shape(SVG_now, 50, 200, 500, 500);
-    text(weatherNow.get("temp") + "℃", 300, 670);
+    text(weatherNow.get("weather"), 300, 290);
+    textFont(FONT_noto, 60);
+    shape(SVG_now, 50, 290, 500, 500);
+    text(weatherNow.get("temp") + "℃", 150, 700);
+    text(weatherNow.get("pressure") + "hPa", 450, 700);
     for (int i = 3; i <= 15; i += 3) {
       drawWeather(i, weatherForecast.get(i).get("weather"), weatherForecast.get(i).get("temp"));
     }

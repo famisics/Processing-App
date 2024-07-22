@@ -16,6 +16,7 @@ int mode = 0; // モード0で初期化
 // config
 
 boolean isFirstBus = false;
+boolean isFreeWifiContain = true;
 
 // 素材
 
@@ -84,6 +85,11 @@ void boot() {
       isFirstBus = true;
     } else {
       isFirstBus = false;
+    }
+    if (json.getInt("is_free_wifi_contain") == 1) {
+      isFreeWifiContain = true;
+    } else {
+      isFreeWifiContain = false;
     }
   } else {
     println("config.json not found");
@@ -221,8 +227,17 @@ void changeFirstBus() {
   isFirstBus = !isFirstBus;
   JSONObject json = new JSONObject();
   json.setInt("is_first_bus", isFirstBus ? 1 : 0);
+  json.setInt("is_free_wifi_contain", isFreeWifiContain ? 1 : 0);
   saveJSONObject(json, "data/config.json");
-
+  println("[json] 設定が保存されました");
+}
+void changeFreeWifiContain() {
+  isFreeWifiContain = !isFreeWifiContain;
+  JSONObject json = new JSONObject();
+  json.setInt("is_first_bus", isFirstBus ? 1 : 0);
+  json.setInt("is_free_wifi_contain", isFreeWifiContain ? 1 : 0);
+  saveJSONObject(json, "data/config.json");
+  println("[json] 設定が保存されました");
 }
 void mousePressed() {
   MANAGER_isMousePressed = true;
