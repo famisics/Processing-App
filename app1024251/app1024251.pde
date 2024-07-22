@@ -30,7 +30,7 @@ void keyPressed() {
     case '5':
       cmode(5);
       break;
-    case '6' :
+    case '6':
       cmode(6);
       break;
   }

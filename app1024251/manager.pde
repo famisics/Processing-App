@@ -13,12 +13,16 @@ SleepScene SleepScene;
 
 int mode = 0; // モード0で初期化
 
+// config
+
+boolean isFirstBus = false;
+
 // 素材
 
 PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
 PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_sleep;
 PShape SVG_01d, SVG_02d, SVG_03d, SVG_04d, SVG_09d, SVG_10d, SVG_11d, SVG_13d, SVG_50d;
-PShape SVG_check, SVG_error;
+PShape SVG_check, SVG_error, SVG_on, SVG_off;
 
 String MANAGER_nextmotion = ""; // 次に行う動作
 boolean MANAGER_isMousePressed = false;
@@ -62,10 +66,12 @@ void boot() {
   SVG_11d = loadShape("svg/weather/11d.svg");
   SVG_13d = loadShape("svg/weather/13d.svg");
   SVG_50d = loadShape("svg/weather/50d.svg");
-
+  
   // ステータスアイコンの初期化
   SVG_check = loadShape("svg/status/check.svg");
   SVG_error = loadShape("svg/status/error.svg");
+  SVG_on = loadShape("svg/status/on.svg");
+  SVG_off = loadShape("svg/status/off.svg");
   
   // apikeys.json
   JSONObject json = loadJSONObject("apikeys.json");
@@ -74,7 +80,7 @@ void boot() {
   } else {
     println("apikeys.json not found");
   }
-
+  
   // endpoints.json
   json = loadJSONObject("endpoints.json");
   if (json != null) {
@@ -82,7 +88,19 @@ void boot() {
   } else {
     println("endpoints.json not found");
   }
-
+  
+  // config.json
+  json = loadJSONObject("config.json");
+  if (json != null) {
+    if (json.getInt("is_first_bus") == 1) {
+      isFirstBus = true;
+    } else {
+      isFirstBus = false;
+    }
+  } else {
+    println("config.json not found");
+  }
+  
   println("done");
   // アプリの起動
   cmode(0);
@@ -113,9 +131,6 @@ void update() {
     }
   } else {
     background(255);
-    if (!(mode == 0)) {
-      CPT.footer();
-    }
     switch(mode) {
       case 0 : // タイトル
         TitleScene.update();
@@ -138,6 +153,9 @@ void update() {
       case 6 : // 睡眠
         SleepScene.update();
         break;
+    }
+    if (!(mode == 0)) {
+      CPT.footer();
     }
     for (Button e : LIST_Button) {
       e.update();
@@ -211,7 +229,13 @@ void cmodeAction(int i) {
 void addButton(float x, float y, float w, float h, color bg, String label, String type, String id) {
   LIST_Button.add(new Button(x, y, w, h, bg, label, type, id));
 }
+void changeFirstBus() {
+  isFirstBus = !isFirstBus;
+  JSONObject json = new JSONObject();
+  json.setInt("is_first_bus", isFirstBus ? 1 : 0);
+  saveJSONObject(json, "data/config.json");
 
+}
 void mousePressed() {
   MANAGER_isMousePressed = true;
   MANAGER_mouseX = mouseX;

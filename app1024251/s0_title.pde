@@ -16,7 +16,11 @@ class TitleScene {
     textFont(FONT_noto, 30);
     text("2024 © famisics (https://uiro.dev)", 300, 1150);
     if (millis() > start + loadingTime) {
-      cmode(1);
+      if(isFirstBus) {
+        cmode(4);
+      } else {
+        cmode(1);
+      }
     }
   }
 }

@@ -63,15 +63,12 @@ class API {
   }
   // ? 返す内容 現在の天気{天気、気温}、予報天気{3,6,9,12,15時間後の天気、気温}
   HashMap<String, String> getFunbus(String query) { // Google Spreadsheet から時刻表を取得
-    //  !返す内容-------------------------------------
-    //  次のバスの(ID、出発時刻、到着時刻、系統、＠＠行き(算出する))
-    //  さらに次のバスまでの時間(BLANKの場合終バスとする)
-    //  !--------------------------------------------
-    int timediff = millis() - CASHTIME_funbus;
-    if ((funbus.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      println("[API] getFunbus: returning CASHED_DATA... done with " + funbus.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
-      return funbus;
-    }
+    // !バスのAPIは、最新のデータをすぐに取得する必要があるため、キャッシュを使わないことにした
+    // int timediff = millis() - CASHTIME_funbus;
+    // if ((funbus.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
+    //   println("[API] getFunbus: returning CASHED_DATA... done with " + funbus.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
+    //   return funbus;
+    // }
     print("[API] getFunbus: FETCHING... ");
     JSONArray JSON_response = loadJSONArray(endpoints.get("gas_funbus") + query);
     
@@ -81,7 +78,10 @@ class API {
       thisId = i;
       JSONObject JSON_item = JSON_response.getJSONObject(i);
       String start = JSON_item.getString("start");
-      if (start.equals("null")) println("[API] getFunbus: クエリーが不正です、データを取得できませんでした");
+      if (start.equals("null")) {
+        println("[API] getFunbus: クエリが不正です、データを取得できませんでした");
+        break;
+      }
       
       // このループのバスが次のバスであれば、ループを抜ける 
       int startHour = Integer.parseInt(start.substring(0, 2));
