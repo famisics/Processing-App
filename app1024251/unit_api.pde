@@ -229,8 +229,8 @@ class API {
     //TODO : フレッツ光の場合のorgを入れる
   }
   void setApikeys(JSONObject json) {
-    apikeys.put("openweathermap", nazo(json.getString("openweathermap")));
-    apikeys.put("ipinfo", nazo(json.getString("ipinfo")));
+    apikeys.put("openweathermap", dcd(json.getString("openweathermap")));
+    apikeys.put("ipinfo", dcd(json.getString("ipinfo")));
   }
   void setEndpoints(JSONObject json) {
     endpoints.put("openweathermap_weather", dcd(json.getString("openweathermap_weather")));
