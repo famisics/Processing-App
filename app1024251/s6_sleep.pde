@@ -58,7 +58,7 @@ class SleepScene {
     }
     text(_day, 600 * (2 * i + 1) / 14, 830);
     text("雷雨", 600 * (2 * i + 1) / 14, 900);
-    shape(SVG_11d, 600 * (2 * i + 1) / 14 - 50, 910, 100, 100);
+    // shape(SVG_11d, 600 * (2 * i + 1) / 14 - 50, 910, 100, 100);
     text(minToTime(duration), 600 * (2 * i + 1) / 14, 1040);
     if (i < 6) {
       fill(0);

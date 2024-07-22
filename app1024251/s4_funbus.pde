@@ -16,23 +16,32 @@ class FunbusScene {
     } else {
       text("未来大→亀田支所前を表示中", 50, 150);
     }
-    textAlign(CENTER, CENTER);
-    textFont(FONT_noto, 80);
     if (!funbus.get("this_code").equals("終バス済")) {
       busCard(funbus.get("this_code"), funbus.get("this_start"), funbus.get("this_end"), funbus.get("this_destination"), remain(funbus.get("this_start")), 300);
-      if (funbus.get("this_untilnext").equals("0")) {
-        text("終バス", 500, 700);
+      if (funbus.get("this_untilnext").equals("last")) {
+        fill(200, 0, 0);
+        rect(50, 700, 500, 200);
+        fill(255, 255, 0);
+        rect(55, 705, 490, 190);
+        fill(200, 0, 0);
+        textAlign(CENTER, CENTER);
+        textFont(FONT_noto, 48);
+        text("今日最後のバスです", 300, 800);
       } else {
+        textFont(FONT_noto, 48);
+        textAlign(RIGHT, CENTER);
         text("次のバスは　" + funbus.get("this_untilnext") + "後", 500, 700);
-        busCard(funbus.get("next_code"), funbus.get("next_start"), funbus.get("next_end"), funbus.get("next_destination"), remain(funbus.get("next_start")), 650);
+        busCard(funbus.get("next_code"), funbus.get("next_start"), funbus.get("next_end"), funbus.get("next_destination"), remain(funbus.get("next_start")), 750);
       }
     } else {
-      text("終バス済", 300, 500);
+      textAlign(CENTER, CENTER);
+      textFont(FONT_noto, 42);
+      text("本日の運行は終了しました", 300, 550);
     }
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 20);
-    text("アプリの起動時にこの画面を表示する", 110, 1025);
+    text("アプリの起動時にこの画面（バス）を表示する", 110, 1025);
     if (isFirstBus) {
       shape(SVG_on, 50, 1000, 50, 50);
     } else {

@@ -1,36 +1,54 @@
 class WeatherScene {
   HashMap<String, String> weatherNow = new HashMap<String, String>();
+  HashMap<Integer, HashMap<String, String>> weatherForecast = new HashMap<Integer, HashMap<String, String>>();
   String NOW_weather, NOW_temp, NOW_pressure, NOW_wind = "";
+  PShape SVG_now, SVG_forecast3, SVG_forecast6, SVG_forecast9, SVG_forecast12, SVG_forecast15 = null;
   void boot() {
     this.weatherNow = API.getWeatherNow();
-    this.NOW_weather = weatherNow.get("weather");
-    this.NOW_temp = weatherNow.get("temp");
-    this.NOW_pressure = weatherNow.get("pressure");
-    this.NOW_wind = weatherNow.get("wind");
+    this.weatherForecast = API.getWeatherForecast();
+    nowIcon(weatherNow.get("icon"));
+    forecastIcon(weatherForecast.get(3).get("icon"), weatherForecast.get(6).get("icon"), weatherForecast.get(9).get("icon"), weatherForecast.get(12).get("icon"), weatherForecast.get(15).get("icon"));
   }
   void update() {
     CPT.header("天気");
     fill(0);
+    textAlign(LEFT, TOP);
+    textFont(FONT_noto, 64);
+    text("現在の天気", 50, 150);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 96);
-    text(NOW_weather, 300, 200);
-    shape(SVG_11d, 50, 160, 500, 500);
-    text(NOW_temp + "℃", 300, 650);
-    for (int i = 0; i < 5; i++) {
-      drawWeather(i);
+    text(weatherNow.get("weather"), 300, 250);
+    shape(SVG_now, 50, 200, 500, 500);
+    text(weatherNow.get("temp") + "℃", 300, 670);
+    for (int i = 3; i <= 15; i += 3) {
+      drawWeather(i, weatherForecast.get(i).get("weather"), weatherForecast.get(i).get("temp"));
     }
   }
-  void drawWeather(int i) {
+  void nowIcon(String name) {
+    SVG_now = loadShape("svg/weather/" + name + ".svg");
+  }
+  void forecastIcon(String name3, String name6, String name9, String name12, String name15) {
+    SVG_forecast3 = loadShape("svg/weather/" + name3 + ".svg");
+    SVG_forecast6 = loadShape("svg/weather/" + name6 + ".svg");
+    SVG_forecast9 = loadShape("svg/weather/" + name9 + ".svg");
+    SVG_forecast12 = loadShape("svg/weather/" + name12 + ".svg");
+    SVG_forecast15 = loadShape("svg/weather/" + name15 + ".svg");
+  }
+  void drawWeather(int i, String weather, String temp) {
     fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 24);
-    text(str((i + 1) * 3) + "時間後", 600 * (2 * i + 1) / 10, 830);
-    text("雷雨", 600 * (2 * i + 1) / 10, 900);
-    shape(SVG_11d, 600 * (2 * i + 1) / 10 - 50, 910, 100, 100);
-    text("22.3℃", 600 * (2 * i + 1) / 10, 1040);
-    if (i < 4) {
+    text(i + "時間後", 600 * (2 * (i / 3 - 1) + 1) / 10, 830);
+    text(weather, 600 * (2 * (i / 3 - 1) + 1) / 10, 900);
+    if (i == 3) shape(SVG_forecast3, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
+    if (i == 6) shape(SVG_forecast6, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
+    if (i == 9) shape(SVG_forecast9, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
+    if (i == 12) shape(SVG_forecast12, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
+    if (i == 15) shape(SVG_forecast15, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
+    text(temp + "℃", 600 * (2 * (i / 3 - 1) + 1) / 10, 1040);
+    if (i < 15) {
       fill(0);
-      rect(600 * (2 * i + 2) / 10 - 1, 800, 2, 280);
+      rect(600 * (2 * (i / 3 - 1) + 2) / 10 - 1, 800, 2, 280);
     }
   }
 }

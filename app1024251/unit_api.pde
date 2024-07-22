@@ -7,7 +7,7 @@ class API {
   int CASHTIME_weatherNow, CASHTIME_weatherForecast, CASHTIME_funbus, CASHTIME_fitbit, CASHTIME_fitbitSleep, CASHTIME_ipinfo = 0;
   // APIレスポンスをキャッシュしておくHashMap
   HashMap<String, String> weatherNow = new HashMap<String, String>();
-  HashMap<String, String> weatherForecast = new HashMap<String, String>();
+  HashMap<Integer, HashMap<String, String>> weatherForecast = new HashMap<Integer, HashMap<String, String>>();
   HashMap<String, String> funbus = new HashMap<String, String>();
   HashMap<Integer, Integer> fitbit = new HashMap<Integer, Integer>();
   HashMap<Integer, HashMap<String, String>> fitbit_sleep = new HashMap<Integer, HashMap<String, String>>();
@@ -24,17 +24,11 @@ class API {
     }
     print("[API] getWeatherNow: FETCHING... ");
     JSONObject JSON_response = loadJSONObject(endpoints.get("openweathermap_weather") + apikeys.get("openweathermap"));
-    
-    JSONArray JSON_weather = JSON_response.getJSONArray("weather");
-    weatherNow.put("weather", JSON_weather.getJSONObject(0).getString("description")); // 天気
-    
-    JSONObject JSON_main = JSON_response.getJSONObject("main");
-    weatherNow.put("temp", String.valueOf(Math.round(10.0 * (JSON_main.getFloat("temp") - 273.15)) / 10.0)); // 気温(四捨五入小数点以下1桁)
-    weatherNow.put("pressure", String.valueOf(Math.round(JSON_main.getFloat("pressure")))); // 気圧(四捨五入)
-    
-    JSONObject JSON_wind = JSON_response.getJSONObject("wind");
-    weatherNow.put("wind", String.valueOf(JSON_wind.getFloat("speed"))); // 風速
-    
+
+    weatherNow.put("weather", JSON_response.getJSONArray("weather").getJSONObject(0).getString("description")); // 天気
+    weatherNow.put("icon", JSON_response.getJSONArray("weather").getJSONObject(0).getString("icon").substring(0, 2) + "d"); // 天気アイコン
+    weatherNow.put("temp", String.valueOf(Math.round(10.0 * (JSON_response.getJSONObject("main").getFloat("temp") - 273.15)) / 10.0)); // 気温(四捨五入小数点以下1桁)
+    weatherNow.put("pressure", String.valueOf(Math.round(JSON_response.getJSONObject("main").getFloat("pressure")))); // 気圧(四捨五入)
     weatherNow.put("city", JSON_response.getString("name")); // 都市名
     
     CASHTIME_weatherNow = millis();
@@ -43,31 +37,41 @@ class API {
     return weatherNow; // ? 返す内容 現在の天気{天気、気温、気圧、風速}
   }
   
-  void getWeatherForecast() { // Open Weather Map から天気情報を取得
+  HashMap<Integer, HashMap<String, String>> getWeatherForecast() { // Open Weather Map から天気情報を取得
     int timediff = millis() - CASHTIME_weatherForecast;
     if ((weatherForecast.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
       println("[API] getWeatherForecast: CASH... done with " + weatherForecast.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
       // return weatherForecast;
     }
-    JSONObject JSON_response = loadJSONObject(endpoints.get("openweathermap_forecast") + apikeys.get("openweathermap"));
-    JSONArray JSON_array = JSON_response.getJSONArray("list");
+    JSONArray JSON_response = loadJSONObject(endpoints.get("openweathermap_forecast") + apikeys.get("openweathermap")).getJSONArray("list");
     print("[API] getWeatherForecast: FETCHING... ");
-    // for (int i = 0; i < JSON_array.size(); i++) {
-    //   JSONObject JSON_item = JSON_array.getJSONObject(i);
-    //   String date = JSON_item.getString("dt_txt");
-    //   JSONObject JSON_main = JSON_item.getJSONObject("main");
-    //   float temp = Math.round(10.0 * (JSON_main.getFloat("temp") - 273.15)) / 10.0;
-    //   JSONObject JSON_weather = JSON_item.getJSONArray("weather").getJSONObject(0);
-    //   String weather = JSON_weather.getString("description");
-    //   println(date + " 天気:" + weather + " 気温:" + temp);
+    
+    for (int i = 0; i < JSON_response.size(); i++) { // データを加工して HashMap に格納
+      JSONObject forecast = JSON_response.getJSONObject(i);
+      int hour = i * 3 + 3; // 3, 6, 9, 12, 15 時間後
+      
+      if (hour >= 18) break; // 15時間後の天気まで取得する
+      
+      HashMap<String, String> forecastData = new HashMap<>(); // 一時データ
+      forecastData.put("weather", forecast.getJSONArray("weather").getJSONObject(0).getString("description"));
+      forecastData.put("temp", String.valueOf(Math.round(10.0 * (forecast.getJSONObject("main").getFloat("temp") - 273.15)) / 10.0));
+      forecastData.put("icon", forecast.getJSONArray("weather").getJSONObject(0).getString("icon").substring(0, 2) + "d");
+      forecastData.put("pressure", String.valueOf(Math.round(forecast.getJSONObject("main").getFloat("pressure"))));
+      
+      weatherForecast.put(hour, forecastData);
+    }
+    
+    CASHTIME_weatherForecast = millis(); // キャッシュ時間を更新
+    println("done with " + weatherForecast.size() + " items at " + getTime());
+    return weatherForecast;
+    //? 返す内容 現在の天気{天気、気温}、予報天気{3,6,9,12,15時間後の天気、気温}
   }
-  // ? 返す内容 現在の天気{天気、気温}、予報天気{3,6,9,12,15時間後の天気、気温}
   HashMap<String, String> getFunbus(String query) { // Google Spreadsheet から時刻表を取得
-    // !バスのAPIは、最新のデータをすぐに取得する必要があるため、キャッシュを使わないことにした
-    // int timediff = millis() - CASHTIME_funbus;
-    // if ((funbus.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-    //   println("[API] getFunbus: returning CASHED_DATA... done with " + funbus.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
-    //   return funbus;
+    //!バスのAPIは、最新のデータをすぐに取得する必要があるため、キャッシュを使わないことにした
+    //int timediff = millis() - CASHTIME_funbus;
+    //if ((funbus.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
+    //println("[API] getFunbus: returning CASHED_DATA... done with " + funbus.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
+    //return funbus;
     // }
     print("[API] getFunbus: FETCHING... ");
     JSONArray JSON_response = loadJSONArray(endpoints.get("gas_funbus") + query);
@@ -83,7 +87,7 @@ class API {
         break;
       }
       
-      // このループのバスが次のバスであれば、ループを抜ける 
+      //このループのバスが次のバスであれば、ループを抜ける 
       int startHour = Integer.parseInt(start.substring(0, 2));
       int startMinute = Integer.parseInt(start.substring(3, 5));
       int startTime = startHour * 60 + startMinute;
@@ -113,16 +117,16 @@ class API {
     funbus.put("this_destination", busDestination(JSON_response.getJSONObject(thisId).getString("code"), query)); // 行き先
     funbus.put("this_untilnext", JSON_response.getJSONObject(thisId).getString("until_next")); // 次のバスまでの時間
     
-    if (!(JSON_response.getJSONObject(thisId).getString("until_next").equals("0"))) { // 最終バスのとき、APIは0を返すため、そうでない場合「さらに次のバス」を取得する
+    if (!(JSON_response.getJSONObject(thisId).getString("until_next").equals("last"))) { // 最終バスのとき、APIは0を返すため、そうでない場合「さらに次のバス」を取得する
       funbus.put("next_code", JSON_response.getJSONObject(thisId + 1).getString("code"));
       funbus.put("next_start", JSON_response.getJSONObject(thisId + 1).getString("start"));
       funbus.put("next_end", JSON_response.getJSONObject(thisId + 1).getString("end"));
       funbus.put("next_destination", busDestination(JSON_response.getJSONObject(thisId + 1).getString("code"), query));
     } else { // 次のバスが最終バスのとき、終バスの表記を返す
       funbus.put("next_code", "終バス");
-      funbus.put("next_start", "");
-      funbus.put("next_end", "");
-      funbus.put("next_destination", "");
+      funbus.put("next_start", "00:00");
+      funbus.put("next_end", "00:00");
+      funbus.put("next_destination", "未知");
       
     }
     
@@ -218,9 +222,9 @@ class API {
     return ipinfo; // ? 返す内容 IPアドレス、プロバイダ、地域、座標
   }
   boolean isFUN() { // 未来大からアクセスしているかを判定
-    // return getIpinfo().get("org").contains("AS2907 R"); // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
+    //return getIpinfo().get("org").contains("AS2907 R"); // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
     return getIpinfo().get("org").contains("AS13335 C") || getIpinfo().get("org").contains("AS2907 R"); // TODO:一時的にCloudflareVPNで未来大かどうかを切り替える(デモ用)
-    // TODO : flets - 光の場合を含める、家で使っている場合は誤作動するけど、うちはflets - 光ではないので問題ない
+    //TODO : flets - 光の場合を含める、家で使っている場合は誤作動するけど、うちはflets - 光ではないので問題ない
   }
   void setApikeys(JSONObject json) {
     apikeys.put("openweathermap", json.getString("openweathermap"));

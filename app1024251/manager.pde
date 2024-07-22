@@ -21,7 +21,6 @@ boolean isFirstBus = false;
 
 PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
 PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_sleep;
-PShape SVG_01d, SVG_02d, SVG_03d, SVG_04d, SVG_09d, SVG_10d, SVG_11d, SVG_13d, SVG_50d;
 PShape SVG_check, SVG_error, SVG_on, SVG_off;
 
 String MANAGER_nextmotion = ""; // 次に行う動作
@@ -55,17 +54,6 @@ void boot() {
   SVG_fit = loadShape("svg/mode/fit.svg");
   SVG_funbus = loadShape("svg/mode/bus.svg");
   SVG_sleep = loadShape("svg/mode/sleep.svg");
-  
-  // 天気アイコンの初期化
-  SVG_01d = loadShape("svg/weather/01d.svg");
-  SVG_02d = loadShape("svg/weather/02d.svg");
-  SVG_03d = loadShape("svg/weather/03d.svg");
-  SVG_04d = loadShape("svg/weather/04d.svg");
-  SVG_09d = loadShape("svg/weather/09d.svg");
-  SVG_10d = loadShape("svg/weather/10d.svg");
-  SVG_11d = loadShape("svg/weather/11d.svg");
-  SVG_13d = loadShape("svg/weather/13d.svg");
-  SVG_50d = loadShape("svg/weather/50d.svg");
   
   // ステータスアイコンの初期化
   SVG_check = loadShape("svg/status/check.svg");
@@ -184,16 +172,16 @@ void cmode(int i) {
       cmodeText = "天気情報を取得中\n\nby Open Weather Map";
       break;
     case 3:
-      cmodeText = "歩数データを取得中\n\nby Fitbit API";
+      cmodeText = "歩数情報を取得中\n\nby Fitbit API";
       break;
     case 4:
-      cmodeText = "バスデータを取得中\n\nby Google Apps Script";
+      cmodeText = "バス情報を取得中\n\nby Google Apps Script";
       break;
     case 5:
-      cmodeText = "IPINFOを取得中\n\nby IPinfo.io";
+      cmodeText = "IPアドレスを取得中\n\nby IPinfo.io";
       break;
     case 6:
-      cmodeText = "睡眠データを取得中\n\nby Fitbit API";
+      cmodeText = "睡眠情報を取得中\n\nby Fitbit API";
       break;
     
   }
