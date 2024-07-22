@@ -33,8 +33,5 @@ void keyPressed() {
     case '6' :
       cmode(6);
       break;
-    case ' ':
-      println(API.isFUN());
-      break;
   }
 }

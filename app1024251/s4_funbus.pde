@@ -29,7 +29,7 @@ class FunbusScene {
       fill(100, 100, 255);
     }
     
-    rect(50, yPoition - 50, 500, 200);
+    rect(50, yPoition - 50, 500, 250);
     fill(255);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 30);
@@ -37,18 +37,18 @@ class FunbusScene {
     text(start + "出発 - " + end + "到着", 100, yPoition + 50);
     text(remain, 100, yPoition + 100);
   }
-  String remain(String this_start) {
+  String remain(String this_start) { // TODO:なんか不具合ある
     int now = hour() * 60 + minute();
     int start = int(this_start.substring(0, 2)) * 60 + int(this_start.substring(3, 5));
     int remainHour = (start - now) / 60;
-    int remainMinute = (start - now) % 60;
+    int remainMinute = ((start - now) % 60) - 1;
     if (start - now + 60 < 0) {
       cmode(4);
       return "";
-    } else if (start - now < 0) {
+    } else if (start - now < 60) {
       return "出発済みです\n" + (60 - (start - now)) + "秒後にリストを入れ替えます";
     }
-    if (remainHour == 0) return "出発まで " + remainMinute + "分" + nf(60 - second(), 2) + "秒";
-    return "出発まで " + remainHour + "時間" + nf(remainMinute, 2) + "分" + nf(60 - second(), 2) + "秒";
+    if (remainHour == 0) return "出発まで " + remainMinute + "分" + nf(59 - second(), 2) + "秒";
+    return "出発まで " + remainHour + "時間" + nf(remainMinute, 2) + "分" + nf(59 - second(), 2) + "秒";
   }
 }
