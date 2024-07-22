@@ -222,25 +222,29 @@ class API {
     String org = getIpinfo().get("org");
     // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
     return org.contains("AS13335 C") || (org.contains("FLETS_no_org") && isFreeWifiContain) || org.contains("AS2907 R");
-
+    
     // 一時的にCloudflareVPNで未来大かどうかを切り替えている(デモ用)
     // VPNのスイッチをON/OFFするだけで、未来大モードと亀田支所前モードを切り替えることができる
-
+    
     //TODO : フレッツ光の場合のorgを入れる
   }
   void setApikeys(JSONObject json) {
-    apikeys.put("openweathermap", json.getString("openweathermap"));
-    apikeys.put("ipinfo", json.getString("ipinfo"));
+    apikeys.put("openweathermap", nazo(json.getString("openweathermap")));
+    apikeys.put("ipinfo", nazo(json.getString("ipinfo")));
   }
   void setEndpoints(JSONObject json) {
-    endpoints.put("openweathermap_weather", json.getString("openweathermap_weather"));
-    endpoints.put("openweathermap_forecast", json.getString("openweathermap_forecast"));
-    endpoints.put("gas_funbus", json.getString("gas_funbus"));
-    endpoints.put("gas_steps", json.getString("gas_steps"));
-    endpoints.put("gas_sleeps", json.getString("gas_sleeps"));
-    endpoints.put("ipinfo", json.getString("ipinfo"));
+    endpoints.put("openweathermap_weather", dcd(json.getString("openweathermap_weather")));
+    endpoints.put("openweathermap_forecast", dcd(json.getString("openweathermap_forecast")));
+    endpoints.put("gas_funbus", dcd(json.getString("gas_funbus")));
+    endpoints.put("gas_steps", dcd(json.getString("gas_steps")));
+    endpoints.put("gas_sleeps", dcd(json.getString("gas_sleeps")));
+    endpoints.put("ipinfo", dcd(json.getString("ipinfo")));
   }
   String getTime() {
     return nf(hour(), 2) + ":" + nf(minute(), 2) + ":" + nf(second(), 2);
+  }
+  String dcd(String i) {
+    byte[] d = Base64.getDecoder().decode(i);
+    return new String(d);
   }
 }

@@ -1,3 +1,5 @@
+import java.util.Base64;
+
 void setup() {
   background(255);
   noStroke();
