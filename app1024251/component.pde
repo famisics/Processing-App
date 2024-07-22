@@ -45,12 +45,4 @@ class Component {
       MANAGER_isMousePressed = false;
     }
   }
-  void boldLine(int x1, int y1, int x2, int y2) {
-    strokeCap(ROUND);
-    stroke(0);
-    strokeWeight(10);
-    line(x1, y1, x2, y2);
-    strokeWeight(1);
-    strokeCap(SQUARE);
-  }
 }

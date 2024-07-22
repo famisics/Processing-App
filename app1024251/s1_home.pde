@@ -1,3 +1,5 @@
+// ? シーン1(ホーム)のクラス
+
 class HomeScene {
   PImage bg;
   void boot() {

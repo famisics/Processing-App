@@ -1,8 +1,8 @@
+// ? 各種APIの{管理、呼び出し、キャッシュ}、エンドポイント、APIキーの管理を行うクラス
+
 class API {
-  // TODO:API読込中の画面を作る
-  // キャッシュタイムアウト時間(2分)
-  int timeout = 1000;
-  // TODO:一時的にキャッシュ期限を1秒にしている
+  // キャッシュの有効期限(ミリ秒)
+  int timeout = 120000; // 2分
   // それぞれのキャッシュの起点となる時間を記憶する変数
   int CASHTIME_weatherNow, CASHTIME_weatherForecast, CASHTIME_funbus, CASHTIME_fitbit, CASHTIME_fitbitSleep, CASHTIME_ipinfo = 0;
   // APIレスポンスをキャッシュしておくHashMap
@@ -24,7 +24,7 @@ class API {
     }
     print("[API] getWeatherNow: FETCHING... ");
     JSONObject JSON_response = loadJSONObject(endpoints.get("openweathermap_weather") + apikeys.get("openweathermap"));
-
+    
     weatherNow.put("weather", JSON_response.getJSONArray("weather").getJSONObject(0).getString("description")); // 天気
     weatherNow.put("icon", JSON_response.getJSONArray("weather").getJSONObject(0).getString("icon").substring(0, 2) + "d"); // 天気アイコン
     weatherNow.put("temp", String.valueOf(Math.round(10.0 * (JSON_response.getJSONObject("main").getFloat("temp") - 273.15)) / 10.0)); // 気温(四捨五入小数点以下1桁)
@@ -34,14 +34,14 @@ class API {
     CASHTIME_weatherNow = millis();
     println("done with " + weatherNow.size() + " items at " + getTime() + ", 都市: " + weatherNow.get("city"));
     
-    return weatherNow; // ? 返す内容 現在の天気{天気、気温、気圧、風速}
+    return weatherNow; // * 返す内容 現在の天気{天気、気温、気圧}
   }
   
   HashMap<Integer, HashMap<String, String>> getWeatherForecast() { // Open Weather Map から天気情報を取得
     int timediff = millis() - CASHTIME_weatherForecast;
     if ((weatherForecast.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
       println("[API] getWeatherForecast: CASH... done with " + weatherForecast.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
-      // return weatherForecast;
+      return weatherForecast;
     }
     JSONArray JSON_response = loadJSONObject(endpoints.get("openweathermap_forecast") + apikeys.get("openweathermap")).getJSONArray("list");
     print("[API] getWeatherForecast: FETCHING... ");
@@ -64,7 +64,7 @@ class API {
     CASHTIME_weatherForecast = millis(); // キャッシュ時間を更新
     println("done with " + weatherForecast.size() + " items at " + getTime());
     return weatherForecast;
-    //? 返す内容 現在の天気{天気、気温}、予報天気{3,6,9,12,15時間後の天気、気温}
+    //? 返す内容 予報天気{3,6,9,12,15時間後の天気、気温、気圧}
   }
   HashMap<String, String> getFunbus(String query) { // Google Spreadsheet から時刻表を取得
     //!バスのAPIは、最新のデータをすぐに取得する必要があるため、キャッシュを使わないことにした
@@ -95,7 +95,6 @@ class API {
       if (startTime > currentTime) break;
       
       if (thisId >= JSON_response.size() - 1) { // 終バス後の処理
-        println("終バス済み処理");
         funbus.put("this_code", "終バス済");
         funbus.put("this_start", "");
         funbus.put("this_end", "");
@@ -132,7 +131,7 @@ class API {
     
     CASHTIME_funbus = millis();
     println("done with " + funbus.size() + " items at " + getTime());
-    return funbus; // ? 返す内容 this_{系統, 出発時刻, 到着時刻, 行き先(算出する), 次のバスまで(APIから取得)} next_{系統, 出発時刻, 到着時刻, 行き先(算出する)}
+    return funbus; // * 返す内容 this_{系統, 出発時刻, 到着時刻, 行き先(算出する), 次のバスまで(APIから取得)} next_{系統, 出発時刻, 到着時刻, 行き先(算出する)}
   }
   String busDestination(String code, String query) { // 行き先を算出
     
@@ -177,7 +176,7 @@ class API {
     CASHTIME_fitbit = millis();
     println("done with " + fitbit.size() + " items at " + getTime());
     
-    return fitbit; // ? 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
+    return fitbit; // * 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
   }
   
   HashMap<Integer, HashMap<String, String>> getFitbitSleeps() { // Fitbit APIから運動データを取得
@@ -190,7 +189,6 @@ class API {
     JSONArray JSON_response = loadJSONArray(endpoints.get("gas_sleeps"));
     for (int i = 0; i < JSON_response.size(); i++) {
       JSONObject data = JSON_response.getJSONObject(i);
-      println(data);
       HashMap<String, String> _data = new HashMap<String, String>();
       _data.put("date", data.getString("date"));
       _data.put("duration", String.valueOf(data.getInt("duration")));
@@ -200,14 +198,14 @@ class API {
     }
     CASHTIME_fitbitSleep = millis();
     println("done with " + fitbit_sleep.size() + " items at " + getTime());
-    
-    return fitbit_sleep; // ? 返す内容 {日付, 睡眠データ{睡眠時間、睡眠開始、睡眠終了}}
+    return fitbit_sleep; // * 返す内容 {日付, 睡眠データ{睡眠時間、睡眠開始、睡眠終了}}
   }
   
   HashMap<String, String> getIpinfo() { // ipinfoを用いて、ipアドレスから接続先のプロバイダを取得(未来大からアクセスしているか、それ以外からアクセスしているかを特定できる)
+    //!バスのAPIに関連するAPIであり、最新のデータをすぐに取得する必要があるため、キャッシュ期限を独自(1秒)にしている→s5でAPIを2回呼ぶから、その時に1秒のキャッシュを読む(リクエスト数の削減)
     int timediff = millis() - CASHTIME_ipinfo;
-    if ((ipinfo.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      println("[API]getIpinfo: returning CASHED_DATA... done with " + ipinfo.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
+    if ((ipinfo.size() > 0) && (timediff < 1000)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
+      println("[API] getIpinfo: returning CASHED_DATA... done with " + ipinfo.size() + " items at " + getTime() + ", キャッシュ期限: 1秒");
       return ipinfo;
     }
     print("[API] getIpinfo: FETCHING... ");
@@ -219,12 +217,17 @@ class API {
     CASHTIME_ipinfo = millis();
     println("done with " + ipinfo.size() + " items at " + getTime());
     
-    return ipinfo; // ? 返す内容 IPアドレス、プロバイダ、地域、座標
+    return ipinfo; // * 返す内容 IPアドレス、プロバイダ、地域、座標
   }
   boolean isFUN() { // 未来大からアクセスしているかを判定
-    //return getIpinfo().get("org").contains("AS2907 R"); // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
-    return getIpinfo().get("org").contains("AS13335 C") || getIpinfo().get("org").contains("AS2907 R"); // TODO:一時的にCloudflareVPNで未来大かどうかを切り替える(デモ用)
-    //TODO : flets - 光の場合を含める、家で使っている場合は誤作動するけど、うちはflets - 光ではないので問題ない
+    String org = getIpinfo().get("org");
+    // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
+    return org.contains("AS13335 C") || (org.contains("FLETS_no_org") && isFreeWifiContain) || org.contains("AS2907 R");
+
+    // 一時的にCloudflareVPNで未来大かどうかを切り替えている(デモ用)
+    // VPNのスイッチをON/OFFするだけで、未来大モードと亀田支所前モードを切り替えることができる
+
+    //TODO : フレッツ光の場合のorgを入れる
   }
   void setApikeys(JSONObject json) {
     apikeys.put("openweathermap", json.getString("openweathermap"));

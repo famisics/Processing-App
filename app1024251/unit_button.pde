@@ -1,3 +1,5 @@
+// ? ボタンを管理するクラス
+
 ArrayList<Button> LIST_Button = new ArrayList<Button>();
 
 class Button {
@@ -20,7 +22,8 @@ class Button {
     if (isShow) {
       fill(bg);
       rect(x - w / 2, y - h / 2, w, h);
-      textFont(FONT_noto, 32);
+      textFont(FONT_noto, 40);
+      if (w ==  500) textFont(FONT_noto, 32);
       textAlign(CENTER, CENTER);
       fill(255);
       text(label, x, y);

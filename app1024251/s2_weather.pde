@@ -1,3 +1,5 @@
+// ? シーン2(天気)のクラス
+
 class WeatherScene {
   HashMap<String, String> weatherNow = new HashMap<String, String>();
   HashMap<Integer, HashMap<String, String>> weatherForecast = new HashMap<Integer, HashMap<String, String>>();
@@ -12,14 +14,14 @@ class WeatherScene {
   void update() {
     CPT.header("天気");
     fill(0);
-    textAlign(LEFT, TOP);
-    textFont(FONT_noto, 42);
-    text("現在の天気", 50, 150);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 40);
+    text("現在の天気", 25, 160);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 96);
-    text(weatherNow.get("weather"), 300, 290);
+    text(weatherNow.get("weather"), 300, 270);
     textFont(FONT_noto, 60);
-    shape(SVG_now, 50, 290, 500, 500);
+    shape(SVG_now, 50, 250, 500, 500);
     text(weatherNow.get("temp") + "℃", 150, 700);
     text(weatherNow.get("pressure") + "hPa", 450, 700);
     for (int i = 3; i <= 15; i += 3) {
@@ -40,14 +42,15 @@ class WeatherScene {
     fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 24);
-    text(i + "時間後", 600 * (2 * (i / 3 - 1) + 1) / 10, 830);
-    text(weather, 600 * (2 * (i / 3 - 1) + 1) / 10, 900);
-    if (i == 3) shape(SVG_forecast3, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
-    if (i == 6) shape(SVG_forecast6, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
-    if (i == 9) shape(SVG_forecast9, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
-    if (i == 12) shape(SVG_forecast12, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
-    if (i == 15) shape(SVG_forecast15, 600 * (2 * (i / 3 - 1) + 1) / 10 - 50, 920, 100, 100);
-    text(temp + "℃", 600 * (2 * (i / 3 - 1) + 1) / 10, 1040);
+    int i2 = 600 * (2 * (i / 3 - 1) + 1) / 10;
+    text(i + "時間後", i2, 830);
+    text(weather, i2, 900);
+    if (i == 3) shape(SVG_forecast3, i2 - 60, 910, 120, 120);
+    if (i == 6) shape(SVG_forecast6, i2 - 60, 910, 120, 120);
+    if (i == 9) shape(SVG_forecast9, i2 - 60, 910, 120, 120);
+    if (i == 12) shape(SVG_forecast12, i2 - 60, 910, 120, 120);
+    if (i == 15) shape(SVG_forecast15, i2 - 60, 910, 120, 120);
+    text(temp + "℃", i2, 1040);
     if (i < 15) {
       fill(0);
       rect(600 * (2 * (i / 3 - 1) + 2) / 10 - 1, 800, 2, 280);

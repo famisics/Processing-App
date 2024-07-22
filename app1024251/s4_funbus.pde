@@ -1,3 +1,5 @@
+// ? シーン4(バス)のクラス
+
 class FunbusScene {
   HashMap<String, String> funbus = new HashMap<String, String>();
   String query;
@@ -10,11 +12,11 @@ class FunbusScene {
     CPT.header("バス");
     fill(0);
     textAlign(LEFT, CENTER);
-    textFont(FONT_noto, 20);
+    textFont(FONT_noto, 32);
     if (query.equals("fromkmdtofun")) {
-      text("亀田支所前→未来大のバスを表示中", 50, 150);
+      text("亀田支所前→未来大のバスを表示中", 25, 150);
     } else {
-      text("未来大→亀田支所前のバスを表示中", 50, 150);
+      text("未来大→亀田支所前のバスを表示中", 25, 150);
     }
     if (!funbus.get("this_code").equals("終バス済")) {
       busCard(funbus.get("this_code"), funbus.get("this_start"), funbus.get("this_end"), funbus.get("this_destination"), remain(funbus.get("this_start")), 300);
@@ -41,7 +43,7 @@ class FunbusScene {
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 20);
-    text("アプリの起動時にこの画面（バス）を表示する", 110, 1025);
+    text("アプリの起動時に、この画面（バス）を表示する", 110, 1025);
     if (isFirstBus) {
       shape(SVG_on, 50, 1000, 50, 50);
     } else {

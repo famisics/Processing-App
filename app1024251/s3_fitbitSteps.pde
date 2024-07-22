@@ -1,3 +1,5 @@
+// ? シーン3(歩数)のクラス
+
 class FitScene {
   HashMap<Integer, Integer> fitbit = new HashMap<Integer, Integer>();
   float[] graphData = new float[7];
@@ -7,12 +9,14 @@ class FitScene {
   void update() {
     CPT.header("健康");
     fill(0);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 40);
+    text("今日", 25, 150);
     textAlign(CENTER, CENTER);
     textFont(FONT_jetbrains, 110);
-    text(fitbit.get(0), 300, 200);
-    textAlign(RIGHT, CENTER);
+    text(fitbit.get(0), 300, 250);
     textFont(FONT_noto, 48);
-    text("歩", 500, 300);
+    text("歩", 550, 250);
     for (int i = 0; i < 7; i++) {
       drawSteps(i, fitbit.get(7 - i));
     }
@@ -21,19 +25,19 @@ class FitScene {
   void drawSteps(int i, int steps) {
     fill(0);
     textAlign(CENTER, CENTER);
-    textFont(FONT_noto, 20);
+    textFont(FONT_noto, 24);
     String _day = str(7 - i) + "日前";
     text(_day, 600 * (2 * i + 1) / 14, 830);
-    text("歩数", 600 * (2 * i + 1) / 14, 900);
     if (steps > 10000) {
-      shape(SVG_check, 600 * (2 * i + 1) / 14 - 30, 940, 60, 60);
+      shape(SVG_check, 600 * (2 * i + 1) / 14 - 30, 870, 60, 60);
     } else {
-      shape(SVG_error, 600 * (2 * i + 1) / 14 - 30, 940, 60, 60);
+      shape(SVG_error, 600 * (2 * i + 1) / 14 - 30, 870, 60, 60);
     }
-    text(steps, 600 * (2 * i + 1) / 14, 1040);
+    text(steps, 600 * (2 * i + 1) / 14, 980);
+    text("歩", 600 * (2 * i + 1) / 14, 1010);
     if (i < 6) {
       fill(0);
-      rect(600 * (2 * i + 2) / 14 - 1, 800, 2, 280);
+      rect(600 * (2 * i + 2) / 14 - 1, 800, 2, 230);
     }
   }
   void drawGraph() { // グラフの描画
@@ -42,7 +46,7 @@ class FitScene {
     }
     stroke(50, 200, 120);
     strokeWeight(5);
-    float baseLineY = map(10000, 0, max(graphData), 800, 500);
+    float baseLineY = map(10000, 0, max(graphData), 1000, 400);
     line(0, baseLineY, 600, baseLineY);
     textAlign(RIGHT, TOP);
     textFont(FONT_noto, 24);
@@ -59,7 +63,7 @@ class FitScene {
     
     for (int i = 0; i < 7; i++) {
       float x = 600 * (2 * i + 1) / 14;
-      float y = map(graphData[i], 0, max(graphData), 800, 500);
+      float y = map(graphData[i], 0, max(graphData), 1000, 400);
       vertex(x, y);
       
       fill(80);
