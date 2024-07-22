@@ -191,7 +191,7 @@ class API {
   }
   boolean isFUN() { // 未来大からアクセスしているかを判定
     // return getIpinfo().get("org").contains("AS2907 R"); // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
-    return getIpinfo().get("org").contains("AS13335 C"); // TODO:一時的にCloudflareVPNで未来大かどうかを切り替える(デモ用)
+    return getIpinfo().get("org").contains("AS13335 C") || getIpinfo().get("org").contains("AS2907 R"); // TODO:一時的にCloudflareVPNで未来大かどうかを切り替える(デモ用)
     // TODO : flets - 光の場合を含める、家で使っている場合は誤作動するけど、うちはflets - 光ではないので問題ない
   }
   String getTime() {
