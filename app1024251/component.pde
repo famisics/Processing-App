@@ -14,7 +14,7 @@ class Component {
     rect(0, 1100, 600, 100);
     fill(0, 75, 75);
     rect(0, 1095, 600, 5);
-    circle(300, 1150, 120);
+    circle(300, 1150, 130);
     
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 20);
@@ -44,5 +44,13 @@ class Component {
       }
       MANAGER_isMousePressed = false;
     }
+  }
+  void boldLine(int x1, int y1, int x2, int y2) {
+    strokeCap(ROUND);
+    stroke(0);
+    strokeWeight(10);
+    line(x1, y1, x2, y2);
+    strokeWeight(1);
+    strokeCap(SQUARE);
   }
 }

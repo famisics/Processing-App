@@ -4,12 +4,13 @@ class API {
   int timeout = 1000;
   // TODO:一時的にキャッシュ期限を1秒にしている
   // それぞれのキャッシュの起点となる時間を記憶する変数
-  int CASHTIME_weatherNow, CASHTIME_weatherForecast, CASHTIME_funbus, CASHTIME_fitbit, CASHTIME_ipinfo = 0;
+  int CASHTIME_weatherNow, CASHTIME_weatherForecast, CASHTIME_funbus, CASHTIME_fitbit, CASHTIME_fitbitSleep, CASHTIME_ipinfo = 0;
   // APIレスポンスをキャッシュしておくHashMap
   HashMap<String, String> weatherNow = new HashMap<String, String>();
   HashMap<String, String> weatherForecast = new HashMap<String, String>();
   HashMap<String, String> funbus = new HashMap<String, String>();
   HashMap<Integer, Integer> fitbit = new HashMap<Integer, Integer>();
+  HashMap<Integer, HashMap<String, String>> fitbit_sleep = new HashMap<Integer, HashMap<String, String>>();
   HashMap<String, String> ipinfo = new HashMap<String, String>();
   
   HashMap<String, String> getWeatherNow() { // Open Weather Map から天気情報を取得
@@ -170,6 +171,30 @@ class API {
     println("done with " + fitbit.size() + " items at " + getTime());
     
     return fitbit; // ? 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
+  }
+  
+  HashMap<Integer, HashMap<String, String>> getFitbitSleep() { // Fitbit APIから運動データを取得
+    int timediff = millis() - CASHTIME_fitbitSleep;
+    if ((fitbit_sleep.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
+      println("[API] getFitbitSleep: returning CASHED_DATA... done with " + fitbit_sleep.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
+      return fitbit_sleep;
+    }
+    print("[API] getFitbitSleep: FETCHING... ");
+    JSONArray JSON_response = loadJSONArray("https://script.google.com/macros/s/AKfycbxUuYwAbN9A9Bgg6Ue8GyphFRbYn9SL8D_zjViu3wRM01vhL4O43uv7S8pZRE-rz-an/exec");
+    for (int i = 0; i < JSON_response.size(); i++) {
+      JSONObject data = JSON_response.getJSONObject(i);
+      println(data);
+      HashMap<String, String> _data = new HashMap<String, String>();
+      _data.put("date", data.getString("date"));
+      _data.put("duration", String.valueOf(data.getInt("duration")));
+      _data.put("start", data.getString("start"));
+      _data.put("end", data.getString("end"));
+      fitbit_sleep.put((7 - i), _data);
+    }
+    CASHTIME_fitbitSleep = millis();
+    println("done with " + fitbit_sleep.size() + " items at " + getTime());
+    
+    return fitbit_sleep; // ? 返す内容 {日付, 睡眠データ{睡眠時間、睡眠開始、睡眠終了}}
   }
   
   HashMap<String, String> getIpinfo() { // ipinfoを用いて、ipアドレスから接続先のプロバイダを取得(未来大からアクセスしているか、それ以外からアクセスしているかを特定できる)

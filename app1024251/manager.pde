@@ -18,6 +18,7 @@ int mode = 0; // モード0で初期化
 PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
 PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_sleep;
 PShape SVG_01d, SVG_02d, SVG_03d, SVG_04d, SVG_09d, SVG_10d, SVG_11d, SVG_13d, SVG_50d;
+PShape SVG_check, SVG_error;
 
 // API
 String APIKEY_openweathermap;
@@ -48,7 +49,7 @@ void boot() {
   FONT_jetbrains = createFont("font/JetBrainsMono-Medium.ttf", 32);
   FONT_noto = createFont("font/NotoSansJP-Medium.ttf", 32);
   
-  // アイコンの初期化
+  // モードアイコンの初期化
   SVG_home = loadShape("svg/mode/home.svg");
   SVG_weather = loadShape("svg/mode/weather.svg");
   SVG_fit = loadShape("svg/mode/fit.svg");
@@ -65,6 +66,10 @@ void boot() {
   SVG_11d = loadShape("svg/weather/11d.svg");
   SVG_13d = loadShape("svg/weather/13d.svg");
   SVG_50d = loadShape("svg/weather/50d.svg");
+
+  // ステータスアイコンの初期化
+  SVG_check = loadShape("svg/status/check.svg");
+  SVG_error = loadShape("svg/status/error.svg");
   
   // config.json
   JSONObject json = loadJSONObject("config.json");
@@ -90,6 +95,8 @@ void update() {
   if (isCmode) {
     if (cmodeCount < 2) {
       if (!cmodeText.equals("")) {
+        fill(255, 255, 255, 150);
+        rect(0, 0, 600, 1100);
         fill(0, 75, 75);
         rect(45, 495, 510, 210);
         fill(255);
@@ -98,6 +105,9 @@ void update() {
         fill(0);
         textFont(FONT_noto, 30);
         text(cmodeText, 300, 600);
+        if (!(mode == 0)) {
+          CPT.footer();
+        }
       }
       cmodeCount++;
     } else {
@@ -149,7 +159,7 @@ void cmode(int i) {
   LIST_Button.clear();
   isCmode = true;
   cmodeTarget = i;
-  switch (i) {
+  switch(i) {
     case 0:
       cmodeText = "";
       break;
