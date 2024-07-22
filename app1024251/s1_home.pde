@@ -23,7 +23,7 @@ class HomeScene {
     addButton(300, 1000, 500, 100, color(50), "接続状態", "cmode", "5");
   }
   void update() {
-    tint(255, 100);
+    tint(255, 175);
     image(bg, 0, 0, width, height);
     noTint();
     fill(0);

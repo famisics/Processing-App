@@ -126,7 +126,6 @@ class API {
       funbus.put("next_start", "00:00");
       funbus.put("next_end", "00:00");
       funbus.put("next_destination", "未知");
-      
     }
     
     CASHTIME_funbus = millis();

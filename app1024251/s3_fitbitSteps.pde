@@ -46,7 +46,7 @@ class FitScene {
     }
     stroke(50, 200, 120);
     strokeWeight(5);
-    float baseLineY = map(10000, 0, max(graphData), 1000, 400);
+    float baseLineY = map(10000, 0, max(graphData), 950, 400);
     line(0, baseLineY, 600, baseLineY);
     textAlign(RIGHT, TOP);
     textFont(FONT_noto, 24);
@@ -63,7 +63,7 @@ class FitScene {
     
     for (int i = 0; i < 7; i++) {
       float x = 600 * (2 * i + 1) / 14;
-      float y = map(graphData[i], 0, max(graphData), 1000, 400);
+      float y = map(graphData[i], 0, max(graphData), 950, 400);
       vertex(x, y);
       
       fill(80);

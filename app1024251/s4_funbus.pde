@@ -19,7 +19,7 @@ class FunbusScene {
       text("未来大→亀田支所前のバスを表示中", 25, 150);
     }
     if (!funbus.get("this_code").equals("終バス済")) {
-      busCard(funbus.get("this_code"), funbus.get("this_start"), funbus.get("this_end"), funbus.get("this_destination"), remain(funbus.get("this_start")), 300);
+      busCard(funbus.get("this_code"), funbus.get("this_start"), funbus.get("this_end"), funbus.get("this_destination"), remain(funbus.get("this_start")), funbus.get("this_untilnext"), 260);
       if (funbus.get("this_untilnext").equals("last")) {
         fill(200, 0, 0);
         rect(50, 700, 500, 200);
@@ -30,10 +30,7 @@ class FunbusScene {
         textFont(FONT_noto, 48);
         text("今日最後のバスです", 300, 800);
       } else {
-        textFont(FONT_noto, 48);
-        textAlign(RIGHT, CENTER);
-        text("次のバスは　" + funbus.get("this_untilnext") + "後", 500, 700);
-        busCard(funbus.get("next_code"), funbus.get("next_start"), funbus.get("next_end"), funbus.get("next_destination"), remain(funbus.get("next_start")), 750);
+        busCard(funbus.get("next_code"), funbus.get("next_start"), funbus.get("next_end"), funbus.get("next_destination"), remain(funbus.get("next_start")), funbus.get("this_untilnext"), 660);
       }
     } else {
       textAlign(CENTER, CENTER);
@@ -54,56 +51,49 @@ class FunbusScene {
       MANAGER_isMousePressed = false;
     }
   }
-  void busCard(String code, String start, String end, String destination, String remain, int yPoition) {
-    if (yPoition == 300) {
-      fill(255, 90, 90);
+  void busCard(String code, String start, String end, String destination, String remain, String untilNext, int yPoition) { // バスの表示カードを作成
+    if (yPoition == 260) {
+      fill(240, 90, 90);
     } else {
       fill(90, 90, 255);
     }
     
-    rect(50, yPoition - 50, 500, 300);
+    rect(50, yPoition - 50, 500, 350);
     fill(255);
-    textAlign(LEFT, CENTER);
     textFont(FONT_noto, 30);
-    text(code + "系統　" + destination + "行き", 100, yPoition);
+    textAlign(LEFT, CENTER);
+    text(code + "系統　" + destination + "行き", 75, yPoition);
     textFont(FONT_noto, 24);
-    text("出発", 105, yPoition + 70);
-    text("到着", 335, yPoition + 70);
+    text("出発", 105, yPoition + 90);
+    text("到着", 335, yPoition + 90);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 64);
-    text(start + "　" + end, 300, yPoition + 120);
-    textFont(FONT_noto, 30);
-    textAlign(LEFT, CENTER);
-    text(remain, 100, yPoition + 200);
+    text(start + "　" + end, 300, yPoition + 140);
+    textFont(FONT_noto, 40);
+    textAlign(CENTER, CENTER);
+    if (yPoition != 260 && !untilNext.equals("0")) {
+      text("さらに" + untilNext + "後", 300, yPoition + 250);
+    } else {
+      text(remain, 300, yPoition + 250);
+    }
   }
-  String remain(String this_start) {
-    //現在時刻を秒に変換
+  String remain(String this_start) { // 残り時間を計算
     int nowSeconds = hour() * 3600 + minute() * 60 + second();
-    
-    //開始時刻を秒に変換
     int startSeconds = int(this_start.substring(0, 2)) * 3600 + 
       int(this_start.substring(3, 5)) * 60;
-    
-    //残り時間を秒で計算
     int remainingSeconds = startSeconds - nowSeconds;
-    
-    //残り時間が負の場合は出発済み
     if (remainingSeconds < 0) {
-      cmode(4); // 必要に応じてモード変更
+      cmode(4);
       return ""; 
     }
-    
-    //残り時間を時間、分、秒に分割
     int remainHour = remainingSeconds / 3600;
     int remainMinute = (remainingSeconds % 3600) / 60;
     int remainSecond = remainingSeconds % 60;
-    
-    //出力文字列を生成
     String result = "出発まで ";
     if (remainHour > 0) {
       result += remainHour + "時間";
     }
-    if (remainMinute > 0) {
+    if (remainMinute > 0 || remainHour > 0) {
       result += nf(remainMinute, 2) + "分";
     }
     result += nf(remainSecond, 2) + "秒";
