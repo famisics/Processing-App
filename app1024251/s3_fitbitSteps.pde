@@ -7,7 +7,7 @@ class FitScene {
     this.fitbit = API.getFitbitSteps();
   }
   void update() {
-    CPT.header("健康");
+    CPT.header("歩数");
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 40);

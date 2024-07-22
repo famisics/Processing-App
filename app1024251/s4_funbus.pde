@@ -72,7 +72,7 @@ class FunbusScene {
     textFont(FONT_noto, 40);
     textAlign(CENTER, CENTER);
     if (yPoition != 260 && !untilNext.equals("0")) {
-      text("さらに" + untilNext + "後", 300, yPoition + 250);
+      text("さらに" + untilNext + "後に出発", 300, yPoition + 250);
     } else {
       text(remain, 300, yPoition + 250);
     }
@@ -89,7 +89,7 @@ class FunbusScene {
     int remainHour = remainingSeconds / 3600;
     int remainMinute = (remainingSeconds % 3600) / 60;
     int remainSecond = remainingSeconds % 60;
-    String result = "出発まで ";
+    String result = "出発まで";
     if (remainHour > 0) {
       result += remainHour + "時間";
     }
