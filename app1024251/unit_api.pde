@@ -221,7 +221,7 @@ class API {
   boolean isFUN() { // 未来大からアクセスしているかを判定
     String org = getIpinfo().get("org");
     // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
-    return org.contains("AS13335 C") || (org.contains("FLETS_no_org") && isFreeWifiContain) || org.contains("AS2907 R");
+    return org.contains("AS13335 C") || (org.contains("AS4713 N") && !isFreeWifiContain) || org.contains("AS2907 R");
     
     // 一時的にCloudflareVPNで未来大かどうかを切り替えている(デモ用)
     // VPNのスイッチをON/OFFするだけで、未来大モードと亀田支所前モードを切り替えることができる
