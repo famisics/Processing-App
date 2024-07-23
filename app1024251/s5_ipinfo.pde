@@ -41,16 +41,13 @@ class IpinfoScene {
       changeFreeWifiContain();
       MANAGER_isMousePressed = false;
     }
-    text("手動モード切り替え", 110, 925);
-    if (busMode == 0) {
-      shape(SVG_on, 50, 900, 50, 50);
-    } else if (busMode == 1) {
-      shape(SVG_off, 50, 900, 50, 50);
-    } else {
-      
-    }
+    String d = "自動";
+    if(busMode.equals("fromfuntokmd")) d = "未来大モード";
+    if(busMode.equals("fromkmdtofun")) d = "亀田支所前モード";
+    text("モード切替 現在: " + d, 110, 925);
+    shape(SVG_change, 50, 900, 50, 50);
     if (MANAGER_isMousePressed && MANAGER_mouseY > 900 && MANAGER_mouseY < 950 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
-      changeFreeWifiContain();
+      changeBusMode();
       MANAGER_isMousePressed = false;
     }
   }

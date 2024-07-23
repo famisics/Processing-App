@@ -19,12 +19,13 @@ int mode = 0; // モード0で初期化
 
 boolean isFirstBus = false;
 boolean isFreeWifiContain = true;
+String busMode = "auto";
 
 // 素材
 
 PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
 PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_sleep;
-PShape SVG_check, SVG_error, SVG_on, SVG_off;
+PShape SVG_check, SVG_error, SVG_on, SVG_off, SVG_change;
 
 String MANAGER_nextmotion = ""; // 次に行う動作
 boolean MANAGER_isMousePressed = false;
@@ -63,6 +64,7 @@ void boot() {
   SVG_error = loadShape("svg/status/error.svg");
   SVG_on = loadShape("svg/status/on.svg");
   SVG_off = loadShape("svg/status/off.svg");
+  SVG_change = loadShape("svg/status/change.svg");
   
   // apikeys.json
   JSONObject json = loadJSONObject("apikeys.json");
@@ -230,16 +232,33 @@ void changeFirstBus() {
   JSONObject json = new JSONObject();
   json.setInt("is_first_bus", isFirstBus ? 1 : 0);
   json.setInt("is_free_wifi_contain", isFreeWifiContain ? 1 : 0);
+  json.setString("bus_mode", busMode);
   saveJSONObject(json, "data/config.json");
-  println("[json] 設定が保存されました");
+  println("[json] 設定が保存されました isFirstBus: " + isFirstBus);
 }
 void changeFreeWifiContain() {
   isFreeWifiContain = !isFreeWifiContain;
   JSONObject json = new JSONObject();
   json.setInt("is_first_bus", isFirstBus ? 1 : 0);
   json.setInt("is_free_wifi_contain", isFreeWifiContain ? 1 : 0);
+  json.setString("bus_mode", busMode);
   saveJSONObject(json, "data/config.json");
-  println("[json] 設定が保存されました");
+  println("[json] 設定が保存されました isFreeWifiContain: " + isFreeWifiContain);
+}
+void changeBusMode() {
+  if (busMode.equals("fromkmdtofun")) {
+    busMode = "fromfuntokmd";
+  } else if (busMode.equals("fromfuntokmd")) {
+    busMode = "auto";
+  } else {
+    busMode = "fromkmdtofun";
+  }
+  JSONObject json = new JSONObject();
+  json.setInt("is_first_bus", isFirstBus ? 1 : 0);
+  json.setInt("is_free_wifi_contain", isFreeWifiContain ? 1 : 0);
+  json.setString("bus_mode", busMode);
+  saveJSONObject(json, "data/config.json");
+  println("[json] 設定が保存されました busMode: " + busMode);
 }
 void mousePressed() {
   MANAGER_isMousePressed = true;
