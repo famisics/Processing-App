@@ -1,4 +1,5 @@
 // ? シーン6(睡眠)のクラス
+
 class SleepScene {
   HashMap<Integer, HashMap<String, String>> fitbit_sleep;
 
