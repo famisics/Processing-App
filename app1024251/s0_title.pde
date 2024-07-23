@@ -1,16 +1,20 @@
 // ? シーン0(タイトル)のクラス
 
-
 class TitleScene {
   int loadingTime = 1800;
   PImage bg;
   
   int start = 0;
+  
+  // 初期化処理
   void boot() {
-    this.start = millis();
+    this.start = millis(); // 基準となる時間を更新
     this.bg = loadImage("img/title.jpg");
   }
+  
+  // 更新処理
   void update() {
+    // UI描画
     background(0);
     tint(150);
     image(bg, 0, 0, width, height);
@@ -21,7 +25,8 @@ class TitleScene {
     text("funget", 300, 250);
     textFont(FONT_noto, 40);
     text("ようこそ ( > ω <)//", 300, 400);
-    int processing = (millis() - start)/2;
+    // 下部の読み込み表示バー
+    int processing = (millis() - start) / 2;
     int rectx, width = 0;
     if (processing < 300) {
       rectx = 100;
@@ -36,6 +41,7 @@ class TitleScene {
     rect(rectx, 800, width, 20);
     textFont(FONT_noto, 30);
     text("2024 © famisics (https://uiro.dev)", 300, 1125);
+    // 指定時間経過後、ページ遷移
     if (millis() > start + loadingTime - 100) {
       if (isFirstBus) {
         cmode(4);

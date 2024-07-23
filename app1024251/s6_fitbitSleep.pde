@@ -2,11 +2,17 @@
 // TODO:ぬるぽ吐いてる！！！  
 class SleepScene {
   HashMap<Integer, HashMap<String, String>> fitbit_sleep;
+
+  // 初期化処理
   void boot() {
+    // APIからデータを取得
     fitbit_sleep = API.getFitbitSleeps();
   }
+
+  // 更新処理
   void update() {
     CPT.header("睡眠");
+    // 今日のデータ
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 40);
@@ -20,7 +26,9 @@ class SleepScene {
       textFont(FONT_noto, 90);
       text(minToTime(lastSleepTime, true), 300, 250);
     }
+    // 背景を描画
     drawBg();
+    // それぞれの列のデータを取得
     for (int i = 0; i < 8; i++) {
       color c = color(20, 120, 120);
       if (Integer.parseInt(fitbit_sleep.get(i).get("duration"))<420) c = color(120, 20, 20);
@@ -28,6 +36,8 @@ class SleepScene {
       drawGraph(i, fitbit_sleep.get(i).get("start"), fitbit_sleep.get(i).get("end"), c);
     }
   }
+
+  // グラフを描画する
   void drawGraph(int i, String start, String end, color c) {
     float startHour = isotimeToHour(start);
     if (startHour < 0) return;
@@ -41,7 +51,9 @@ class SleepScene {
     int i3 = 600 * (2 * i2 + 1) / 18;
     drawRoundedLine(i3, 350 + (startHour * 35), i3, 350 + (endHour * 35), c);
   }
-  void drawSleep(int i, HashMap<String, String> data, color c) { // 下部分の表示
+
+  //下部分のテキスト表示
+  void drawSleep(int i, HashMap<String, String> data, color c) {
     fill(0);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 18);
@@ -61,8 +73,10 @@ class SleepScene {
     text(minToTime(Integer.parseInt(data.get("duration")), false), i3, 1040);
     fill(0);
     rect(600 * (2 * i2) / 18 - 1, 930, 2, 130);
-  } 
-  void drawRoundedLine(float x1, float y1, float x2, float y2, color c) {
+  }
+
+  // 端が丸い線を描画する
+  voiddrawRoundedLine(float x1, float y1, float x2, float y2, color c) {
     stroke(c);
     strokeWeight(20);
     strokeCap(ROUND);
@@ -70,6 +84,8 @@ class SleepScene {
     strokeCap(SQUARE);
     noStroke();
   }
+
+  // 背景を描画する
   void drawBg() { // 背景の線
     fill(75);
     stroke(2);
@@ -83,11 +99,15 @@ class SleepScene {
     }
     noStroke();
   }
+
+  // 分を ~ 時に変換する
   String minToClock(int min) {
     if (min > 1440) min -= 1440;
     
     return str(int(min / 60)) + "時";
   }
+
+  // 分を時刻表示に変換する
   String minToTime(int min, boolean isJapanese) {
     if (min == 0) return "-";
     if (min > 1440) min -= 1440;
@@ -97,6 +117,8 @@ class SleepScene {
       return str(int(min / 60)) + "h" + nf(min % 60, 2) + "m";
     }
   }
+
+  // ISO8601形式の時刻を時刻に変換する(APIレスポンスを変換する)
   float isotimeToHour(String date) {
     if (date.matches("")) return - 1;
     int tIndex = date.indexOf('T');
@@ -105,9 +127,7 @@ class SleepScene {
     int hour = int(timePart.substring(0, 2));
     int minute = int(timePart.substring(3, 5));
     int second = int(timePart.substring(6, 8));
-    
-    float hoursDecimal = hour + minute / 60.0 + second / 3600.0;
-    
+    float hoursDecimal = hour + minute / 60.0 + second / 3600.0; // 時刻に変換
     return hoursDecimal;
   }
 }

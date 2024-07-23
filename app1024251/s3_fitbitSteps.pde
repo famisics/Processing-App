@@ -4,7 +4,10 @@ class FitScene {
   HashMap<Integer, Integer> fitbit = new HashMap<Integer, Integer>();
   float[] graphData = new float[7];
   int totalSteps = 0;
+  
+  // 初期化処理
   void boot() {
+    // APIからデータを取得
     this.fitbit = API.getFitbitSteps();
     totalSteps = 0;
     for (int i = 1; i < 8; i++) {
@@ -14,6 +17,8 @@ class FitScene {
     }
     addButton(480, 1030, 180, 70, color(26, 140, 216), "ツイート", "tweet", "【funget歩数シェア】私は1週間で" + str(totalSteps) + "歩、歩きました！すごいでしょ！！");
   }
+  
+  // 更新処理
   void update() {
     CPT.header("歩数");
     fill(0);
@@ -33,6 +38,8 @@ class FitScene {
     }
     drawGraph();
   }
+  
+  //歩数を描画
   void drawSteps(int i, int steps) {
     fill(0);
     textAlign(CENTER, CENTER);

@@ -35,6 +35,7 @@ boolean isCmode = false;
 int cmodeCount, cmodeTarget = 0;
 String cmodeText = "";
 
+// 初期化処理
 void boot() {
   // クラスの初期化
   API = new API();
@@ -107,10 +108,13 @@ void boot() {
   // アプリの起動
   cmode(0);
 }
+
+// 更新処理
 void update() {
-  if (isCmode) {
+  if (isCmode) { // モード切り替え中の場合、シーン切り替え処理
     if (cmodeCount < 2) {
       if (!cmodeText.equals("")) {
+        // 切り替え中のメッセージ空ではない場合、読み込み中ウィンドウを表示
         fill(255, 255, 255, 150);
         rect(0, 0, 600, 1100);
         fill(0, 75, 75);
@@ -131,7 +135,7 @@ void update() {
       isCmode = false;
       cmodeAction(cmodeTarget);
     }
-  } else {
+  } else { // シーン描画処理
     background(255);
     switch(mode) {
       case 0 : // タイトル
@@ -166,19 +170,22 @@ void update() {
       e.update();
     }
   }
+  // つぎに行う動作がある場合、実行
   if (!MANAGER_nextmotion.equals("")) {
-    String[] query = split(MANAGER_nextmotion, ",");
+    String[] query = split(MANAGER_nextmotion, ","); // 動作を展開
     if (query[0].equals("cmode")) {
-      cmode(Integer.parseInt(query[1]));
+      cmode(Integer.parseInt(query[1])); // cmodeを実行
     }
     MANAGER_nextmotion = "";
   }
 }
+
+// シーン切り替え処理を開始する
 void cmode(int i) {
   LIST_Button.clear();
   isCmode = true;
   cmodeTarget = i;
-  switch(i) {
+  switch(i) { // メッセージを選択
     case 0:
       cmodeText = "";
       break;
@@ -205,6 +212,8 @@ void cmode(int i) {
       break;
   }
 }
+
+// シーン切り替え処理を実行する
 void cmodeAction(int i) {
   delay(20);
   switch(i) {
@@ -236,9 +245,12 @@ void cmodeAction(int i) {
   mode = i;
   println("[cmode] mode: " + mode);
 }
+// ボタンの追加
 void addButton(float x, float y, float w, float h, color bg, String label, String type, String id) {
   LIST_Button.add(new Button(x, y, w, h, bg, label, type, id));
 }
+
+// バスをデフォルトの表示にするかどうかを変更
 void changeFirstBus() {
   isFirstBus = !isFirstBus;
   JSONObject json = new JSONObject();
@@ -248,6 +260,8 @@ void changeFirstBus() {
   saveJSONObject(json, "data/config.json");
   println("[json] 設定が保存されました isFirstBus: " + isFirstBus);
 }
+
+// フレッツ光を含むかどうかの設定を変更
 void changeFreeWifiContain() {
   isFreeWifiContain = !isFreeWifiContain;
   JSONObject json = new JSONObject();
@@ -257,6 +271,8 @@ void changeFreeWifiContain() {
   saveJSONObject(json, "data/config.json");
   println("[json] 設定が保存されました isFreeWifiContain: " + isFreeWifiContain);
 }
+
+// バスモードを変更
 void changeBusMode() {
   if (busMode.equals("fromkmdtofun")) {
     busMode = "fromfuntokmd";
@@ -272,6 +288,8 @@ void changeBusMode() {
   saveJSONObject(json, "data/config.json");
   println("[json] 設定が保存されました busMode: " + busMode);
 }
+
+// マウスが押された場合に、そのことと座標を記録する(それぞれのボタンを描画している場所で、条件にあたるかどうかを判定する(ここでは判定しない))
 void mousePressed() {
   MANAGER_isMousePressed = true;
   MANAGER_mouseX = mouseX;

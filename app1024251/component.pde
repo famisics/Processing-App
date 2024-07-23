@@ -1,7 +1,9 @@
 // ? 使い回すコンポーネントを定義
 
 class Component {
+  // ヘッダー
   void header(String i) {
+    // 表示部分
     fill(100, 200, 230);
     rect(0, 0, 600, 100);
     fill(0);
@@ -9,18 +11,23 @@ class Component {
     textFont(FONT_noto, 48);
     text(i, 30, 50);
     shape(SVG_settings, 525, 25, 50, 50);
+    
+    // ボタンの判定
     if (MANAGER_isMousePressed && MANAGER_mouseY < 100 && MANAGER_mouseX > 500) {
       MANAGER_nextmotion = "cmode,7";
       MANAGER_isMousePressed = false;
     }
   }
+  // フッターメニュー
   void footer() {
+    // 表示部分の枠
     fill(170, 255, 235);
     rect(0, 1100, 600, 100);
     fill(0, 75, 75);
     rect(0, 1095, 600, 5);
     circle(300, 1150, 130);
     
+    // 表示部分のボタン
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 20);
     fill(0);
@@ -35,6 +42,8 @@ class Component {
     fill(170, 255, 235);
     text("ホーム", 600 * 5 / 10, 1180);
     shape(SVG_home, 600 * 5 / 10 - 25, 1110, 50, 50);
+    
+    // ボタンの判定
     if (MANAGER_isMousePressed && MANAGER_mouseY > 1100) {
       if (MANAGER_mouseX < 600 * 1 / 5) {
         MANAGER_nextmotion = "cmode,2";

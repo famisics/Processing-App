@@ -5,14 +5,15 @@ void setup() {
   noStroke();
   print("initializing... ");
   size(600,1200); // Google Pixel 7 基準に指定
-  boot();
+  boot(); // コードを読みやすくするために、managerでシーンを初期化(boot)しています
 }
+
 void draw() {
-  update();
+  update(); // コードを読みやすくするために、managerでシーンを描画(update)しています
 }
 
 // ! デバッグ用のキー
-void keyPressed() {
+void keyPressed() { // シーンを切り替える
   switch(key) {
     case '0':
       cmode(0);

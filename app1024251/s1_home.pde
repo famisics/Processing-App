@@ -2,6 +2,8 @@
 
 class HomeScene {
   PImage bg;
+  
+  // 初期化処理
   void boot() {
     // 時間帯に応じた背景画像
     int time = Integer.parseInt(API.getTime().substring(0, 2));
@@ -23,6 +25,8 @@ class HomeScene {
     addButton(162.5, 1000, 225, 100, color(120, 10, 170), "接続状態", "cmode", "5");
     addButton(437.5, 1000, 225, 100, color(50), "設定", "cmode", "7");
   }
+  
+  // 更新処理
   void update() {
     tint(255, 175);
     image(bg, 0, 0, width, height);

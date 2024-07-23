@@ -3,12 +3,18 @@
 class IpinfoScene {
   HashMap<String, String> ipinfo = new HashMap<String, String>();
   boolean isFUN = false;
+
+  // 初期化処理
   void boot() {
+    // APIからデータを取得
     ipinfo = API.getIpinfo();
     isFUN = API.solvedIsFUN();
   }
+  
+  // 更新処理
   void update() {
     CPT.header("接続状態");
+    // UIの描画
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 24);
@@ -32,6 +38,7 @@ class IpinfoScene {
       text("バスモード：亀田支所前モード", 50, 500);
     }
     text("バスの行き先が自動で変わります\n学内LAN, fun-wifi, free-wifi, eduroam\nに接続時、未来大モードが有効になります\n自宅の回線がフレッツ光の場合は、\n未来大として検出されます", 50, 700);
+    // ボタンの描画
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 20);

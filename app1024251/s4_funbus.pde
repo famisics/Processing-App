@@ -3,13 +3,20 @@
 class FunbusScene {
   HashMap<String, String> funbus = new HashMap<String, String>();
   String query;
+
+  // 初期化処理
   void boot() {
+    // APIを元に起点となるバス停を算出し、その文字列をクエリとしてAPIからデータを取得
     query = "fromkmdtofun";
     if (API.solvedIsFUN()) query = "fromfuntokmd";
     funbus = API.getFunbus(query);
   }
+  
+  // 更新処理
   void update() {
     CPT.header("バス");
+    
+    // メインUIの描画
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 32);
@@ -37,6 +44,8 @@ class FunbusScene {
       textFont(FONT_noto, 42);
       text("本日の運行は終了しました", 300, 550);
     }
+
+    // ボタンの描画
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 20);
@@ -50,7 +59,9 @@ class FunbusScene {
       MANAGER_isMousePressed = false;
     }
   }
-  void busCard(String code, String start, String end, String destination, String remain, String untilNext, int yPoition) { // バスの表示カードを作成
+
+  // バス情報を表示するカードを作成
+  void busCard(String code, String start, String end, String destination, String remain, String untilNext, int yPoition) {
     if (yPoition == 260) {
       fill(240, 90, 90);
     } else {
@@ -76,7 +87,9 @@ class FunbusScene {
       text(remain, 300, yPoition + 250);
     }
   }
-  String remain(String this_start) { // 残り時間を計算
+
+  // 残り時間を計算
+  String remain(String this_start) {
     int nowSeconds = hour() * 3600 + minute() * 60 + second();
     int startSeconds = int(this_start.substring(0, 2)) * 3600 + int(this_start.substring(3, 5)) * 60;
     int remainingSeconds = startSeconds - nowSeconds;
