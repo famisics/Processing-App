@@ -1,5 +1,4 @@
 // ? シーン6(睡眠)のクラス
-// TODO:ぬるぽ吐いてる！！！  
 class SleepScene {
   HashMap<Integer, HashMap<String, String>> fitbit_sleep;
 
