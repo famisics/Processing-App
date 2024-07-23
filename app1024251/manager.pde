@@ -95,6 +95,7 @@ void boot() {
     } else {
       isFreeWifiContain = false;
     }
+    busMode = json.getString("bus_mode");
   } else {
     println("config.json not found");
   }
