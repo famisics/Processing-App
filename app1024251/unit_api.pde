@@ -248,3 +248,4 @@ class API {
     return new String(d);
   }
 }
+// TODO: 手動のモード切り替えに対応
