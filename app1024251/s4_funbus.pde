@@ -78,8 +78,7 @@ class FunbusScene {
   }
   String remain(String this_start) { // 残り時間を計算
     int nowSeconds = hour() * 3600 + minute() * 60 + second();
-    int startSeconds = int(this_start.substring(0, 2)) * 3600 + 
-      int(this_start.substring(3, 5)) * 60;
+    int startSeconds = int(this_start.substring(0, 2)) * 3600 + int(this_start.substring(3, 5)) * 60;
     int remainingSeconds = startSeconds - nowSeconds;
     if (remainingSeconds < 0) {
       cmode(4);
