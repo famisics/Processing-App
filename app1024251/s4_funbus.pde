@@ -5,7 +5,7 @@ class FunbusScene {
   String query;
   void boot() {
     query = "fromkmdtofun";
-    if (API.isFUN()) query = "fromfuntokmd";
+    if (API.solvedIsFUN()) query = "fromfuntokmd";
     funbus = API.getFunbus(query);
   }
   void update() {

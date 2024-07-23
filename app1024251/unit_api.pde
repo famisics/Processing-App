@@ -225,8 +225,15 @@ class API {
     
     // 一時的にCloudflareVPNで未来大かどうかを切り替えている(デモ用)
     // VPNのスイッチをON/OFFするだけで、未来大モードと亀田支所前モードを切り替えることができる
-    
-    //TODO : フレッツ光の場合のorgを入れる
+  }
+  boolean solvedIsFUN() {
+    if (busMode.equals("auto")) {
+      return isFUN();
+    } else if (busMode.equals("fromfuntokmd")) {
+      return true;
+    } else {
+      return false;
+    }
   }
   void setApikeys(JSONObject json) {
     apikeys.put("openweathermap", dcd(json.getString("openweathermap")));

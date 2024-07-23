@@ -5,7 +5,7 @@ class IpinfoScene {
   boolean isFUN = false;
   void boot() {
     ipinfo = API.getIpinfo();
-    isFUN = API.isFUN();
+    isFUN = API.solvedIsFUN();
   }
   void update() {
     CPT.header("接続状態");
@@ -42,12 +42,13 @@ class IpinfoScene {
       MANAGER_isMousePressed = false;
     }
     String d = "自動";
-    if(busMode.equals("fromfuntokmd")) d = "未来大モード";
-    if(busMode.equals("fromkmdtofun")) d = "亀田支所前モード";
-    text("モード切替 現在: " + d, 110, 925);
+    if (busMode.equals("fromfuntokmd")) d = "未来大モード";
+    if (busMode.equals("fromkmdtofun")) d = "亀田支所前モード";
+    text("モードを切り替える　現在: " + d, 110, 925);
     shape(SVG_change, 50, 900, 50, 50);
     if (MANAGER_isMousePressed && MANAGER_mouseY > 900 && MANAGER_mouseY < 950 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
       changeBusMode();
+      isFUN = API.solvedIsFUN();
       MANAGER_isMousePressed = false;
     }
   }
