@@ -1,7 +1,7 @@
 import java.util.Base64;
 
 void setup() {
-  background(255);
+  background(0);
   noStroke();
   print("initializing... ");
   size(600,1200); // Google Pixel 7 基準に指定
@@ -34,6 +34,9 @@ void keyPressed() {
       break;
     case '6':
       cmode(6);
+      break;
+    case '7':
+      cmode(7);
       break;
   }
 }

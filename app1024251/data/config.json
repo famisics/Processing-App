@@ -1,5 +1,5 @@
 {
   "is_first_bus": 0,
-  "bus_mode": "auto",
+  "bus_mode": "fromfuntokmd",
   "is_free_wifi_contain": 0
 }

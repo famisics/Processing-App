@@ -40,14 +40,13 @@ class FunbusScene {
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 20);
-    text("アプリの起動時に、この画面（バス）を表示する", 110, 1025);
-    if (isFirstBus) {
-      shape(SVG_on, 50, 1000, 50, 50);
-    } else {
-      shape(SVG_off, 50, 1000, 50, 50);
-    }
+    String d = "自動";
+    if (busMode.equals("fromfuntokmd")) d = "未来大モード"; 
+    if (busMode.equals("fromkmdtofun")) d = "亀田支所前モード";
+    text("バスモードを切り替える　現在: " + d, 110, 1025);
+    shape(SVG_change, 50, 1000, 50, 50);
     if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 && MANAGER_mouseY < 1050 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
-      changeFirstBus();
+      changeBusMode();
       MANAGER_isMousePressed = false;
     }
   }

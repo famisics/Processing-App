@@ -3,21 +3,32 @@
 class FitScene {
   HashMap<Integer, Integer> fitbit = new HashMap<Integer, Integer>();
   float[] graphData = new float[7];
+  int totalSteps = 0;
   void boot() {
     this.fitbit = API.getFitbitSteps();
+    totalSteps = 0;
+    for (int i = 1; i < 8; i++) {
+      int steps = fitbit.get(7 - i);
+      graphData[i - 1] = steps;
+      totalSteps += steps;
+    }
+    addButton(480, 1030, 180, 70, color(26, 140, 216), "ツイート", "tweet", "【funget歩数シェア】私は1週間で" + str(totalSteps) + "歩、歩きました！すごいでしょ！！");
   }
   void update() {
     CPT.header("歩数");
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 40);
-    text("今日", 25, 150);
+    text("今日の歩数", 25, 150);
     textAlign(CENTER, CENTER);
     textFont(FONT_jetbrains, 110);
     text(fitbit.get(0), 300, 250);
     textFont(FONT_noto, 48);
     text("歩", 550, 250);
-    for (int i = 0; i < 7; i++) {
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 40);
+    text("週合計: " + totalSteps + "歩", 25, 1030);
+    for (int i = 1; i < 8; i++) {
       drawSteps(i, fitbit.get(7 - i));
     }
     drawGraph();
@@ -27,26 +38,26 @@ class FitScene {
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 24);
     String _day = str(7 - i) + "日前";
-    text(_day, 600 * (2 * i + 1) / 14, 830);
-    if (steps > 10000) {
-      shape(SVG_check, 600 * (2 * i + 1) / 14 - 30, 870, 60, 60);
-    } else {
-      shape(SVG_error, 600 * (2 * i + 1) / 14 - 30, 870, 60, 60);
+    if (i == 7) {
+      _day = "今日";
     }
-    text(steps, 600 * (2 * i + 1) / 14, 980);
-    text("歩", 600 * (2 * i + 1) / 14, 1010);
-    if (i < 6) {
+    text(_day, 600 * (2 * i - 1) / 14, 750);
+    if (steps > 10000) {
+      shape(SVG_check, 600 * (2 * i - 1) / 14 - 30, 790, 60, 60);
+    } else {
+      shape(SVG_error, 600 * (2 * i - 1) / 14 - 30, 790, 60, 60);
+    }
+    text(steps, 600 * (2 * i - 1) / 14, 900);
+    text("歩", 600 * (2 * i - 1) / 14, 930);
+    if (i < 7) {
       fill(0);
-      rect(600 * (2 * i + 2) / 14 - 1, 800, 2, 230);
+      rect(600 * (2 * i + 2) / 14 - 1, 720, 2, 230);
     }
   }
   void drawGraph() { // グラフの描画
-    for (int i = 0; i < 7; i++) {
-      graphData[i] = fitbit.get(7 - i);
-    }
     stroke(50, 200, 120);
     strokeWeight(5);
-    float baseLineY = map(10000, 0, max(graphData), 950, 400);
+    float baseLineY = map(10000, 0, max(graphData), 800, 400);
     line(0, baseLineY, 600, baseLineY);
     textAlign(RIGHT, TOP);
     textFont(FONT_noto, 24);
@@ -63,7 +74,7 @@ class FitScene {
     
     for (int i = 0; i < 7; i++) {
       float x = 600 * (2 * i + 1) / 14;
-      float y = map(graphData[i], 0, max(graphData), 950, 400);
+      float y = map(graphData[i], 0, max(graphData), 800, 400);
       vertex(x, y);
       
       fill(80);

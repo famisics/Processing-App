@@ -18,7 +18,7 @@ class SleepScene {
       text("データがありません", 300, 250);
     } else {
       textFont(FONT_noto, 90);
-      text(minToTime(lastSleepTime), 300, 250);
+      text(minToTime(lastSleepTime, true), 300, 250);
     }
     drawBg();
     for (int i = 0; i < 8; i++) {
@@ -58,7 +58,7 @@ class SleepScene {
       shape(SVG_check, i3 - 25, 970, 50, 50);
     }
     fill(c);
-    text(minToTime(Integer.parseInt(data.get("duration"))), i3, 1040);
+    text(minToTime(Integer.parseInt(data.get("duration")), false), i3, 1040);
     fill(0);
     rect(600 * (2 * i2) / 18 - 1, 930, 2, 130);
   } 
@@ -88,11 +88,14 @@ class SleepScene {
     
     return str(int(min / 60)) + "時";
   }
-  String minToTime(int min) {
+  String minToTime(int min, boolean isJapanese) {
     if (min == 0) return "-";
     if (min > 1440) min -= 1440;
-    
-    return String.valueOf(min / 60) + "h" + nf(min % 60, 2) + "m";
+    if (isJapanese) {
+      return str(int(min / 60)) + "時間" + nf(min % 60, 2) + "分";
+    } else {
+      return str(int(min / 60)) + "h" + nf(min % 60, 2) + "m";
+    }
   }
   float isotimeToHour(String date) {
     if (date.matches("")) return - 1;

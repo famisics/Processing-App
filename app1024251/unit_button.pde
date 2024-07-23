@@ -31,6 +31,10 @@ class Button {
         MANAGER_nextmotion = type + "," + id;
         MANAGER_isMousePressed = false;
       }
+      if (type.equals("tweet") && MANAGER_isMousePressed && (MANAGER_mouseX > x - w / 2) && (MANAGER_mouseX < x + w / 2) && (MANAGER_mouseY > y - h / 2) && (MANAGER_mouseY < y + h / 2)) {
+        link("https://x.com/intent/post?text=" + id);
+        MANAGER_isMousePressed = false;
+      }
     }
   }
   void show() {

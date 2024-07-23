@@ -6,21 +6,22 @@ class HomeScene {
     // 時間帯に応じた背景画像
     int time = Integer.parseInt(API.getTime().substring(0, 2));
     if (time >= 19) {
-      bg = loadImage("img/bg/night.jpg");
+      bg = loadImage("img/home/night.jpg");
     } else if (time >= 15) {
-      bg = loadImage("img/bg/sunset.jpg");
+      bg = loadImage("img/home/sunset.jpg");
     } else if (time >= 5) {
-      bg = loadImage("img/bg/noon.jpg");
+      bg = loadImage("img/home/noon.jpg");
     } else {
-      bg = loadImage("img/bg/midnight.jpg");
+      bg = loadImage("img/home/midnight.jpg");
     }
     
     // ボタンの追加
-    addButton(162.5, 512.5, 225, 225, color(3, 171, 106), "天気", "cmode", "2");
-    addButton(437.5, 512.5, 225, 225, color(28, 130, 173), "歩数", "cmode", "3");
-    addButton(162.5, 787.5, 225, 225, color(0, 51, 124), "バス", "cmode", "4");
-    addButton(437.5, 787.5, 225, 225, color(70, 30, 80), "睡眠", "cmode", "6");
-    addButton(300, 1000, 500, 100, color(50), "接続状態", "cmode", "5");
+    addButton(162.5, 512.5, 225, 225, color(0, 140, 180), "天気", "cmode", "2");
+    addButton(437.5, 512.5, 225, 225, color(190, 130, 70), "歩数", "cmode", "3");
+    addButton(162.5, 787.5, 225, 225, color(170, 50, 120), "バス", "cmode", "4");
+    addButton(437.5, 787.5, 225, 225, color(30, 150, 50), "睡眠", "cmode", "6");
+    addButton(162.5, 1000, 225, 100, color(120, 10, 170), "接続状態", "cmode", "5");
+    addButton(437.5, 1000, 225, 100, color(50), "設定", "cmode", "7");
   }
   void update() {
     tint(255, 175);

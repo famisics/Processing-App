@@ -1,23 +1,43 @@
 // ? シーン0(タイトル)のクラス
 
+
 class TitleScene {
-  int loadingTime = 500;
+  int loadingTime = 1800;
+  PImage bg;
   
   int start = 0;
   void boot() {
     this.start = millis();
+    this.bg = loadImage("img/title.jpg");
   }
   void update() {
-    background(255);
-    fill(0);
+    background(0);
+    tint(150);
+    image(bg, 0, 0, width, height);
+    noTint();
+    fill(255);
     textAlign(CENTER, CENTER);
     textFont(FONT_noto, 80);
-    text("ようこそ\n( > ω <)//", 300, 300);
-    rect(50, 800, 500 * (millis() - start) / loadingTime, 20);
+    text("funget", 300, 250);
+    textFont(FONT_noto, 40);
+    text("ようこそ ( > ω <)//", 300, 400);
+    int processing = (millis() - start)/2;
+    int rectx, width = 0;
+    if (processing < 300) {
+      rectx = 100;
+      width = processing * 4 / 3;
+    } else if (processing < 600) {
+      rectx = 100 + (processing - 300) * 4 / 3;
+      width = 400 - (processing - 300) * 4 / 3;
+    } else {
+      rectx = 100;
+      width = (processing - 600) * 4 / 3;
+    }
+    rect(rectx, 800, width, 20);
     textFont(FONT_noto, 30);
     text("2024 © famisics (https://uiro.dev)", 300, 1125);
-    if (millis() > start + loadingTime) {
-      if(isFirstBus) {
+    if (millis() > start + loadingTime - 100) {
+      if (isFirstBus) {
         cmode(4);
       } else {
         cmode(1);

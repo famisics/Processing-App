@@ -12,6 +12,7 @@ FitScene FitScene;
 FunbusScene FunbusScene;
 IpinfoScene IpinfoScene;
 SleepScene SleepScene;
+SettingsScene SettingsScene;
 
 int mode = 0; // モード0で初期化
 
@@ -25,7 +26,7 @@ String busMode = "auto";
 
 PFont FONT_meiryo, FONT_jetbrains, FONT_noto;
 PShape SVG_home, SVG_weather, SVG_fit, SVG_funbus, SVG_sleep;
-PShape SVG_check, SVG_error, SVG_on, SVG_off, SVG_change;
+PShape SVG_check, SVG_error, SVG_on, SVG_off, SVG_change, SVG_settings;
 
 String MANAGER_nextmotion = ""; // 次に行う動作
 boolean MANAGER_isMousePressed = false;
@@ -46,6 +47,7 @@ void boot() {
   FunbusScene = new FunbusScene();
   IpinfoScene = new IpinfoScene();
   SleepScene = new SleepScene();
+  SettingsScene = new SettingsScene();
   
   // フォントの初期化
   FONT_meiryo = createFont("Meiryo UI", 32);
@@ -65,6 +67,7 @@ void boot() {
   SVG_on = loadShape("svg/status/on.svg");
   SVG_off = loadShape("svg/status/off.svg");
   SVG_change = loadShape("svg/status/change.svg");
+  SVG_settings = loadShape("svg/status/settings.svg");
   
   // apikeys.json
   JSONObject json = loadJSONObject("apikeys.json");
@@ -152,6 +155,9 @@ void update() {
       case 6 : // 睡眠
         SleepScene.update();
         break;
+      case 7 : // 設定
+        SettingsScene.update();
+        break;
     }
     if (!(mode == 0)) {
       CPT.footer();
@@ -177,7 +183,7 @@ void cmode(int i) {
       cmodeText = "";
       break;
     case 1:
-      cmodeText = "読み込み中";
+      cmodeText = "";
       break;
     case 2:
       cmodeText = "天気情報を取得中\n\nby Open Weather Map";
@@ -194,11 +200,13 @@ void cmode(int i) {
     case 6:
       cmodeText = "睡眠情報を取得中\n\nby Fitbit API";
       break;
-    
+    case 7:
+      cmodeText = "";
+      break;
   }
 }
 void cmodeAction(int i) {
-  delay(100);
+  delay(20);
   switch(i) {
     case 0:
       TitleScene.boot();
@@ -220,6 +228,9 @@ void cmodeAction(int i) {
       break;
     case 6:
       SleepScene.boot();
+      break;
+    case 7:
+      SettingsScene.boot();
       break;
   }
   mode = i;
