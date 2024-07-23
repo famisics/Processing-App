@@ -27,7 +27,7 @@ class IpinfoScene {
     } else {
       text("バスモード　：　亀田支所前モード", 50, 550);
     }
-    text("バスの行き先が自動で変わります\n学内LAN, fun-wifi, free-wifi, eduroam\nに接続時、未来大モードが有効になります\n自宅の回線がフレッツ光の場合は、\n未来大として検出されます\n\n(詳しい話：このアプリでは、IPアドレスの\norganizationから接続先を検出しています\nfree-wifiがフレッツ光回線であるため、\nご家庭のフレッツ光と区別できないのです)", 50, 775);
+    text("バスの行き先が自動で変わります\n学内LAN, fun-wifi, free-wifi, eduroam\nに接続時、未来大モードが有効になります\n自宅の回線がフレッツ光の場合は、\n未来大として検出されます", 50, 700);
     fill(0);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 20);
@@ -38,6 +38,18 @@ class IpinfoScene {
       shape(SVG_off, 50, 1000, 50, 50);
     }
     if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 && MANAGER_mouseY < 1050 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+      changeFreeWifiContain();
+      MANAGER_isMousePressed = false;
+    }
+    text("手動モード切り替え", 110, 925);
+    if (busMode == 0) {
+      shape(SVG_on, 50, 900, 50, 50);
+    } else if (busMode == 1) {
+      shape(SVG_off, 50, 900, 50, 50);
+    } else {
+      
+    }
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 900 && MANAGER_mouseY < 950 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
       changeFreeWifiContain();
       MANAGER_isMousePressed = false;
     }
