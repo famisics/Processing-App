@@ -55,9 +55,9 @@ class SleepScene {
   void message() { // TODO:正しくする
     String msg;
     if (totalSleepMins > 2940) {
-      msg = "おめでとうございます！\n目標達成です！";
+      msg = "おめでとうございます！\n8日で7日*7時間睡眠を達成しました";
     } else {
-      msg = "目標まであと" + str(2940 - float(totalSleepMins)) + "時間不足しています";
+      msg = "目標まであと" + str(2940 - totalSleepMins) + "歩です\nがんばりましょう！";
     }
     fill(200, 255, 255);
     rect(50, 300, 500, 300);

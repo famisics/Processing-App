@@ -43,17 +43,19 @@ class HomeScene {
     // 時間帯に応じたメッセージ
     int time = Integer.parseInt(API.getTime().substring(0, 2));
     if (time >= 18) {
-      text("こんばんは！", 300, 250);
+      text("こんばんは！", 300, 225);
     } else if (time >= 12) {
-      text("こんにちは！", 300, 250);
+      text("こんにちは！", 300, 225);
     } else if (time >= 5) {
-      text("おはようございます！", 300, 250);
+      text("おはようございます！", 300, 225);
     } else {
-      text("寝てください", 300, 250);
+      text("寝てください", 300, 225);
     }
+    textFont(FONT_noto, 30);
     if (isRain) {
-      text("雨が降っています", 300, 300);
-      // TODO:いい感じの処理をいれる
+      text("今日は雨が降るかもしれません", 300, 325);
+    } else {
+      text("今日は、雨は降らない予定です", 300, 325);
     }
   }
 }

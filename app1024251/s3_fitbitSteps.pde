@@ -51,9 +51,9 @@ class FitScene {
   void message() { // TODO:正しくする
     String msg;
     if (totalSteps > 50000) {
-      msg = "おめでとうございます！\n目標達成です！";
+      msg = "おめでとうございます！\n週間歩数50000歩を達成しました";
     } else {
-      msg = "目標まであと" + str(50000 - totalSteps) + "歩です！";
+      msg = "目標まであと" + str(50000 - totalSteps) + "歩です\nがんばりましょう！";
     }
     fill(200, 255, 255);
     rect(50, 300, 500, 300);
