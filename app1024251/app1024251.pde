@@ -1,9 +1,9 @@
 import java.util.Base64;
 
-int originalWidth = 800; // 元の描画領域の幅
-int originalHeight = 600; // 元の描画領域の高さ
-float scaleX = 0;
-float scaleY = 0;
+// int originalWidth = 800; // 元の描画領域の幅
+// int originalHeight = 600; // 元の描画領域の高さ
+// float scaleX = 0;
+// float scaleY = 0;
 
 void setup() {
   background(0);
