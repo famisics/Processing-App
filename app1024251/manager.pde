@@ -190,7 +190,7 @@ void cmode(int i) {
       cmodeText = "";
       break;
     case 1:
-      cmodeText = "";
+      cmodeText = "読み込み中";
       break;
     case 2:
       cmodeText = "天気情報を取得中\n\nby Open Weather Map";

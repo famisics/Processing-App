@@ -4,16 +4,18 @@ class SleepScene {
   HashMap<Integer, HashMap<String, String>> fitbit_sleep;
   int start = 0;
   int totalSleepMins = 0;
+  boolean isMsg = true;
   
   // 初期化処理
   void boot() {
     // APIからデータを取得
     fitbit_sleep = API.getFitbitSleeps();
-    start = millis();
     totalSleepMins = 0;
     for (int i = 0; i < 8; i++) {
       totalSleepMins += Integer.parseInt(fitbit_sleep.get(i).get("duration"));
     }
+    start = millis();
+    isMsg = true;
   }
   
   // 更新処理
@@ -46,25 +48,29 @@ class SleepScene {
     }
     
     // メッセージ
-    if (millis() - start < 5000) {
+    if ((millis() - start < 5000) && isMsg) {
       message();
     }
   }
   
   // メッセージを描画
-  void message() { // TODO:正しくする
+  void message() {
     String msg;
     if (totalSleepMins > 2940) {
       msg = "おめでとうございます！\n8日で7日*7時間睡眠を達成しました";
     } else {
       msg = "目標まであと" + str(2940 - totalSleepMins) + "歩です\nがんばりましょう！";
     }
-    fill(200, 255, 255);
-    rect(50, 300, 500, 300);
-    fill(0);
+    fill(25, 100, 100);
+    rect(0, 100, 600, 200);
+    fill(255);
     textAlign(CENTER, CENTER);
-    textFont(FONT_noto, 40);
-    text(msg, 300, 450);
+    textFont(FONT_noto, 36);
+    text(msg, 300, 200);
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 && MANAGER_mouseY < 300) {
+      isMsg = false;
+      MANAGER_isMousePressed = false;
+    }
   }
   
   // グラフを描画する

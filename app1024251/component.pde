@@ -4,9 +4,9 @@ class Component {
   // ヘッダー
   void header(String i) {
     // 表示部分
-    fill(100, 200, 230);
+    fill(0, 75, 75);
     rect(0, 0, 600, 100);
-    fill(0);
+    fill(255);
     textAlign(LEFT, CENTER);
     textFont(FONT_noto, 48);
     text(i, 30, 50);

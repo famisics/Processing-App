@@ -4,6 +4,7 @@ class FitScene {
   HashMap<Integer, Integer> fitbit = new HashMap<Integer, Integer>();
   float[] graphData = new float[7];
   int totalSteps = 0;
+  boolean isMsg = true;
   
   int start = 0;
   
@@ -19,6 +20,7 @@ class FitScene {
     }
     addButton(480, 1030, 180, 70, color(26, 140, 216), "ツイート", "tweet", "【funget歩数シェア】私は1週間で" + str(totalSteps) + "歩、歩きました！すごいでしょ！！");
     start = millis();
+    isMsg = true;
   }
   
   // 更新処理
@@ -42,25 +44,29 @@ class FitScene {
     drawGraph();
     
     // メッセージ
-    if (millis() - start < 5000) {
+    if ((millis() - start < 5000) && isMsg) {
       message();
     }
   }
   
   // メッセージを描画
-  void message() { // TODO:正しくする
+  void message() {
     String msg;
     if (totalSteps > 50000) {
       msg = "おめでとうございます！\n週間歩数50000歩を達成しました";
     } else {
       msg = "目標まであと" + str(50000 - totalSteps) + "歩です\nがんばりましょう！";
     }
-    fill(200, 255, 255);
-    rect(50, 300, 500, 300);
-    fill(0);
+    fill(25, 100, 100);
+    rect(0, 100, 600, 200);
+    fill(255);
     textAlign(CENTER, CENTER);
-    textFont(FONT_noto, 40);
-    text(msg, 300, 450);
+    textFont(FONT_noto, 36);
+    text(msg, 300, 200);
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 && MANAGER_mouseY < 300) {
+      isMsg = false;
+      MANAGER_isMousePressed = false;
+    }
   }
   
   //歩数を描画
