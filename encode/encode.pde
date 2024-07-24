@@ -4,7 +4,7 @@ import processing.data.JSONArray;
 
 void setup() {
   // 読み込むJSONファイルのパス
-  String inputFilePath = "apikeys.json";
+  String inputFilePath = "endpoints.json";
   // 書き出すJSONファイルのパス
   String outputFilePath = "output.json";
 

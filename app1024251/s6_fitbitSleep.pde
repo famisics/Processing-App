@@ -52,7 +52,7 @@ class SleepScene {
   }
   
   // メッセージを描画
-  void message() {
+  void message() { // TODO:正しくする
     String msg;
     if (totalSleepMins > 2940) {
       msg = "おめでとうございます！\n目標達成です！";
@@ -62,8 +62,8 @@ class SleepScene {
     fill(200, 255, 255);
     rect(50, 300, 500, 300);
     fill(0);
-    textAlign(LEFT, CENTER);
-    textFont(FONT_noto, 48);
+    textAlign(CENTER, CENTER);
+    textFont(FONT_noto, 40);
     text(msg, 300, 450);
   }
   
