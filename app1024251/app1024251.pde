@@ -10,16 +10,16 @@ void setup() {
   noStroke();
   print("initializing... ");
   size(600,1200); // Google Pixel 7 基準に指定
-  scaleX = (float) width / originalWidth;
-  scaleY = (float) height / originalHeight;
+  // scaleX = (float) width / originalWidth;
+  // scaleY = (float) height / originalHeight;
   boot(); // コードを読みやすくするために、managerでシーンを初期化(boot)しています
 }
 
 void draw() {
-  pushMatrix();
-  scale(scaleX, scaleY);
+  // pushMatrix();
+  // scale(scaleX, scaleY);
   update(); // コードを読みやすくするために、managerでシーンを描画(update)しています
-  popMatrix();
+  // popMatrix();
 }
 
 // ! デモ用のキー
