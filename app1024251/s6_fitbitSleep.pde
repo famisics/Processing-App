@@ -60,7 +60,7 @@ class SleepScene {
       msg = "おめでとうございます！\n8日で7日*7時間睡眠を達成しました";
     } else {
       float remain = Math.round((float)(2940 - totalSleepMins) / 6);
-      msg = "目標まであと" + str(remain/10) + "時間です\nがんばりましょう！";
+      msg = "あと1日" + str(remain/10/7) + "時間\nは眠りましょう、健康に！";
     }
     fill(25, 100, 100);
     rect(0, 100, 600, 200);
