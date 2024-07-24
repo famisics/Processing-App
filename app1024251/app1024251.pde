@@ -39,5 +39,8 @@ void keyPressed() { // シーンを切り替える
     case '7':
       cmode(7);
       break;
+    case 'x':
+      API.isRain();
+      break;
   }
 }

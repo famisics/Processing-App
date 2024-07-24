@@ -5,6 +5,8 @@ class FitScene {
   float[] graphData = new float[7];
   int totalSteps = 0;
   
+  int start = 0;
+  
   // 初期化処理
   void boot() {
     // APIからデータを取得
@@ -16,6 +18,7 @@ class FitScene {
       totalSteps += steps;
     }
     addButton(480, 1030, 180, 70, color(26, 140, 216), "ツイート", "tweet", "【funget歩数シェア】私は1週間で" + str(totalSteps) + "歩、歩きました！すごいでしょ！！");
+    start = millis();
   }
   
   // 更新処理
@@ -37,6 +40,27 @@ class FitScene {
       drawSteps(i, fitbit.get(7 - i));
     }
     drawGraph();
+    
+    // メッセージ
+    if (millis() - start < 5000) {
+      message();
+    }
+  }
+  
+  // メッセージを描画
+  void message() {
+    String msg;
+    if (totalSteps > 50000) {
+      msg = "おめでとうございます！\n目標達成です！";
+    } else {
+      msg = "目標まであと" + str(50000 - totalSteps) + "歩です！";
+    }
+    fill(200, 255, 255);
+    rect(50, 300, 500, 300);
+    fill(0);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 48);
+    text(msg, 300, 450);
   }
   
   //歩数を描画
@@ -61,7 +85,9 @@ class FitScene {
       rect(600 * (2 * i + 2) / 14 - 1, 720, 2, 230);
     }
   }
-  void drawGraph() { // グラフの描画
+  
+  // グラフの描画
+  void drawGraph() {
     stroke(50, 200, 120);
     strokeWeight(5);
     float baseLineY = map(10000, 0, max(graphData), 800, 400);
@@ -80,16 +106,21 @@ class FitScene {
     beginShape();
     
     for (int i = 0; i < 7; i++) {
-      float x = 600 * (2 * i + 1) / 14;
-      float y = map(graphData[i], 0, max(graphData), 800, 400);
-      vertex(x, y);
-      
-      fill(80);
-      circle(x, y, 10);
-      noFill();
+      graphShape(i);
     }
     
     endShape();
     noStroke();
+  }
+  
+  // グラフの折れ線を描画
+  void graphShape(int i) {
+    float x = 600 * (2 * i + 1) / 14;
+    float y = map(graphData[i], 0, max(graphData), 800, 400);
+    vertex(x, y);
+    
+    fill(80);
+    circle(x, y, 10);
+    noFill();
   }
 }

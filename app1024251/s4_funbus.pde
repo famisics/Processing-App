@@ -3,7 +3,7 @@
 class FunbusScene {
   HashMap<String, String> funbus = new HashMap<String, String>();
   String query;
-
+  
   // 初期化処理
   void boot() {
     // APIを元に起点となるバス停を算出し、その文字列をクエリとしてAPIからデータを取得
@@ -44,7 +44,7 @@ class FunbusScene {
       textFont(FONT_noto, 42);
       text("本日の運行は終了しました", 300, 550);
     }
-
+    
     // ボタンの描画
     fill(0);
     textAlign(LEFT, CENTER);
@@ -59,7 +59,7 @@ class FunbusScene {
       MANAGER_isMousePressed = false;
     }
   }
-
+  
   // バス情報を表示するカードを作成
   void busCard(String code, String start, String end, String destination, String remain, String untilNext, int yPoition) {
     if (yPoition == 260) {
@@ -87,7 +87,7 @@ class FunbusScene {
       text(remain, 300, yPoition + 250);
     }
   }
-
+  
   // 残り時間を計算
   String remain(String this_start) {
     int nowSeconds = hour() * 3600 + minute() * 60 + second();

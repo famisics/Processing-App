@@ -2,6 +2,7 @@
 
 class HomeScene {
   PImage bg;
+  boolean isRain = false;
   
   // 初期化処理
   void boot() {
@@ -16,6 +17,9 @@ class HomeScene {
     } else {
       bg = loadImage("img/home/midnight.jpg");
     }
+    
+    // 雨が降るかどうか
+    isRain = API.isRain();
     
     // ボタンの追加
     addButton(162.5, 512.5, 225, 225, color(0, 140, 180), "天気", "cmode", "2");
@@ -46,6 +50,10 @@ class HomeScene {
       text("おはようございます！", 300, 250);
     } else {
       text("寝てください", 300, 250);
+    }
+    if (isRain) {
+      text("雨が降っています", 300, 300);
+      // TODO:いい感じの処理をいれる
     }
   }
 }

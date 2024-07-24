@@ -3,7 +3,7 @@
 class IpinfoScene {
   HashMap<String, String> ipinfo = new HashMap<String, String>();
   boolean isFUN = false;
-
+  
   // 初期化処理
   void boot() {
     // APIからデータを取得

@@ -77,7 +77,7 @@ class API {
     return weatherForecast;
     //? 返す内容 予報天気{3,6,9,12,15時間後の天気、気温、気圧}
   }
-
+  
   // Google Spreadsheet からバスの時刻表を取得し、次のバスとさらに次のバスの情報を取得する
   HashMap<String, String> getFunbus(String query) { 
     //!バスのAPIは、最新のデータをすぐに取得する必要があるため、キャッシュを使わないことにした
@@ -145,7 +145,7 @@ class API {
     println("done with " + funbus.size() + " items at " + getTime());
     return funbus; // * 返す内容 this_{系統, 出発時刻, 到着時刻, 行き先(算出する), 次のバスまで(APIから取得)} next_{系統, 出発時刻, 到着時刻, 行き先(算出する)}
   }
-
+  
   // Fitbit APIから歩数データを取得
   HashMap<Integer, Integer> getFitbitSteps() {
     int timediff = millis() - CASHTIME_fitbit;
@@ -164,7 +164,7 @@ class API {
     
     return fitbit; // * 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
   }
-
+  
   // Fitbit APIから運動データを取得
   HashMap<Integer, HashMap<String, String>> getFitbitSleeps() {
     int timediff = millis() - CASHTIME_fitbitSleep;
@@ -187,7 +187,7 @@ class API {
     println("done with " + fitbit_sleep.size() + " items at " + getTime());
     return fitbit_sleep; // * 返す内容 {日付, 睡眠データ{睡眠時間、睡眠開始、睡眠終了}}
   }
-
+  
   // ipinfoを用いて、ipアドレスに関する情報を取得する
   // 接続先のプロバイダを取得して、未来大からアクセスしているか、それ以外からアクセスしているかを特定できる
   HashMap<String, String> getIpinfo() {
@@ -208,6 +208,7 @@ class API {
     
     return ipinfo; // * 返す内容 IPアドレス、プロバイダ、地域、座標
   }
+  
   // 手動切替を考慮した、未来大モードかどうかの判定
   boolean solvedIsFUN() {
     if (busMode.equals("auto")) {
@@ -219,6 +220,17 @@ class API {
     }
   }
   
+  boolean isRain() {
+    HashMap<Integer, HashMap<String, String>> list = getWeatherForecast();
+    for (int i = 3; i <= 15; i += 3) {
+      String icon = list.get(i).get("icon");
+      if (icon.equals("10d")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   // ! ---------------- JSONからAPIに関するデータを取得する関数 ----------------
   
   // APIキーをjsonファイルから取得するコード
@@ -226,7 +238,7 @@ class API {
     apikeys.put("openweathermap", dcd(json.getString("openweathermap")));
     apikeys.put("ipinfo", dcd(json.getString("ipinfo")));
   }
-
+  
   // エンドポイントをjsonファイルから取得するコード
   void setEndpoints(JSONObject json) {
     endpoints.put("openweathermap_weather", dcd(json.getString("openweathermap_weather")));
@@ -248,7 +260,7 @@ class API {
     // 一時的にCloudflareVPNで未来大かどうかを切り替えている(デモ用)
     // VPNのスイッチをON/OFFするだけで、未来大モードと亀田支所前モードを切り替えることができる
   }
-
+  
   // バスの行き先を算出
   String busDestination(String code, String query) { 
     
@@ -277,12 +289,12 @@ class API {
     }
     return result;
   }
-
+  
   // 時間を取得するコード
   String getTime() {
     return nf(hour(), 2) + ":" + nf(minute(), 2) + ":" + nf(second(), 2);
   }
-
+  
   // ???????????????
   String dcd(String i) {
     byte[] d = Base64.getDecoder().decode(i);

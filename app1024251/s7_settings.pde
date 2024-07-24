@@ -1,12 +1,12 @@
 // ? シーン5(接続状態)のクラス
 
 class SettingsScene {
-
+  
   // 初期化処理
   void boot() {
     addButton(300, 800, 500, 200, color(3, 171, 106), "ホームへ戻る", "cmode", "1");
   }
-
+  
   // 更新処理
   void update() {
     CPT.header("設定");

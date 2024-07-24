@@ -19,7 +19,7 @@ class Button {
     this.type = type;
     this.id = id;
   }
-
+  
   // ボタンの更新
   void update() {
     if (isShow) {
