@@ -12,35 +12,32 @@ void draw() {
   update(); // コードを読みやすくするために、managerでシーンを描画(update)しています
 }
 
-// ! デバッグ用のキー
+// ! デモ用のキー
 void keyPressed() { // シーンを切り替える
   switch(key) {
-    case '0':
+    case '0' : // スタート画面
       cmode(0);
       break;
-    case '1':
+    case '1' : // ホーム画面
       cmode(1);
       break;
-    case '2':
+    case '2' : // 天気画面
       cmode(2);
       break;
-    case '3':
-      cmode(3);
-      break;
-    case '4':
+    case '3' : // バス画面
       cmode(4);
       break;
-    case '5':
-      cmode(5);
+    case '4' : // 歩数画面
+      cmode(3);
       break;
-    case '6':
+    case '5' : // 睡眠画面
       cmode(6);
       break;
-    case '7':
-      cmode(7);
+    case '6' : // 接続情報画面
+      cmode(5);
       break;
-    case 'x':
-      API.isRain();
+    case '7' : // 設定画面
+      cmode(7);
       break;
   }
 }

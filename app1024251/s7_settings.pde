@@ -4,7 +4,7 @@ class SettingsScene {
   
   // 初期化処理
   void boot() {
-    addButton(300, 800, 500, 200, color(3, 171, 106), "ホームへ戻る", "cmode", "1");
+    addButton(300, 800, 500, 200, color(0, 75, 75), "ホームへ戻る", "cmode", "1");
   }
   
   // 更新処理

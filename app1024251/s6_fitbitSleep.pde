@@ -59,7 +59,8 @@ class SleepScene {
     if (totalSleepMins > 2940) {
       msg = "おめでとうございます！\n8日で7日*7時間睡眠を達成しました";
     } else {
-      msg = "目標まであと" + str(2940 - totalSleepMins) + "歩です\nがんばりましょう！";
+      float remain = Math.round((float)(2940 - totalSleepMins) / 6);
+      msg = "目標まであと" + str(remain/10) + "時間です\nがんばりましょう！";
     }
     fill(25, 100, 100);
     rect(0, 100, 600, 200);
