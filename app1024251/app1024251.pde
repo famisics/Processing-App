@@ -39,5 +39,8 @@ void keyPressed() { // シーンを切り替える
     case '7' : // 設定画面
       cmode(7);
       break;
+    case 'l' : // デモ用、最終バス表示
+      DEMO_isLast = !DEMO_isLast;
+      break;
   }
 }

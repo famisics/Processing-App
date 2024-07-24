@@ -1,5 +1,7 @@
 // ? シーン4(バス)のクラス
 
+boolean DEMO_isLast = false;
+
 class FunbusScene {
   HashMap<String, String> funbus = new HashMap<String, String>();
   String query;
@@ -27,11 +29,11 @@ class FunbusScene {
     }
     if (!funbus.get("this_code").equals("終バス済")) {
       busCard(funbus.get("this_code"), funbus.get("this_start"), funbus.get("this_end"), funbus.get("this_destination"), remain(funbus.get("this_start")), funbus.get("this_untilnext"), 260);
-      if (funbus.get("this_untilnext").equals("last")) {
+      if (funbus.get("this_untilnext").equals("last") || DEMO_isLast) {
         fill(200, 0, 0);
         rect(50, 700, 500, 200);
         fill(255, 255, 0);
-        rect(55, 705, 490, 190);
+        rect(58, 708, 484, 184);
         fill(200, 0, 0);
         textAlign(CENTER, CENTER);
         textFont(FONT_noto, 48);
