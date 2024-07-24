@@ -21,10 +21,10 @@ class TitleScene {
     noTint();
     fill(255);
     textAlign(CENTER, CENTER);
-    textFont(FONT_noto, 80);
+    textFont(FONT_jetbrains, 120);
     text("funget", 300, 250);
     textFont(FONT_noto, 40);
-    text("ようこそ ( > ω <)//", 300, 400);
+    text("ようこそ ( > ω <)//", 300, 450);
     // 下部の読み込み表示バー
     int processing = (millis() - start) / 2;
     int rectx, width = 0;
