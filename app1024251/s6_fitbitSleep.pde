@@ -3,12 +3,17 @@
 class SleepScene {
   HashMap<Integer, HashMap<String, String>> fitbit_sleep;
   int start = 0;
+  int totalSleepMins = 0;
   
   // 初期化処理
   void boot() {
     // APIからデータを取得
     fitbit_sleep = API.getFitbitSleeps();
     start = millis();
+    totalSleepMins = 0;
+    for (int i = 0; i < 8; i++) {
+      totalSleepMins += Integer.parseInt(fitbit_sleep.get(i).get("duration"));
+    }
   }
   
   // 更新処理
@@ -33,7 +38,9 @@ class SleepScene {
     // それぞれの列のデータを取得
     for (int i = 0; i < 8; i++) {
       color c = color(20, 120, 120);
-      if (Integer.parseInt(fitbit_sleep.get(i).get("duration"))<420) c = color(120, 20, 20);
+      if (Integer.parseInt(fitbit_sleep.get(i).get("duration")) < 420) {
+        c = color(120, 20, 20);
+      }
       drawSleep(i, fitbit_sleep.get(i), c);
       drawGraph(i, fitbit_sleep.get(i).get("start"), fitbit_sleep.get(i).get("end"), c);
     }
@@ -47,10 +54,10 @@ class SleepScene {
   // メッセージを描画
   void message() {
     String msg;
-    if (totalSteps > 50000) {
+    if (totalSleepMins > 2940) {
       msg = "おめでとうございます！\n目標達成です！";
     } else {
-      msg = "目標まであと" + str(50000 - totalSteps) + "歩です！";
+      msg = "目標まであと" + str(2940 - float(totalSleepMins)) + "時間不足しています";
     }
     fill(200, 255, 255);
     rect(50, 300, 500, 300);
