@@ -113,27 +113,27 @@ function boot() {
   SettingsScene = new SettingsScene_class();
   
   // フォントの初期化
-  FONT_meiryo = createFont("Meiryo UI", 32);
-  FONT_jetbrains = createFont("font/JetBrainsMono-Medium.ttf", 32);
-  FONT_noto = createFont("font/NotoSansJP-Medium.ttf", 32);
+  FONT_meiryo = textFont("Meiryo UI", 32);
+  FONT_jetbrains = textFont("font/JetBrainsMono-Medium.ttf", 32);
+  FONT_noto = textFont("font/NotoSansJP-Medium.ttf", 32);
   
   // モードアイコンの初期化
-  SVG_home = loadShape("svg/mode/home.svg");
-  SVG_weather = loadShape("svg/mode/weather.svg");
-  SVG_fit = loadShape("svg/mode/fit.svg");
-  SVG_funbus = loadShape("svg/mode/bus.svg");
-  SVG_sleep = loadShape("svg/mode/sleep.svg");
+  // SVG_home = loadShape("svg/mode/home.svg");
+  // SVG_weather = loadShape("svg/mode/weather.svg");
+  // SVG_fit = loadShape("svg/mode/fit.svg");
+  // SVG_funbus = loadShape("svg/mode/bus.svg");
+  // SVG_sleep = loadShape("svg/mode/sleep.svg");
   
   // ステータスアイコンの初期化
-  SVG_check = loadShape("svg/status/check.svg");
-  SVG_error = loadShape("svg/status/error.svg");
-  SVG_on = loadShape("svg/status/on.svg");
-  SVG_off = loadShape("svg/status/off.svg");
-  SVG_change = loadShape("svg/status/change.svg");
-  SVG_settings = loadShape("svg/status/settings.svg");
+  // SVG_check = loadShape("svg/status/check.svg");
+  // SVG_error = loadShape("svg/status/error.svg");
+  // SVG_on = loadShape("svg/status/on.svg");
+  // SVG_off = loadShape("svg/status/off.svg");
+  // SVG_change = loadShape("svg/status/change.svg");
+  // SVG_settings = loadShape("svg/status/settings.svg");
   
   // apikeys.json
-  var json = loadJSONObject("apikeys.json");
+  var json = loadJSON("apikeys.json");
   if (json != null) {
     API.setApikeys(json);
   } else {
@@ -141,7 +141,7 @@ function boot() {
   }
   
   // endpoints.json
-  json = loadJSONObject("endpoints.json");
+  json = loadJSON("endpoints.json");
   if (json != null) {
     API.setEndpoints(json);
   } else {
@@ -149,7 +149,7 @@ function boot() {
   }
   
   // config.json
-  json = loadJSONObject("config.json");
+  json = loadJSON("config.json");
   if (json != null) {
     if (json.getInt("is_first_bus") == 1) {
       isFirstBus = true;
@@ -307,13 +307,13 @@ function cmodeAction(i) {
 }
 // ボタンの追加
 function addButton(x, y, w, h, bg, label, type, id) {
-  LIST_Button.add(new Button(x, y, w, h, bg, label, type, id));
+  LIST_Button.add(new Button_class(x, y, w, h, bg, label, type, id));
 }
 
 // バスをデフォルトの表示にするかどうかを変更
 function changeFirstBus() {
   isFirstBus = !isFirstBus;
-  var json = new JSONObject();
+  var json;
   json.setInt("is_first_bus", isFirstBus ? 1 : 0);
   json.setInt("is_free_wifi_contain", isFreeWifiContain ? 1 : 0);
   json.setString("bus_mode", busMode);
@@ -324,7 +324,7 @@ function changeFirstBus() {
 // フレッツ光を含むかどうかの設定を変更
 function changeFreeWifiContain() {
   isFreeWifiContain = !isFreeWifiContain;
-  var json = new JSONObject();
+  var json;
   json.setInt("is_first_bus", isFirstBus ? 1 : 0);
   json.setInt("is_free_wifi_contain", isFreeWifiContain ? 1 : 0);
   json.setString("bus_mode", busMode);
@@ -341,7 +341,7 @@ function changeBusMode() {
   } else {
     busMode = "fromkmdtofun";
   }
-  var json = new JSONObject();
+  var json;
   json.setInt("is_first_bus", isFirstBus ? 1 : 0);
   json.setInt("is_free_wifi_contain", isFreeWifiContain ? 1 : 0);
   json.setString("bus_mode", busMode);
@@ -397,7 +397,7 @@ class API_class {
       return weatherNow;
     }
     print("[API] getWeatherNow: FETCHING... ");
-    var JSON_response = loadJSONObject(endpoints.get("openweathermap_weather") + apikeys.get("openweathermap"));
+    var JSON_response = loadJSON(endpoints.get("openweathermap_weather") + apikeys.get("openweathermap"));
     
     weatherNow.put("weather", JSON_response.getJSONArray("weather").getJSONObject(0).getString("description")); // 天気
     weatherNow.put("icon", JSON_response.getJSONArray("weather").getJSONObject(0).getString("icon").substring(0, 2) + "d"); // 天気アイコン
@@ -418,7 +418,7 @@ class API_class {
       println("[API] getWeatherForecast: CASH... done with " + weatherForecast.size() + " items at " + getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒");
       return weatherForecast;
     }
-    var JSON_response = loadJSONObject(endpoints.get("openweathermap_forecast") + apikeys.get("openweathermap")).getJSONArray("list");
+    var JSON_response = loadJSON(endpoints.get("openweathermap_forecast") + apikeys.get("openweathermap")).getJSONArray("list");
     print("[API] getWeatherForecast: FETCHING... ");
     
     for (i = 0; i < JSON_response.size(); i++) { // データを加工して HashMap に格納
@@ -562,7 +562,7 @@ class API_class {
       return ipinfo;
     }
     print("[API] getIpinfo: FETCHING... ");
-    var JSON_response = loadJSONObject(endpoints.get("ipinfo") + apikeys.get("ipinfo"));
+    var JSON_response = loadJSON(endpoints.get("ipinfo") + apikeys.get("ipinfo"));
     ipinfo.put("ip",JSON_response.getString("ip"));
     ipinfo.put("region", JSON_response.getString("city") + ", " + JSON_response.getString("region") + ", " + JSON_response.getString("country")); // 天気の取得にこのデータを使えそうだけど、VPN使ってたりするとずれるのでやめておく
     ipinfo.put("loc", JSON_response.getString("loc"));
@@ -924,6 +924,588 @@ class WeatherScene_class {
     if (i < 15) {
       fill(0);
       rect(600 * (2 * (i / 3 - 1) + 2) / 10 - 1, 800, 2, 280);
+    }
+  }
+}
+
+// ? シーン3(歩数)のクラス
+
+class FitScene_class {
+  itbit;
+  graphData;
+  totalSteps = 0;
+  isMsg = true;
+  
+  start = 0;
+  
+  // 初期化処理
+  boot() {
+    // APIからデータを取得
+    this.fitbit = API.getFitbitSteps();
+    totalSteps = 0;
+    for (i = 1; i < 8; i++) {
+      steps = fitbit.get(7 - i);
+      graphData[i - 1] = steps;
+      totalSteps += steps;
+    }
+    addButton(480, 1030, 180, 70, color(26, 140, 216), "ツイート", "tweet", "【funget歩数シェア】私は1週間で" + str(totalSteps) + "歩、歩きました！すごいでしょ！！");
+    start = millis();
+    isMsg = true;
+  }
+  
+  // 更新処理
+  update() {
+    CPT.header("歩数");
+    fill(0);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 40);
+    text("今日の歩数", 25, 150);
+    textAlign(CENTER, CENTER);
+    textFont(FONT_jetbrains, 110);
+    text(fitbit.get(0), 300, 250);
+    textFont(FONT_noto, 48);
+    text("歩", 550, 250);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 40);
+    text("週合計: " + totalSteps + "歩", 25, 1030);
+    for (i = 1; i < 8; i++) {
+      drawSteps(i, fitbit.get(7 - i));
+    }
+    drawGraph();
+    
+    // メッセージ
+    if ((millis() - start < 5000) && isMsg) {
+      message();
+    }
+  }
+  
+  // メッセージを描画
+  message() {
+    msg;
+    if (totalSteps > 50000) {
+      msg = "おめでとうございます！\n週間歩数50000歩を達成しました";
+    } else {
+      msg = "目標まであと" + str(50000 - totalSteps) + "歩です\nがんばりましょう！";
+    }
+    fill(25, 100, 100);
+    rect(0, 100, 600, 200);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textFont(FONT_noto, 36);
+    text(msg, 300, 200);
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 && MANAGER_mouseY < 300) {
+      isMsg = false;
+      MANAGER_isMousePressed = false;
+    }
+  }
+  
+  //歩数を描画
+  drawSteps(i, steps) {
+    fill(0);
+    textAlign(CENTER, CENTER);
+    textFont(FONT_noto, 24);
+    var _day = str(7 - i) + "日前";
+    if (i == 7) {
+      _day = "今日";
+    }
+    text(_day, 600 * (2 * i - 1) / 14, 750);
+    if (steps > 10000) {
+      shape(SVG_check, 600 * (2 * i - 1) / 14 - 30, 790, 60, 60);
+    } else {
+      shape(SVG_error, 600 * (2 * i - 1) / 14 - 30, 790, 60, 60);
+    }
+    text(steps, 600 * (2 * i - 1) / 14, 900);
+    text("歩", 600 * (2 * i - 1) / 14, 930);
+    if (i < 7) {
+      fill(0);
+      rect(600 * (2 * i + 2) / 14 - 1, 720, 2, 230);
+    }
+  }
+  
+  // グラフの描画
+  drawGraph() {
+    stroke(50, 200, 120);
+    strokeWeight(5);
+    baseLineY = map(10000, 0, max(graphData), 800, 400);
+    line(0, baseLineY, 600, baseLineY);
+    textAlign(RIGHT, TOP);
+    textFont(FONT_noto, 24);
+    fill(50, 200, 120);
+    text("10000歩", 590, baseLineY + 10);
+    textAlign(LEFT, BOTTOM);
+    text("10000歩", 10, baseLineY - 10);
+    
+    stroke(80);
+    strokeWeight(5);
+    
+    noFill();
+    beginShape();
+    
+    for (i = 0; i < 7; i++) {
+      graphShape(i);
+    }
+    
+    endShape();
+    noStroke();
+  }
+  
+  // グラフの折れ線を描画
+  graphShape(i) {
+    var x = 600 * (2 * i + 1) / 14;
+    var y = map(graphData[i], 0, max(graphData), 800, 400);
+    vertex(x, y);
+    
+    fill(80);
+    circle(x, y, 10);
+    noFill();
+  }
+}
+// ? シーン4(バス)のクラス
+
+var DEMO_isLast = false;
+
+class FunbusScene_class {
+  funbus;
+  query;
+  
+  // 初期化処理
+  boot() {
+    // APIを元に起点となるバス停を算出し、その文字列をクエリとしてAPIからデータを取得
+    query = "fromkmdtofun";
+    if (API.solvedIsFUN()) query = "fromfuntokmd";
+    funbus = API.getFunbus(query);
+  }
+  
+  // 更新処理
+  update() {
+    CPT.header("バス");
+    
+    // メインUIの描画
+    fill(0);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 32);
+    if (query.equals("fromkmdtofun")) {
+      text("亀田支所前→未来大のバスを表示中", 25, 150);
+    } else {
+      text("未来大→亀田支所前のバスを表示中", 25, 150);
+    }
+    if (!funbus.get("this_code").equals("終バス済")) {
+      busCard(funbus.get("this_code"), funbus.get("this_start"), funbus.get("this_end"), funbus.get("this_destination"), remain(funbus.get("this_start")), funbus.get("this_untilnext"), 260);
+      if (funbus.get("this_untilnext").equals("last") || DEMO_isLast) {
+        fill(200, 0, 0);
+        rect(50, 700, 500, 200);
+        fill(255, 255, 0);
+        rect(58, 708, 484, 184);
+        fill(200, 0, 0);
+        textAlign(CENTER, CENTER);
+        textFont(FONT_noto, 48);
+        text("今日最後のバスです", 300, 800);
+      } else {
+        busCard(funbus.get("next_code"), funbus.get("next_start"), funbus.get("next_end"), funbus.get("next_destination"), remain(funbus.get("next_start")), funbus.get("this_untilnext"), 660);
+      }
+    } else {
+      textAlign(CENTER, CENTER);
+      textFont(FONT_noto, 42);
+      text("本日の運行は終了しました", 300, 550);
+    }
+    
+    // ボタンの描画
+    fill(0);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 20);
+    var d = "自動";
+    if (busMode.equals("fromfuntokmd")) d = "未来大モード"; 
+    if (busMode.equals("fromkmdtofun")) d = "亀田支所前モード";
+    text("バスモードを切り替える　現在: " + d, 110, 1025);
+    shape(SVG_change, 50, 1000, 50, 50);
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 && MANAGER_mouseY < 1050 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+      changeBusMode();
+      MANAGER_isMousePressed = false;
+    }
+  }
+  
+  // バス情報を表示するカードを作成
+  busCard(code, start, end, destination, remain, untilNext, yPoition) {
+    if (yPoition == 260) {
+      fill(240, 90, 90);
+    } else {
+      fill(90, 90, 255);
+    }
+    
+    rect(50, yPoition - 50, 500, 350);
+    fill(255);
+    textFont(FONT_noto, 30);
+    textAlign(LEFT, CENTER);
+    text(code + "系統　" + destination + "行き", 75, yPoition);
+    textFont(FONT_noto, 24);
+    text("出発", 105, yPoition + 90);
+    text("到着", 335, yPoition + 90);
+    textAlign(CENTER, CENTER);
+    textFont(FONT_noto, 64);
+    text(start + "　" + end, 300, yPoition + 140);
+    textFont(FONT_noto, 40);
+    textAlign(CENTER, CENTER);
+    if (yPoition != 260 && !untilNext.equals("0")) {
+      text("さらに" + untilNext + "後に出発", 300, yPoition + 250);
+    } else {
+      text(remain, 300, yPoition + 250);
+    }
+  }
+  
+  // 残り時間を計算
+  remain(this_start) {
+    var nowSeconds = hour() * 3600 + minute() * 60 + second();
+    var startSeconds = int(this_start.substring(0, 2)) * 3600 + int(this_start.substring(3, 5)) * 60;
+    var remainingSeconds = startSeconds - nowSeconds;
+    if (remainingSeconds < 0) {
+      cmode(4);
+      return ""; 
+    }
+    var remainHour = remainingSeconds / 3600;
+    var remainMinute = (remainingSeconds % 3600) / 60;
+    var remainSecond = remainingSeconds % 60;
+    var result = "出発まで";
+    if (remainHour > 0) {
+      result += remainHour + "時間";
+    }
+    if (remainMinute > 0 || remainHour > 0) {
+      result += nf(remainMinute, 2) + "分";
+    }
+    result += nf(remainSecond, 2) + "秒";
+    return result;
+  }
+}
+
+// ? シーン5(接続状態)のクラス
+
+class IpinfoScene_class {
+  pinfo;
+  isFUN = false;
+  
+  // 初期化処理
+  boot() {
+    // APIからデータを取得
+    ipinfo = API.getIpinfo();
+    isFUN = API.solvedIsFUN();
+  }
+  
+  // 更新処理
+  update() {
+    CPT.header("接続状態");
+    // UIの描画
+    fill(0);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 24);
+    text("IPアドレス", 50, 150);
+    textAlign(CENTER, CENTER);
+    textFont(FONT_noto, 64);
+    text(ipinfo.get("ip"), 300, 240);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 24);
+    text("地域：" + ipinfo.get("region"), 50, 350);
+    text("座標：" + ipinfo.get("loc"), 50, 400);
+    var org = ipinfo.get("org");
+    if (org.contains("AS2907 R")) org = "AS2907 SINET6 by 国立情報学研究所";
+    if (org.length() > 32) {
+      org = org.substring(0, 32) + "...";
+    }
+    text("組織：" + org, 50, 450);
+    if (isFUN) {
+      text("バスモード：未来大モード", 50, 500);
+    } else {
+      text("バスモード：亀田支所前モード", 50, 500);
+    }
+    text("バスの行き先が自動で変わります\n学内LAN, fun-wifi, free-wifi, eduroam\nに接続時、未来大モードが有効になります\n自宅の回線がフレッツ光の場合は、\n未来大として検出されます", 50, 700);
+    // ボタンの描画
+    fill(0);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 20);
+    text("フレッツ光(free-wifi)を未来大モードから除外する", 110, 1025);
+    if (isFreeWifiContain) {
+      shape(SVG_on, 50, 1000, 50, 50);
+    } else {
+      shape(SVG_off, 50, 1000, 50, 50);
+    }
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 && MANAGER_mouseY < 1050 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+      changeFreeWifiContain();
+      MANAGER_isMousePressed = false;
+    }
+  }
+}
+
+
+// ? シーン6(睡眠)のクラス
+
+class SleepScene_class {
+  fitbit_sleep;
+  start = 0;
+  totalSleepMins = 0;
+  isMsg = true;
+  
+  // 初期化処理
+  boot() {
+    // APIからデータを取得
+    fitbit_sleep = API.getFitbitSleeps();
+    totalSleepMins = 0;
+    for (i = 0; i < 8; i++) {
+      totalSleepMins += Integer.parseInt(fitbit_sleep.get(i).get("duration"));
+    }
+    start = millis();
+    isMsg = true;
+  }
+  
+  // 更新処理
+  update() {
+    CPT.header("睡眠");
+    // 今日のデータ
+    fill(0);
+    textAlign(LEFT, CENTER);
+    textFont(FONT_noto, 40);
+    text("昨晩の睡眠時間（今日）", 25, 150);
+    textAlign(CENTER, CENTER);
+    var lastSleepTime = Integer.parseInt(fitbit_sleep.get(0).get("duration"));
+    if (lastSleepTime == 0) {
+      textFont(FONT_noto, 60);
+      text("データがありません", 300, 250);
+    } else {
+      textFont(FONT_noto, 90);
+      text(minToTime(lastSleepTime, true), 300, 250);
+    }
+    // 背景を描画
+    drawBg();
+    // それぞれの列のデータを取得
+    for (i = 0; i < 8; i++) {
+      var c = color(20, 120, 120);
+      if (Integer.parseInt(fitbit_sleep.get(i).get("duration")) < 420) {
+        c = color(120, 20, 20);
+      }
+      drawSleep(i, fitbit_sleep.get(i), c);
+      drawGraph(i, fitbit_sleep.get(i).get("start"), fitbit_sleep.get(i).get("end"), c);
+    }
+    
+    // メッセージ
+    if ((millis() - start < 5000) && isMsg) {
+      message();
+    }
+  }
+  
+  // メッセージを描画
+  message() {
+    var msg;
+    if (totalSleepMins > 2940) {
+      msg = "おめでとうございます！\n8日で7日*7時間睡眠を達成しました";
+    } else {
+      var remain = Math.round((float)(2940 - totalSleepMins) / 6);
+      msg = "あと1日" + str(remain/10/7) + "時間は眠ろう！\n健康のために！";
+    }
+    fill(25, 100, 100);
+    rect(0, 100, 600, 200);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textFont(FONT_noto, 36);
+    text(msg, 300, 200);
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 && MANAGER_mouseY < 300) {
+      isMsg = false;
+      MANAGER_isMousePressed = false;
+    }
+  }
+  
+  // グラフを描画する
+  drawGraph(i, start, end, c) {
+    var startHour = isotimeToHour(start);
+    if (startHour < 0) return;
+    startHour -= 21;
+    if (startHour < 0) startHour += 24;
+    var endHour = isotimeToHour(end);
+    if (endHour < 0) return;
+    endHour -= 21;
+    if (endHour < 0) endHour += 24;
+    var i2 = 7 - i + 1;
+    var i3 = 600 * (2 * i2 + 1) / 18;
+    drawRoundedLine(i3, 350 + (startHour * 35), i3, 350 + (endHour * 35), c);
+  }
+  
+  //下部分のテキスト表示
+  drawSleep(i, data, c) {
+    fill(0);
+    textAlign(CENTER, CENTER);
+    textFont(FONT_noto, 18);
+    var _day = String.valueOf(i) + "日前";
+    if (i == 0) {
+      _day = "今日";
+    }
+    var i2 = 7 - i + 1;
+    var i3 = 600 * (2 * i2 + 1) / 18;
+    text(_day, i3, 950);
+    if (data.get("duration").equals("0")) {
+      shape(SVG_error, i3 - 25, 970, 50, 50);
+    } else {
+      shape(SVG_check, i3 - 25, 970, 50, 50);
+    }
+    fill(c);
+    text(minToTime(Integer.parseInt(data.get("duration")), false), i3, 1040);
+    fill(0);
+    rect(600 * (2 * i2) / 18 - 1, 930, 2, 130);
+  }
+  
+  // 端が丸い線を描画する
+  drawRoundedLine(x1, y1, x2, y2, c) {
+    stroke(c);
+    strokeWeight(20);
+    strokeCap(ROUND);
+    line(x1, y1, x2, y2);
+    strokeCap(SQUARE);
+    noStroke();
+  }
+  
+  // 背景を描画する
+  drawBg() { // 背景の線
+    fill(75);
+    stroke(2);
+    stroke(75);
+    strokeWeight(2);
+    textFont(FONT_noto, 20);
+    textAlign(RIGHT, CENTER);
+    for (i = 0; i < 16; i++) {
+      line(70, 350 + (i * 35), 600, 350 + (i * 35));
+      text(minToClock(1260 + (i * 60)), 60, 350 + (i * 35));
+    }
+    noStroke();
+  }
+  
+  // 分を ~ 時に変換する
+  minToClock(min) {
+    if (min > 1440) min -= 1440;
+    
+    return str(int(min / 60)) + "時";
+  }
+  
+  // 分を時刻表示に変換する
+  minToTime(min, isJapanese) {
+    if (min == 0) return "-";
+    if (min > 1440) min -= 1440;
+    if (isJapanese) {
+      return str(int(min / 60)) + "時間" + nf(min % 60, 2) + "分";
+    } else {
+      return str(int(min / 60)) + "h" + nf(min % 60, 2) + "m";
+    }
+  }
+  
+  // ISO8601形式の時刻を時刻に変換する(APIレスポンスを変換する)
+  isotimeToHour(date) {
+    if (date.matches("")) return - 1;
+    var tIndex = date.indexOf('T');
+    var timePart = date.substring(tIndex + 1, tIndex + 9);
+    
+    var hour = int(timePart.substring(0, 2));
+    var minute = int(timePart.substring(3, 5));
+    var second = int(timePart.substring(6, 8));
+    var hoursDecimal = hour + minute / 60.0 + second / 3600.0; // 時刻に変換
+    return hoursDecimal;
+  }
+}
+
+// ? シーン5(接続状態)のクラス
+
+class SettingsScene_class {
+  
+  // 初期化処理
+  boot() {
+    addButton(300, 800, 500, 200, color(0, 75, 75), "ホームへ戻る", "cmode", "1");
+  }
+  
+  // 更新処理
+  update() {
+    CPT.header("設定");
+    fill(0);
+    textFont(FONT_noto, 20);
+    textAlign(LEFT, CENTER);
+    // ボタンの描画
+    text("アプリの起動時に、バスを表示する", 110, 175);
+    text("→朝バスの時間ぎりぎり使う人におすすめです", 110, 225);
+    if (isFirstBus) {
+      shape(SVG_on, 50, 150, 50, 50);
+    } else {
+      shape(SVG_off, 50, 150, 50, 50);
+    }
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 150 && MANAGER_mouseY < 200 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+      changeFirstBus();
+      MANAGER_isMousePressed = false;
+    }
+    text("フレッツ光(free-wifi)を未来大モードから除外する", 110, 375);
+    text("→自宅がフレッツ光の人は有効にしてください", 110, 425);
+    if (isFreeWifiContain) {
+      shape(SVG_on, 50, 350, 50, 50);
+    } else {
+      shape(SVG_off, 50, 350, 50, 50);
+    }
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 350 && MANAGER_mouseY < 400 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+      changeFreeWifiContain();
+      MANAGER_isMousePressed = false;
+    }
+    var d = "自動";
+    if (busMode.equals("fromfuntokmd")) d = "未来大モード";
+    if (busMode.equals("fromkmdtofun")) d = "亀田支所前モード";
+    text("バスモードを切り替える　現在: " + d, 110, 575);
+    text("→位置情報を無視して特定のモードに固定します", 110, 625);
+    shape(SVG_change, 50, 550, 50, 50);
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 550 && MANAGER_mouseY < 600 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+      changeBusMode();
+      MANAGER_isMousePressed = false;
+    }
+    textAlign(CENTER, CENTER);
+    textFont(FONT_noto, 30);
+    text("2024 © famisics (https://uiro.dev)", 300, 1000);
+  }
+}
+
+// ? ボタンを管理するクラス
+
+var LIST_Button;
+
+class Button_class {
+  isShow = true;
+  x;
+  y;
+  w;
+  h;
+  label;
+  id;
+  type;
+  bg;
+  
+  // ボタンのx, yはそこを中心として描画される
+  constructor(x, y, w, h, bg, label, type, id) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.label = label;
+    this.bg = bg;
+    this.type = type;
+    this.id = id;
+  }
+  
+  // ボタンの更新
+  update() {
+    if (isShow) {
+      fill(bg);
+      rect(x - w / 2, y - h / 2, w, h);
+      textFont(FONT_noto, 40);
+      if (w ==  500) textFont(FONT_noto, 32);
+      textAlign(CENTER, CENTER);
+      fill(255);
+      text(label, x, y);
+      // それがモード切り替えボタンである場合、押された時にモード切り替えアクションを登録する
+      if (type.equals("cmode") && MANAGER_isMousePressed && (MANAGER_mouseX > x - w / 2) && (MANAGER_mouseX < x + w / 2) && (MANAGER_mouseY > y - h / 2) && (MANAGER_mouseY < y + h / 2)) {
+        MANAGER_nextmotion = type + "," + id;
+        MANAGER_isMousePressed = false;
+      }
+      // それがツイートボタンである場合、押された時にツイート画面を表示する
+      if (type.equals("tweet") && MANAGER_isMousePressed && (MANAGER_mouseX > x - w / 2) && (MANAGER_mouseX < x + w / 2) && (MANAGER_mouseY > y - h / 2) && (MANAGER_mouseY < y + h / 2)) {
+        link("https://x.com/intent/post?text=" + id); // ツイート画面を表示
+        MANAGER_isMousePressed = false;
+      }
     }
   }
 }
