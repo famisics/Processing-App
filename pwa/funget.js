@@ -13,6 +13,10 @@ var DEV_MODE = 1
 
 var master = { width: 600, height: 1200 }
 
+// ボタン管理用クラス
+
+var LIST_Button = []
+
 // 動作に必要なモジュール
 var API
 var CPT
@@ -32,7 +36,7 @@ var mode = 0 // モード0で初期化
 // config
 
 var isFirstBus = false
-var isFreeWifiContain = true
+var isFreeWifiNotContain = true
 var busMode = 'auto'
 
 // 素材
@@ -172,13 +176,13 @@ function boot() {
   }
   if (localStorage.getItem('settings/is_free_wifi_contain')) {
     if (localStorage.getItem('settings/is_free_wifi_contain') == 1) {
-      isFreeWifiContain = true
+      isFreeWifiNotContain = true
     } else {
-      isFreeWifiContain = false
+      isFreeWifiNotContain = false
     }
   } else {
-    isFreeWifiContain = true
-    localStorage.setItem('settings/is_free_wifi_contain', isFreeWifiContain ? 1 : 0)
+    isFreeWifiNotContain = true
+    localStorage.setItem('settings/is_free_wifi_not_contain', isFreeWifiNotContain ? 1 : 0)
   }
   if (localStorage.getItem('settings/bus_mode')) {
     busMode = localStorage.getItem('settings/bus_mode')
@@ -267,10 +271,9 @@ function update() {
     if (!(mode == 0)) {
       CPT.footer()
     }
-    if (LIST_Button != null) {
-      for (let i = 0; i < LIST_Button.length; i++) {
-        const element = LIST_Button[i]
-        element.update()
+    if (LIST_Button != []) {
+      for (let b of LIST_Button) {
+        b.update()
       }
     }
   }
@@ -286,7 +289,7 @@ function update() {
 
 // シーン切り替え処理を開始する
 function cmode(i) {
-  LIST_Button = false
+  LIST_Button = []
   isCmode = true
   cmodeTarget = i
   switch (
@@ -362,9 +365,8 @@ function loading(i) {
 
 // ボタンの追加
 function addButton(x, y, w, h, bg, label, type, id) {
-  elog('addButton', 'disabled', 'Tomato')
-  // elog('addButton', 'x: ' + x + ', y: ' + y + ', w: ' + w + ', h: ' + h + ', bg: ' + bg + ', label: ' + label + ', type: ' + type + ', id: ' + id, 'white')
-  // LIST_Button.add(new Button_class(x, y, w, h, bg, label, type, id)) // TODO:これどうしよう
+  elog('addButton', 'x: ' + x + ', y: ' + y + ', w: ' + w + ', h: ' + h + ', bg: ' + bg + ', label: ' + label + ', type: ' + type + ', id: ' + id, 'Tomato')
+  LIST_Button.push(new Button_class(x, y, w, h, bg, label, type, id))
 }
 
 // バスをデフォルトの表示にするかどうかを変更
@@ -376,9 +378,9 @@ function changeFirstBus() {
 
 // フレッツ光を含むかどうかの設定を変更
 function changeFreeWifiContain() {
-  isFreeWifiContain = !isFreeWifiContain
-  localStorage.setItem('settings/is_free_wifi_contain', isFreeWifiContain ? 1 : 0)
-  elog('json', '設定が保存されました isFreeWifiContain: ' + isFreeWifiContain, 'white')
+  isFreeWifiNotContain = !isFreeWifiNotContain
+  localStorage.setItem('settings/is_free_wifi_contain', isFreeWifiNotContain ? 1 : 0)
+  elog('json', '設定が保存されました isFreeWifiNotContain: ' + isFreeWifiNotContain, 'white')
 }
 
 // バスモードを変更
@@ -399,6 +401,9 @@ function mousePressed() {
   MANAGER_isMousePressed = true
   MANAGER_mouseX = mouseX
   MANAGER_mouseY = mouseY
+  for (let b of LIST_Button) {
+    b.checkClick(mouseX, mouseY)
+  }
 }
 
 // ? 各種APIの{管理、呼び出し、キャッシュ}、エンドポイント、APIキーの管理を行うクラス
@@ -460,7 +465,7 @@ class API_class {
   // ! ---------------- API ----------------
 
   // Open Weather Map から天気情報を取得
-  getWeatherNow() {
+  async getWeatherNow() {
     var timediff = millis() - this.CASHTIME_weatherNow
     if (this.weatherNow != 0 && timediff < this.timeout) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
@@ -469,28 +474,27 @@ class API_class {
       return Promise.resolve(this.weatherNow)
     }
     elog('API', 'getWeatherNow: FETCHING... ', 'LightSkyBlue')
-    return funfetch(decode(localStorage.getItem('endpoints/openweathermap_weather')) + decode(localStorage.getItem('apikeys/openweathermap')))
-      .then(data => {
-        var res = { weather: '', icon: '', temp: '', pressure: '', city: '' }
-        res.weather = data.weather[0].description
-        res.icon = data.weather[0].icon.substring(0, 2) + 'd'
-        res.temp = Math.round(10 * (data.main.temp - 273.15)) / 10
-        res.pressure = Math.round(data.main.pressure)
-        res.city = data.name
-        this.weatherNow = res
-        this.CASHTIME_weatherNow = millis()
-        elog('API', 'getWeatherNow: FETCHING... done at ' + this.getTime(), 'LightSkyBlue')
-        return this.weatherNow // * 返す内容 現在の天気{天気、気温、気圧}
-      })
-      .catch(error => {
-        // エラー処理
-        console.error(error)
-        return false
-      })
+    try {
+      const data_1 = await funfetch(decode(localStorage.getItem('endpoints/openweathermap_weather')) + decode(localStorage.getItem('apikeys/openweathermap')))
+      var res = { weather: '', icon: '', temp: '', pressure: '', city: '' }
+      res.weather = data_1.weather[0].description
+      res.icon = data_1.weather[0].icon.substring(0, 2) + 'd'
+      res.temp = Math.round(10 * (data_1.main.temp - 273.15)) / 10
+      res.pressure = Math.round(data_1.main.pressure)
+      res.city = data_1.name
+      this.weatherNow = res
+      this.CASHTIME_weatherNow = millis()
+      elog('API', 'getWeatherNow: FETCHING... done at ' + this.getTime(), 'LightSkyBlue')
+      return this.weatherNow // * 返す内容 現在の天気{天気、気温、気圧}
+    } catch (error) {
+      // エラー処理
+      console.error(error)
+      return false
+    }
   }
 
   // Open Weather Map から天気情報を取得
-  getWeatherForecast() {
+  async getWeatherForecast() {
     var timediff = millis() - this.CASHTIME_weatherForecast
     if (this.weatherForecast != 0 && timediff < this.timeout) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
@@ -499,44 +503,41 @@ class API_class {
     }
     elog('API', 'getWeatherForecast: FETCHING... ', 'LightSkyBlue')
     let query = decode(localStorage.getItem('endpoints/openweathermap_forecast')) + decode(localStorage.getItem('apikeys/openweathermap'))
-    return funfetch(query)
-      .then(data => {
-        // 取得した JSON データ (data) を処理
+    try {
+      const data = await funfetch(query)
+      // 取得した JSON データ (data) を処理
+      var JSON_response = data.list
 
-        var JSON_response = data.list
+      this.weatherForecast = []
 
-        this.weatherForecast = []
+      let _unixtime = Math.round(new Date().getTime() / 1000)
+      let _count = 0
 
-        let _unixtime = Math.round(new Date().getTime() / 1000)
-        let _count = 0
+      for (var i = 0; i < JSON_response.length; i++) {
+        const forecast = JSON_response[i] // JSON_response は配列と仮定
+        if (forecast.dt < _unixtime) continue // 現在時刻より前のデータは無視
+        const hour = _count * 3 + 3
+        _count++
 
-        for (var i = 0; i < JSON_response.length; i++) {
-          const forecast = JSON_response[i] // JSON_response は配列と仮定
-          if (forecast.dt < _unixtime) continue // 現在時刻より前のデータは無視
-          const hour = _count * 3 + 3
-          _count++
+        const forecastData = { hour: '', weather: '', temp: '', icon: '', pressure: '' }
+        forecastData.hour = hour
+        forecastData.weather = forecast.weather[0].description
+        forecastData.temp = Math.round(10 * (forecast.main.temp - 273.15)) / 10
+        forecastData.icon = forecast.weather[0].icon.substring(0, 2) + 'd'
+        forecastData.pressure = Math.round(forecast.main.pressure)
+        this.weatherForecast.push(forecastData)
 
-          const forecastData = { hour: '', weather: '', temp: '', icon: '', pressure: '' }
-          forecastData.hour = hour
-          forecastData.weather = forecast.weather[0].description
-          forecastData.temp = Math.round(10 * (forecast.main.temp - 273.15)) / 10
-          forecastData.icon = forecast.weather[0].icon.substring(0, 2) + 'd'
-          forecastData.pressure = Math.round(forecast.main.pressure)
-          this.weatherForecast.push(forecastData)
+        if (hour >= 15) break // 15時間後まで
+      }
 
-          if (hour >= 15) break // 15時間後まで
-        }
-
-        this.CASHTIME_weatherForecast = millis() // キャッシュ時間を更新
-        elog('API', 'getWeatherForecast: FETCHING... done at ' + this.getTime(), 'LightSkyBlue')
-        return this.weatherForecast
-        //? 返す内容 予報天気{3,6,9,12,15時間後の天気、気温、気圧}
-      })
-      .catch(error => {
-        // エラー処理
-        console.error(error)
-        return false
-      })
+      this.CASHTIME_weatherForecast = millis() // キャッシュ時間を更新
+      elog('API', 'getWeatherForecast: FETCHING... done at ' + this.getTime(), 'LightSkyBlue')
+      return this.weatherForecast
+    } catch (error) {
+      // エラー処理
+      console.error(error)
+      return false
+    }
   }
 
   // Google Spreadsheet からバスの時刻表を取得し、次のバスとさらに次のバスの情報を取得する
@@ -699,10 +700,6 @@ class API_class {
     let client_secret = localStorage.getItem('fitbit/client_secret')
     let access_token = localStorage.getItem('fitbit/access_token')
     let refresh_token = localStorage.getItem('fitbit/refresh_token')
-    // let client_id = '23PFRB'
-    // let client_secret = '90cb8d3daf2e460708bb7d5918047981'
-    // let access_token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1BGUkIiLCJzdWIiOiJCVDZTRkQiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJlY2cgcnNldCByb3h5IHJudXQgcnBybyByc2xlIHJjZiByYWN0IHJyZXMgcmxvYyByd2VpIHJociBydGVtIiwiZXhwIjoxNzIyMDI2NzIxLCJpYXQiOjE3MjE5OTc5MjF9.TSD3Q3PjKx4Y1iK7UYF6jAG9AzqMolNKS44xiIJwYM4'
-    // let refresh_token = '64a3d2d6a49e4987b8e85749cdae3650d5b1cccc46952bffbd2f67358a66e22c'
     let query_url = `https://script.google.com/macros/s/AKfycbwaVMxMfZHS7ZgLc9-HBUaur1YUDt0ZOsT5fcAqd7WqTN_ZFGgQat968b-DxQSsagcM/exec?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
     try {
       const data = await funfetch(query_url)
@@ -750,13 +747,12 @@ class API_class {
   }
 
   // 手動切替を考慮した、未来大モードかどうかの判定
-  solvedIsFUN() {
+  async solvedIsFUN() {
     elog('API', 'solvedIsFUN', 'firebrick')
     if (busMode == 'auto') {
-      return this.isFUN().then(res => {
-        elog('API', 'solvedIsFUN: done with' + res, 'firebrick')
-        return res
-      })
+      const res = await this.isFUN()
+      elog('API', 'solvedIsFUN: done with' + res, 'firebrick')
+      return res
     } else if (busMode == 'fromfuntokmd') {
       elog('API', 'solvedIsFUN: done with true', 'firebrick')
       return Promise.resolve(true)
@@ -803,15 +799,14 @@ class API_class {
   // ! ---------------- 内部で使っている関数 ----------------
 
   // 未来大からアクセスしているかを判定(APIのみの判定、solvedIsFUNでwrapする)
-  isFUN() {
+  async isFUN() {
     elog('API', 'isFUN', 'firebrick')
-    return this.getIpinfo().then(res => {
-      var org = res.org
-      // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
-      let _is = org.indexOf('AS13335 C') !== -1 || (org.indexOf('AS4713 N') !== -1 && !isFreeWifiContain) || org.indexOf('AS2907 R') !== -1
-      elog('API', 'isFUN: ' + _is, 'firebrick')
-      return _is
-    })
+    const res = await this.getIpinfo()
+    var org = res.org
+    // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
+    let _is = org.indexOf('AS13335 C') !== -1 || (org.indexOf('AS4713 N') !== -1 && !isFreeWifiNotContain) || org.indexOf('AS2907 R') !== -1
+    elog('API', 'isFUN: ' + _is, 'firebrick')
+    return _is
 
     // 一時的にCloudflareVPNで未来大かどうかを切り替えている(デモ用)
     // VPNのスイッチをON/OFFするだけで、未来大モードと亀田支所前モードを切り替えることができる
@@ -1291,7 +1286,7 @@ class FunbusScene_class {
       this.funbus = API.getFunbus(this.query)
       setTimeout(() => {
         this.isLoaded = true
-      }, 500)
+      }, 300)
     })
   }
 
@@ -1444,7 +1439,7 @@ class IpinfoScene_class {
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 20)
     text('フレッツ光(free-wifi)を未来大モードから除外する', 110, 1025)
-    if (isFreeWifiContain) {
+    if (isFreeWifiNotContain) {
       image(SVG_on, 50, 1000, 50, 50)
     } else {
       image(SVG_off, 50, 1000, 50, 50)
@@ -1663,7 +1658,7 @@ class SettingsScene_class {
     }
     text('フレッツ光(free-wifi)を未来大モードから除外する', 110, 375)
     text('→自宅がフレッツ光の人は有効にしてください', 110, 425)
-    if (isFreeWifiContain) {
+    if (isFreeWifiNotContain) {
       image(SVG_on, 50, 350, 50, 50)
     } else {
       image(SVG_off, 50, 350, 50, 50)
@@ -1690,50 +1685,37 @@ class SettingsScene_class {
 
 // ? ボタンを管理するクラス
 
-var LIST_Button = null
-
 class Button_class {
-  isShow = true
-  x
-  y
-  w
-  h
-  label
-  id
-  type
-  bg
-
-  // ボタンのx, yはそこを中心として描画される
   constructor(x, y, w, h, bg, label, type, id) {
     this.x = x
     this.y = y
     this.w = w
     this.h = h
-    this.label = label
     this.bg = bg
+    this.label = label
     this.type = type
     this.id = id
+    this.isShow = true
   }
 
-  // ボタンの更新
   update() {
-    if (isShow) {
-      fill(bg)
-      rect(x - w / 2, y - h / 2, w, h)
-      textFont(FONT_noto, 40)
-      if (w == 500) textFont(FONT_noto, 32)
-      textAlign(CENTER, CENTER)
+    if (this.isShow) {
+      fill(this.bg)
+      rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h)
+      textFont(FONT_noto, 36)
       fill(255)
-      text(label, x, y)
-      // それがモード切り替えボタンである場合、押された時にモード切り替えアクションを登録する
-      if (type == 'cmode' && MANAGER_isMousePressed && MANAGER_mouseX > x - w / 2 && MANAGER_mouseX < x + w / 2 && MANAGER_mouseY > y - h / 2 && MANAGER_mouseY < y + h / 2) {
-        MANAGER_nextmotion = type + ',' + id
-        MANAGER_isMousePressed = false
-      }
-      // それがツイートボタンである場合、押された時にツイート画面を表示する
-      if (type == 'tweet' && MANAGER_isMousePressed && MANAGER_mouseX > x - w / 2 && MANAGER_mouseX < x + w / 2 && MANAGER_mouseY > y - h / 2 && MANAGER_mouseY < y + h / 2) {
-        link('https://x.com/intent/post?text=' + id) // ツイート画面を表示
-        MANAGER_isMousePressed = false
+      textAlign(CENTER, CENTER)
+      text(this.label, this.x, this.y)
+    }
+  }
+
+  checkClick(mouseX, mouseY) {
+    if (this.isShow && mouseX > this.x - this.w / 2 && mouseX < this.x + this.w / 2 && mouseY > this.y - this.h / 2 && mouseY < this.y + this.h / 2) {
+      if (this.type === 'cmode') {
+        MANAGER_nextmotion = this.type + ',' + this.id
+        // モード切り替えの処理
+      } else if (this.type === 'tweet') {
+        window.open('https://x.com/intent/post?text=' + this.id)
       }
     }
   }

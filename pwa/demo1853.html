@@ -17,21 +17,20 @@
         access_token_value: localStorage.getItem('fitbit/access_token') || '',
         refresh_token: 'fitbit/refresh_token',
         refresh_token_value: localStorage.getItem('fitbit/refresh_token') || '',
-        msg: '必要な値を設定して、更新をクリックしてください',
-        link: false,
+        msg: '回復ボタンを押すと、デモ用の設定が回復されます',
         updateValue() {
-          if(this.client_id_value && this.client_secret_value && this.access_token_value && this.refresh_token_value) {
-            localStorage.setItem(this.client_id, this.client_id_value);
-            localStorage.setItem(this.client_secret, this.client_secret_value);
-            localStorage.setItem(this.access_token, this.access_token_value);
-            localStorage.setItem(this.refresh_token, this.refresh_token_value);
-            setTimeout(() => {
-              this.msg = '保存しました、アプリに移動できます';
-              this.link = true;
-            }, 100);
-          } else {
-            this.msg = '保存できませんでした、全ての値を入力してください';
-          }
+          this.client_id_value = '23PFRB'
+          this.client_secret_value = '90cb8d3daf2e460708bb7d5918047981'
+          this.access_token_value = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1BGUkIiLCJzdWIiOiJCVDZTRkQiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJlY2cgcnNldCByb3h5IHJudXQgcnBybyByc2xlIHJjZiByYWN0IHJyZXMgcmxvYyByd2VpIHJociBydGVtIiwiZXhwIjoxNzIyMDI2NzIxLCJpYXQiOjE3MjE5OTc5MjF9.TSD3Q3PjKx4Y1iK7UYF6jAG9AzqMolNKS44xiIJwYM4'
+          this.refresh_token_value = '64a3d2d6a49e4987b8e85749cdae3650d5b1cccc46952bffbd2f67358a66e22c'
+
+          localStorage.setItem(this.client_id, this.client_id_value);
+          localStorage.setItem(this.client_secret, this.client_secret_value);
+          localStorage.setItem(this.access_token, this.access_token_value);
+          localStorage.setItem(this.refresh_token, this.refresh_token_value);
+          setTimeout(() => {
+            this.msg = '設定を回復しました'
+          }, 100);
         },
         clear() {
           localStorage.removeItem(this.client_id);
@@ -43,7 +42,7 @@
           this.access_token_value = '';
           this.refresh_token_value = '';
           setTimeout(() => {
-            alert('削除しました');
+            this.msg = '設定を削除しました'
           }, 100);
         }
       }">
@@ -68,16 +67,16 @@
         <div><p x-text="msg"></p></div>
       </div>
       <div class="button-box">
-        <button x-on:click="updateValue">更新</button>
+        <button x-on:click="updateValue">回復</button>
         <button x-on:click="clear">削除</button>
       </div>
-      <a class="link" href="index.html" x-show="link">アプリに移動する</a>
       <br />
       <h2>説明リンク</h2>
       <p>分かる人だけ操作してください</p>
       <div class="links">
         <a href="index.html">index.html</a>
         <a href="key.html">key.html</a>
+        <a href="demo1853.html">demo1853.html</a>
         <a href="https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/">getting-started | fitbit developer</a>
       </div>
     </main>
@@ -103,11 +102,6 @@
         width: calc(50% - 5px);
         height: 40px;
         font-size: 20px;
-      }
-      .link {
-        display: block;
-        margin-top: 20px;
-        font-size: 26px;
       }
       .links a {
         font-size: 20px;
