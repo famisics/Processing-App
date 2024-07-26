@@ -181,7 +181,7 @@ function boot() {
       isFreeWifiNotContain = false
     }
   } else {
-    isFreeWifiNotContain = true
+    isFreeWifiNotContain = false
     localStorage.setItem('settings/is_free_wifi_not_contain', isFreeWifiNotContain ? 1 : 0)
   }
   if (localStorage.getItem('settings/bus_mode')) {
@@ -1044,7 +1044,6 @@ class WeatherScene_class {
   // 初期化処理
   boot() {
     // APIからデータを取得
-    elog('check', ':D', 'coral')
     API.getWeatherNow().then(res => {
       this.weatherNow = res
       API.getWeatherForecast().then(res => {
@@ -1399,16 +1398,26 @@ class FunbusScene_class {
 class IpinfoScene_class {
   pinfo
   isFUN = false
+  isLoaded = false
 
   // 初期化処理
   boot() {
     // APIからデータを取得
-    ipinfo = API.getIpinfo()
-    isFUN = API.solvedIsFUN()
+    API.getIpinfo().then(res => {
+      this.ipinfo = res
+      API.solvedIsFUN().then(res => {
+        this.isFUN = res
+        this.isLoaded = true
+      })
+    })
   }
 
   // 更新処理
   update() {
+    if (!this.isLoaded) {
+      loading('IPアドレスを取得中...')
+      return
+    }
     CPT.header('接続状態')
     // UIの描画
     fill(0)
@@ -1417,18 +1426,18 @@ class IpinfoScene_class {
     text('IPアドレス', 50, 150)
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 64)
-    text(ipinfo.get('ip'), 300, 240)
+    text(this.ipinfo.ip, 300, 240)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 24)
-    text('地域：' + ipinfo.get('region'), 50, 350)
-    text('座標：' + ipinfo.get('loc'), 50, 400)
-    var org = ipinfo.get('org')
-    if (org.contains('AS2907 R')) org = 'AS2907 SINET6 by 国立情報学研究所'
-    if (org.length() > 32) {
+    text('地域：' + this.ipinfo.region, 50, 350)
+    text('座標：' + this.ipinfo.loc, 50, 400)
+    var org = this.ipinfo.org
+    if (org.indexOf('AS2907 R') !== -1) org = 'AS2907 SINET6 by 国立情報学研究所'
+    if (org.length > 32) {
       org = org.substring(0, 32) + '...'
     }
     text('組織：' + org, 50, 450)
-    if (isFUN) {
+    if (this.isFUN) {
       text('バスモード：未来大モード', 50, 500)
     } else {
       text('バスモード：亀田支所前モード', 50, 500)
@@ -1635,7 +1644,8 @@ class SleepScene_class {
 class SettingsScene_class {
   // 初期化処理
   boot() {
-    addButton(300, 800, 500, 200, color(0, 75, 75), 'ホームへ戻る', 'cmode', '1')
+    addButton(300, 750, 500, 100, color(0, 150, 75), 'ホームへ戻る', 'cmode', '1')
+    addButton(300, 900, 500, 100, color(0, 125, 175), 'Fitbit API 設定', 'link', 'key.html')
   }
 
   // 更新処理
@@ -1679,7 +1689,7 @@ class SettingsScene_class {
     }
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 30)
-    text('2024 © famisics (https://uiro.dev)', 300, 1000)
+    text('2024 © famisics (https://uiro.dev)', 300, 1025)
   }
 }
 
@@ -1716,6 +1726,8 @@ class Button_class {
         // モード切り替えの処理
       } else if (this.type === 'tweet') {
         window.open('https://x.com/intent/post?text=' + this.id)
+      } else if (this.type === 'link') {
+        location.href = this.id
       }
     }
   }
