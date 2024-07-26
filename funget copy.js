@@ -5,6 +5,8 @@ function elog(func, text, color) {
 
 var DEV_MODE = 1
 
+var scale = 0.9
+
 // function setup() {
 //   let width = window.innerWidth;
 //   let height = window.innerHeight-10;
@@ -93,8 +95,7 @@ function setup() {
   background(0)
   noStroke()
   elog('boot', 'initializing... ', 'lime')
-  // createCanvas(600, 1200) // Google Pixel 7 基準に指定
-  createCanvas(windowWidth, windowHeight) // TODO: windowWidth, windowHeight を使って気合で書く、たぶんこれが早い
+  createCanvas(600, 1200) // Google Pixel 7 基準に指定
   // scaleX = (float) width / originalWidth;
   // scaleY = (float) height / originalHeight;
   boot() // コードを読みやすくするために、managerでシーンを初期化(boot)しています
