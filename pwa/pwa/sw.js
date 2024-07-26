@@ -8,7 +8,7 @@ const urlsToCache = [
   '/index.html',
   '/style.css',
   '/app.js',
-  '/images/logo.png'
+  '/src/icon.png'
 ];
 
 // インストールイベント

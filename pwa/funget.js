@@ -70,9 +70,9 @@ var JSON_funbus
 
 function preload() {
   // jsonのロード
-  JSON_endpoints = loadJSON('endpoints.json')
-  JSON_apikeys = loadJSON('apikeys.json')
-  JSON_funbus = loadJSON('funbus.json')
+  JSON_endpoints = loadJSON('json/endpoints.json')
+  JSON_apikeys = loadJSON('json/apikeys.json')
+  JSON_funbus = loadJSON('json/funbus.json')
   // モードアイコンの初期化
   SVG_home = loadImage('svg/mode/home.svg')
   SVG_weather = loadImage('svg/mode/weather.svg')
