@@ -1,3 +1,8 @@
+function elog(func, text, color) {
+  // super tsuyotusyo command line logging tool!
+  console.log('%c' + func + '%c%c' + text, 'font-size: 12px; border-radius: 3px 0 0 3px; color: black; font-weight: 1000; padding: 1px 4px; background: ' + color + '; border: solid ' + color + ' 1px;', '', 'font-size: 12px; border-radius: 0 3px 3px 0; color: white; font-weight: 1000; padding: 1px 4px; background: black; border: solid ' + color + ' 1px;')
+}
+
 var DEV_MODE = 1
 
 // function setup() {
@@ -57,14 +62,12 @@ var cmodeText = ''
 
 var JSON_endpoints
 var JSON_apikeys
-var JSON_config
 var JSON_funbus
 
 function preload() {
   // jsonのロード
   JSON_endpoints = loadJSON('endpoints.json')
   JSON_apikeys = loadJSON('apikeys.json')
-  JSON_config = loadJSON('config.json')
   JSON_funbus = loadJSON('funbus.json')
   // モードアイコンの初期化
   SVG_home = loadImage('svg/mode/home.svg')
@@ -133,10 +136,6 @@ function keyPressed() {
   }
 }
 
-function elog(func, text, color) {
-  console.log('%c' + func + '%c%c' + text, 'font-size: 12px; color: black; font-weight: 1000; padding: 1px 4px; background: ' + color + '; border: solid ' + color + ' 1px;', '', 'font-size: 12px; color: white; font-weight: 1000; padding: 1px 4px; background: black; border: solid ' + color + ' 1px;')
-}
-
 // ? アプリの進行を管理するコード
 
 // 初期化処理
@@ -159,67 +158,77 @@ function boot() {
   FONT_jetbrains = textFont('font/JetBrainsMono-Medium.ttf', 32)
   FONT_noto = textFont('font/NotoSansJP-Medium.ttf', 32)
 
+  // config.json
+  elog('boot', 'settings loading...', 'lime')
+  if (localStorage.getItem('settings/is_first_bus')) {
+    if (localStorage.getItem('settings/is_first_bus') == 1) {
+      isFirstBus = true
+    } else {
+      isFirstBus = false
+    }
+  } else {
+    isFirstBus = false
+    localStorage.setItem('settings/is_first_bus', isFirstBus ? 1 : 0)
+  }
+  if (localStorage.getItem('settings/is_free_wifi_contain')) {
+    if (localStorage.getItem('settings/is_free_wifi_contain') == 1) {
+      isFreeWifiContain = true
+    } else {
+      isFreeWifiContain = false
+    }
+  } else {
+    isFreeWifiContain = true
+    localStorage.setItem('settings/is_free_wifi_contain', isFreeWifiContain ? 1 : 0)
+  }
+  if (localStorage.getItem('settings/bus_mode')) {
+    busMode = localStorage.getItem('settings/bus_mode')
+  } else {
+    busMode = 'auto'
+    localStorage.setItem('settings/bus_mode', busMode)
+  }
+
   // apikeys.json
   if (JSON_apikeys != null) {
+    elog('boot', 'apikeys.json loading...', 'lime')
     API.setApikeys(JSON_apikeys)
-    elog('boot', 'apikeys.json loaded', 'lime')
   } else {
     elog('boot', 'apikeys.json not found', 'red')
   }
 
   // endpoints.json
   if (JSON_endpoints != null) {
+    elog('boot', 'endpoints.json loading...', 'lime')
     API.setEndpoints(JSON_endpoints)
-    elog('boot', 'endpoints.json loaded', 'lime')
   } else {
     elog('boot', 'endpoints.json not found', 'red')
   }
 
-  // config.json
-  if (JSON_config != null) {
-    if (JSON_config.is_first_bus == 1) {
-      isFirstBus = true
-    } else {
-      isFirstBus = false
-    }
-    if (JSON_config.is_free_wifi_contain == 1) {
-      isFreeWifiContain = true
-    } else {
-      isFreeWifiContain = false
-    }
-    busMode = JSON_config.bus_mode
-    elog('boot', 'config.json loaded', 'lime')
-  } else {
-    elog('boot', 'config.json not found', 'red')
-  }
-
-  elog('boot', 'done', 'lime')
+  elog('boot', 'initializing... done', 'lime')
   // アプリの起動
   cmode(0)
 }
 
 // 更新処理
 function update() {
-  console.log('update')
   if (isCmode) {
     // モード切り替え中の場合、シーン切り替え処理
     if (cmodeCount < 2) {
-      if (!(cmodeText == '')) {
-        // 切り替え中のメッセージ空ではない場合、読み込み中ウィンドウを表示
-        fill(255, 255, 255, 150)
-        rect(0, 0, 600, 1100)
-        fill(0, 75, 75)
-        rect(45, 495, 510, 210)
-        fill(255)
-        rect(50, 500, 500, 200)
-        textAlign(CENTER, CENTER)
-        fill(0)
-        textFont(FONT_noto, 30)
-        text(cmodeText, 300, 600)
-        if (!(mode == 0)) {
-          CPT.footer()
-        }
-      }
+      // if (!(cmodeText == '')) {
+      //   // 切り替え中のメッセージ空ではない場合、読み込み中ウィンドウを表示
+      //   fill(255, 255, 255, 150)
+      //   rect(0, 0, 600, 1100)
+      //   fill(0, 75, 75)
+      //   rect(45, 495, 510, 210)
+      //   fill(255)
+      //   rect(50, 500, 500, 200)
+      //   textAlign(CENTER, CENTER)
+      //   fill(0)
+      //   textFont(FONT_noto, 30)
+      //   text(cmodeText, 300, 600)
+      //   if (!(mode == 0)) {
+      //     CPT.footer()
+      //   }
+      // }
       cmodeCount++
     } else {
       cmodeCount = 0
@@ -312,6 +321,7 @@ function cmode(i) {
 
 // シーン切り替え処理を実行する
 function cmodeAction(i) {
+  i = Number(i)
   switch (i) {
     case 0:
       TitleScene.boot()
@@ -341,33 +351,33 @@ function cmodeAction(i) {
   mode = i
   elog('cmode', ' mode: ' + mode, 'violet')
 }
+
+// 読み込み画面(p5.js用)
+function loading(i) {
+  textAlign(CENTER, CENTER)
+  fill(0)
+  textFont(FONT_noto, 30)
+  text(i, 300, 600)
+}
+
 // ボタンの追加
 function addButton(x, y, w, h, bg, label, type, id) {
-  elog('addButton', 'x: ' + x + ', y: ' + y + ', w: ' + w + ', h: ' + h + ', bg: ' + bg + ', label: ' + label + ', type: ' + type + ', id: ' + id, 'white')
+  elog('addButton', 'disabled', 'Tomato')
+  // elog('addButton', 'x: ' + x + ', y: ' + y + ', w: ' + w + ', h: ' + h + ', bg: ' + bg + ', label: ' + label + ', type: ' + type + ', id: ' + id, 'white')
   // LIST_Button.add(new Button_class(x, y, w, h, bg, label, type, id)) // TODO:これどうしよう
 }
 
 // バスをデフォルトの表示にするかどうかを変更
 function changeFirstBus() {
   isFirstBus = !isFirstBus
-  var json = {
-    is_first_bus: isFirstBus ? 1 : 0,
-    is_free_wifi_contain: isFreeWifiContain ? 1 : 0,
-    bus_mode: busMode,
-  }
-  saveJSONObject(json, 'config.json')
+  localStorage.setItem('settings/is_first_bus', isFirstBus ? 1 : 0)
   elog('json', '設定が保存されました isFirstBus: ' + isFirstBus, 'white')
 }
 
 // フレッツ光を含むかどうかの設定を変更
 function changeFreeWifiContain() {
   isFreeWifiContain = !isFreeWifiContain
-  var json = {
-    is_first_bus: isFirstBus ? 1 : 0,
-    is_free_wifi_contain: isFreeWifiContain ? 1 : 0,
-    bus_mode: busMode,
-  }
-  saveJSONObject(json, 'config.json')
+  localStorage.setItem('settings/is_free_wifi_contain', isFreeWifiContain ? 1 : 0)
   elog('json', '設定が保存されました isFreeWifiContain: ' + isFreeWifiContain, 'white')
 }
 
@@ -380,12 +390,7 @@ function changeBusMode() {
   } else {
     busMode = 'fromkmdtofun'
   }
-  var json = {
-    is_first_bus: isFirstBus ? 1 : 0,
-    is_free_wifi_contain: isFreeWifiContain ? 1 : 0,
-    bus_mode: busMode,
-  }
-  saveJSONObject(json, 'config.json')
+  localStorage.setItem('settings/bus_mode', busMode)
   elog('json', '設定が保存されました busMode: ' + busMode, 'white')
 }
 
@@ -405,7 +410,7 @@ async function funfetch(query) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
-    elog('funfetch', 'response.ok', 'white')
+    elog('funfetch', '200 - funfetch done', 'MediumSpringGreen')
     const data = await response.json()
     return data
   } catch (error) {
@@ -415,9 +420,15 @@ async function funfetch(query) {
 }
 
 function decode(query) {
-  elog('decode', query, 'orange')
+  elog('*', 'query solved', 'white')
   var decoded = atob(query)
   return decoded
+}
+
+async function lawReturn(i) {
+  try {
+    return i
+  } catch (error) {}
 }
 
 class API_class {
@@ -451,27 +462,24 @@ class API_class {
   // Open Weather Map から天気情報を取得
   getWeatherNow() {
     var timediff = millis() - this.CASHTIME_weatherNow
-    if (this.weatherNow != 0 && timediff < timeout) {
+    if (this.weatherNow != 0 && timediff < this.timeout) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      elog('API', 'getWeatherNow: CASH... done at ' + this.getTime() + ', キャッシュ期限: ' + (timeout - timediff) / 1000 + '秒', 'aqua')
-      return this.weatherNow
+      elog('API', 'getWeatherNow: CASH... done at ' + this.getTime() + ', キャッシュ期限: ' + Math.floor((this.timeout - timediff) / 1000) + '秒', 'LightSkyBlue')
+      console.log(this.weatherNow)
+      return Promise.resolve(this.weatherNow)
     }
-    elog('API', 'getWeatherNow: FETCHING... ', 'aqua')
+    elog('API', 'getWeatherNow: FETCHING... ', 'LightSkyBlue')
     return funfetch(decode(localStorage.getItem('endpoints/openweathermap_weather')) + decode(localStorage.getItem('apikeys/openweathermap')))
       .then(data => {
         var res = { weather: '', icon: '', temp: '', pressure: '', city: '' }
-
         res.weather = data.weather[0].description
         res.icon = data.weather[0].icon.substring(0, 2) + 'd'
         res.temp = Math.round(10 * (data.main.temp - 273.15)) / 10
         res.pressure = Math.round(data.main.pressure)
         res.city = data.name
-
         this.weatherNow = res
-
         this.CASHTIME_weatherNow = millis()
-        elog('API', 'getWeatherNow: FETCHING... done at ' + this.getTime(), 'aqua')
-
+        elog('API', 'getWeatherNow: FETCHING... done at ' + this.getTime(), 'LightSkyBlue')
         return this.weatherNow // * 返す内容 現在の天気{天気、気温、気圧}
       })
       .catch(error => {
@@ -484,12 +492,12 @@ class API_class {
   // Open Weather Map から天気情報を取得
   getWeatherForecast() {
     var timediff = millis() - this.CASHTIME_weatherForecast
-    if (this.weatherForecast != 0 && timediff < timeout) {
+    if (this.weatherForecast != 0 && timediff < this.timeout) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      elog('API', 'getWeatherForecast: CASH... done at ' + this.getTime() + ', キャッシュ期限: ' + (timeout - timediff) / 1000 + '秒', 'aqua')
-      return this.weatherForecast
+      elog('API', 'getWeatherForecast: CASH... done at ' + this.getTime() + ', キャッシュ期限: ' + Math.floor((this.timeout - timediff) / 1000) + '秒', 'LightSkyBlue')
+      return Promise.resolve(this.weatherForecast)
     }
-    elog('API', 'getWeatherForecast: FETCHING... ', 'aqua')
+    elog('API', 'getWeatherForecast: FETCHING... ', 'LightSkyBlue')
     let query = decode(localStorage.getItem('endpoints/openweathermap_forecast')) + decode(localStorage.getItem('apikeys/openweathermap'))
     return funfetch(query)
       .then(data => {
@@ -520,7 +528,7 @@ class API_class {
         }
 
         this.CASHTIME_weatherForecast = millis() // キャッシュ時間を更新
-        elog('API', 'getWeatherForecast: FETCHING... done at ' + this.getTime(), 'aqua')
+        elog('API', 'getWeatherForecast: FETCHING... done at ' + this.getTime(), 'LightSkyBlue')
         return this.weatherForecast
         //? 返す内容 予報天気{3,6,9,12,15時間後の天気、気温、気圧}
       })
@@ -535,11 +543,11 @@ class API_class {
   getFunbus(query) {
     //!バスのAPIは、最新のデータをすぐに取得する必要があるため、キャッシュを使わないことにした
     //int timediff = millis() - this.CASHTIME_funbus;
-    //if ((funbus.size() > 0) && (timediff < timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-    //elog('API',getFunbus: returning CASHED_DATA... done with " + funbus.size() + " items at " + this.getTime() + ", キャッシュ期限: " + (timeout - timediff) / 1000 + "秒", 'aqua');
+    //if ((funbus.size() > 0) && (timediff < this.timeout)) { // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
+    //elog('API',getFunbus: returning CASHED_DATA... done with " + funbus.size() + " items at " + this.getTime() + ", キャッシュ期限: " + Math.floor((this.timeout - timediff) / 1000) + "秒", 'aqua');
     //return funbus;
     // }
-    elog('API', 'getFunbus: FETCHING... ', 'aqua')
+    elog('API', 'getFunbus: FETCHING... ', 'lavender')
     // 取得した JSON データ (data) を処理
     var data = JSON_funbus
     var date = new Date()
@@ -565,13 +573,14 @@ class API_class {
 
     var thisId = 0 // バスのID
 
+    elog('API', 'getFunbus: ' + query, 'lavender')
     for (var i = 0; i < table.length; i++) {
       // 次に出発するバスを探索
       thisId = i
       var JSON_item = table[i]
       var start = JSON_item.start
       if (start == 'null') {
-        elog('API', 'getFunbus: クエリが不正です、データを取得できませんでした クエリ:' + query, 'aqua')
+        elog('API', 'getFunbus: クエリが不正です、データを取得できませんでした クエリ:' + query, 'red')
         break
       }
 
@@ -581,7 +590,6 @@ class API_class {
       var startMinute = Number(start.slice(3, 5))
       var startTime = startHour * 60 + startMinute
       var currentTime = hour() * 60 + minute()
-      console.log('startTime: ' + startTime + ' currentTime: ' + currentTime)
       if (startTime > currentTime) break
 
       if (thisId >= table.length - 1) {
@@ -596,7 +604,7 @@ class API_class {
         res.next_end = ''
         res.next_destination = ''
         this.funbus = res
-        elog('API', 'getFunbus: FETCHING... done at ' + this.getTime(), 'aqua')
+        elog('API', 'getFunbus: FETCHING... done at ' + this.getTime(), 'lavender')
         return this.funbus
       }
     }
@@ -624,119 +632,150 @@ class API_class {
 
     this.funbus = res
     this.CASHTIME_funbus = millis()
-    elog('API', 'getFunbus: done at ' + this.getTime(), 'aqua')
+    elog('API', 'getFunbus: done at ' + this.getTime(), 'lavender')
     return this.funbus // * 返す内容 this_{系統, 出発時刻, 到着時刻, 行き先(算出する), 次のバスまで(APIから取得)} next_{系統, 出発時刻, 到着時刻, 行き先(算出する)}
   }
 
   // Fitbit APIから歩数データを取得
-  getFitbitSteps() {
+  async getFitbitSteps() {
     var timediff = millis() - this.CASHTIME_fitbit
-    if (fitbit != 0 && timediff < timeout) {
+    if (this.fitbit != 0 && timediff < this.timeout) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      elog('API', 'getFitbitSteps: returning CASHED_DATA... done at ' + this.getTime() + ', キャッシュ期限: ' + (timeout - timediff) / 1000 + '秒', 'aqua')
-      return fitbit
+      elog('API', 'getFitbitSteps: returning CASHED_DATA... done at ' + this.getTime() + ', キャッシュ期限: ' + Math.floor((this.timeout - timediff) / 1000) + '秒', 'aqua')
+      return Promise.resolve(this.fitbit)
     }
     elog('API', 'getFitbitSteps: FETCHING... ', 'aqua')
-    var JSON_response = loadJSONArray(endpoints.get('gas_steps'))
-    for (var i = 0; i < JSON_response.size(); i++) {
-      var data = JSON_response.getJSONObject(i)
-      fitbit.put(7 - i, int(data.getString('steps')))
+    try {
+      const data = await this.fetchFitbit('steps')
+      var res = ['0', '0', '0', '0', '0', '0', '0']
+      for (var i = 0; i < data.length; i++) {
+        var _data = data[i]
+        res[7 - i] = _data.steps
+      }
+      this.fitbit = res
+      this.CASHTIME_fitbit = millis()
+      elog('API', 'getFitbitSteps: done at ' + this.getTime(), 'aqua')
+      return this.fitbit // * 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
+    } catch (error) {
+      console.error(error)
+      return false
     }
-    this.CASHTIME_fitbit = millis()
-    elog('API', 'getFitbitSteps: done with ' + fitbit.size() + ' items at ' + this.getTime(), 'aqua')
-
-    return fitbit // * 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
   }
 
   // Fitbit APIから運動データを取得
-  getFitbitSleeps() {
+  async getFitbitSleeps() {
     var timediff = millis() - this.CASHTIME_fitbitSleep
-    if (fitbit_sleep != 0 && timediff < timeout) {
+    if (this.fitbit_sleep != 0 && timediff < this.timeout) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      elog('API', 'getFitbitSleeps: returning CASHED_DATA... done at ' + this.getTime() + ', キャッシュ期限: ' + (timeout - timediff) / 1000 + '秒', 'aqua')
-      return fitbit_sleep
+      elog('API', 'getFitbitSleeps: returning CASHED_DATA... done at ' + this.getTime() + ', キャッシュ期限: ' + Math.floor((this.timeout - timediff) / 1000) + '秒', 'aqua')
+      return Promise.resolve(this.fitbit_sleep)
     }
     elog('API', 'getFitbitSleeps: FETCHING... ', 'aqua')
-    var JSON_response = loadJSONArray(endpoints.get('gas_sleeps'))
-    for (var i = 0; i < JSON_response.size(); i++) {
-      var data = JSON_response.getJSONObject(i)
-      var _data
-      _data.put('date', data.getString('date'))
-      _data.put('duration', String.valueOf(data.getInt('duration')))
-      _data.put('start', data.getString('start'))
-      _data.put('end', data.getString('end'))
-      fitbit_sleep.put(7 - i, _data)
+    try {
+      const data = await this.fetchFitbit('sleeps')
+      var res = []
+      for (var i = 0; i < data.length; i++) {
+        var _data = data[i]
+        var _res = { date: '', duration: '', start: '', end: '' }
+        _res.date = _data.date
+        _res.duration = _data.duration
+        _res.start = _data.start
+        _res.end = _data.end
+        res.push(_res)
+      }
+      res = res.reverse()
+      this.fitbit_sleep = res
+      this.CASHTIME_fitbitSleep = millis()
+      elog('API', 'getFitbitSteps: FETCHING... done at ' + this.getTime(), 'aqua')
+      return this.fitbit_sleep // * 返す内容 {日付, 睡眠データ{睡眠時間、睡眠開始、睡眠終了}}
+    } catch (error) {
+      console.error(error)
+      return false
     }
-    this.CASHTIME_fitbitSleep = millis()
-    elog('API', 'getFitbitSteps: FETCHING... done at ' + this.getTime(), 'aqua')
-    return fitbit_sleep // * 返す内容 {日付, 睡眠データ{睡眠時間、睡眠開始、睡眠終了}}
+  }
+
+  async fetchFitbit(query) {
+    let client_id = localStorage.getItem('fitbit/client_id')
+    let client_secret = localStorage.getItem('fitbit/client_secret')
+    let access_token = localStorage.getItem('fitbit/access_token')
+    let refresh_token = localStorage.getItem('fitbit/refresh_token')
+    // let client_id = '23PFRB'
+    // let client_secret = '90cb8d3daf2e460708bb7d5918047981'
+    // let access_token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1BGUkIiLCJzdWIiOiJCVDZTRkQiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJlY2cgcnNldCByb3h5IHJudXQgcnBybyByc2xlIHJjZiByYWN0IHJyZXMgcmxvYyByd2VpIHJociBydGVtIiwiZXhwIjoxNzIyMDI2NzIxLCJpYXQiOjE3MjE5OTc5MjF9.TSD3Q3PjKx4Y1iK7UYF6jAG9AzqMolNKS44xiIJwYM4'
+    // let refresh_token = '64a3d2d6a49e4987b8e85749cdae3650d5b1cccc46952bffbd2f67358a66e22c'
+    let query_url = `https://script.google.com/macros/s/AKfycbwaVMxMfZHS7ZgLc9-HBUaur1YUDt0ZOsT5fcAqd7WqTN_ZFGgQat968b-DxQSsagcM/exec?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
+    try {
+      const data = await funfetch(query_url)
+      return data
+    } catch (error) {
+      console.error(error)
+      return false
+    }
   }
 
   // ipinfoを用いて、ipアドレスに関する情報を取得する
   // 接続先のプロバイダを取得して、未来大からアクセスしているか、それ以外からアクセスしているかを特定できる
-  getIpinfo() {
+  async getIpinfo() {
     //!バスのAPIに関連するAPIであり、最新のデータをすぐに取得する必要があるため、キャッシュ期限を独自(1秒)にしている→s5でAPIを2回呼ぶから、その時に1秒のキャッシュを読む(リクエスト数の削減)
     var timediff = millis() - this.CASHTIME_ipinfo
     if (this.ipinfo != 0 && timediff < 1000) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      elog('API', 'getIpinfo: returning CASHED_DATA... done at ' + this.getTime() + ', キャッシュ期限: 1秒', 'aqua')
-      return this.ipinfo
+      elog('API', 'getIpinfo: returning CASHED_DATA... done at ' + this.getTime() + ', キャッシュ期限: 1秒', 'royalblue')
+      return Promise.resolve(this.ipinfo)
     }
-    elog('API', 'getIpinfo: FETCHING... ', 'aqua')
+    elog('API', 'getIpinfo: FETCHING... ', 'royalblue')
 
     let query = decode(localStorage.getItem('endpoints/ipinfo')) + decode(localStorage.getItem('apikeys/ipinfo'))
-    return funfetch(query)
-      .then(data => {
-        // 取得した JSON データ (data) を処理
-        var JSON_response = data
+    try {
+      const data = await funfetch(query)
+      // 取得した JSON データ (data) を処理
+      var JSON_response = data
 
-        let _arr = { ip: '', region: '', loc: '', org: '' }
-        _arr.ip = JSON_response.ip
-        _arr.region = JSON_response.city + ', ' + JSON_response.region + ', ' + JSON_response.country
-        _arr.loc = JSON_response.loc
-        _arr.org = JSON_response.org
+      let _arr = { ip: '', region: '', loc: '', org: '' }
+      _arr.ip = JSON_response.ip
+      _arr.region = JSON_response.city + ', ' + JSON_response.region + ', ' + JSON_response.country
+      _arr.loc = JSON_response.loc
+      _arr.org = JSON_response.org
 
-        this.ipinfo = _arr
+      this.ipinfo = _arr
 
-        this.CASHTIME_ipinfo = millis()
-        elog('API', 'getIpinfo: done at ' + this.getTime(), 'aqua')
-        return this.ipinfo // * 返す内容 IPアドレス、プロバイダ、地域、座標
-      })
-      .catch(error => {
-        // エラー処理
-        console.error(error)
-        return false
-      })
+      this.CASHTIME_ipinfo = millis()
+      elog('API', 'getIpinfo: done at ' + this.getTime(), 'royalblue')
+      return this.ipinfo // * 返す内容 IPアドレス、プロバイダ、地域、座標
+    } catch (error) {
+      // エラー処理
+      console.error(error)
+      return false
+    }
   }
 
   // 手動切替を考慮した、未来大モードかどうかの判定
   solvedIsFUN() {
-    elog('API', 'solvedIsFUN', 'aqua')
+    elog('API', 'solvedIsFUN', 'firebrick')
     if (busMode == 'auto') {
       return this.isFUN().then(res => {
-        elog('API', 'solvedIsFUN: ' + res, 'aqua')
+        elog('API', 'solvedIsFUN: done with' + res, 'firebrick')
         return res
       })
     } else if (busMode == 'fromfuntokmd') {
-      elog('API', 'solvedIsFUN: true', 'aqua')
-      return true
+      elog('API', 'solvedIsFUN: done with true', 'firebrick')
+      return Promise.resolve(true)
     } else {
-      elog('API', 'solvedIsFUN: false', 'aqua')
-      return false
+      elog('API', 'solvedIsFUN: done with false', 'firebrick')
+      return Promise.resolve(false)
     }
   }
 
-  isRain() {
+  async isRain() {
     elog('API', 'isRain', 'aqua')
-    return this.getWeatherForecast().then(res => {
-      // TODO: なんかおかしい気がする
-      for (let i = 0; i <= 5; i++) {
-        if (res[i] === '10d') {
-          return true
-        }
+    const res = await this.getWeatherForecast()
+    // TODO: なんかおかしい気がする
+    for (let i = 0; i <= 5; i++) {
+      if (res[i] === '10d') {
+        return true
       }
-      return false
-    })
+    }
+    return false
   }
 
   // ! ---------------- JSONからAPIに関するデータを取得する関数 ----------------
@@ -765,12 +804,12 @@ class API_class {
 
   // 未来大からアクセスしているかを判定(APIのみの判定、solvedIsFUNでwrapする)
   isFUN() {
-    elog('API', 'isFUN', 'aqua')
+    elog('API', 'isFUN', 'firebrick')
     return this.getIpinfo().then(res => {
       var org = res.org
       // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
       let _is = org.indexOf('AS13335 C') !== -1 || (org.indexOf('AS4713 N') !== -1 && !isFreeWifiContain) || org.indexOf('AS2907 R') !== -1
-      elog('API', 'isFUN: ' + _is, 'aqua')
+      elog('API', 'isFUN: ' + _is, 'firebrick')
       return _is
     })
 
@@ -780,7 +819,7 @@ class API_class {
 
   // バスの行き先を算出
   busDestination(code, query) {
-    elog('API', 'busDestination', 'aqua')
+    elog('API', 'busDestination', 'lavender')
     if (query == 'fromkmdtofun') return '赤川'
 
     var result
@@ -1010,6 +1049,7 @@ class WeatherScene_class {
   // 初期化処理
   boot() {
     // APIからデータを取得
+    elog('check', ':D', 'coral')
     API.getWeatherNow().then(res => {
       this.weatherNow = res
       API.getWeatherForecast().then(res => {
@@ -1025,12 +1065,7 @@ class WeatherScene_class {
   // 更新処理
   update() {
     if (!this.isLoaded) {
-      // データが取得できていない場合
-      background(0)
-      fill(255)
-      textAlign(CENTER, CENTER)
-      textFont(FONT_noto, 48)
-      text('データを取得中...', 300, 600)
+      loading('天気情報を取得中...')
       return
     }
     tint(255, 75)
@@ -1051,8 +1086,8 @@ class WeatherScene_class {
     text(this.weatherNow.temp + '℃', 150, 700)
     text(this.weatherNow.pressure + 'hPa', 450, 700)
     // 予報を描画
-    for (var i = 3; i <= 15; i += 3) {
-      this.drawWeather(i, this.weatherForecast[i].weather, this.weatherForecast[i].temp)
+    for (var i = 0; i < 5; i++) {
+      this.drawWeather((i + 1) * 3, this.weatherForecast[i].weather, this.weatherForecast[i].temp)
     }
   }
 
@@ -1099,30 +1134,38 @@ class WeatherScene_class {
 // ? シーン3(歩数)のクラス
 
 class FitScene_class {
-  itbit
-  graphData
+  fitbit
+  graphData = ['0', '0', '0', '0', '0', '0', '0']
   totalSteps = 0
   isMsg = true
-
   start = 0
+  isLoaded = false
 
   // 初期化処理
   boot() {
     // APIからデータを取得
-    this.fitbit = API.getFitbitSteps()
-    totalSteps = 0
-    for (var i = 1; i < 8; i++) {
-      steps = fitbit.get(7 - i)
-      graphData[i - 1] = steps
-      totalSteps += steps
-    }
-    addButton(480, 1030, 180, 70, color(26, 140, 216), 'ツイート', 'tweet', '【funget歩数シェア】私は1週間で' + str(totalSteps) + '歩、歩きました！すごいでしょ！！')
-    start = millis()
-    isMsg = true
+    this.isLoaded = false
+    API.getFitbitSteps().then(res => {
+      this.fitbit = res
+      this.totalSteps = 0
+      for (var i = 1; i < 8; i++) {
+        var steps = this.fitbit[7 - i]
+        this.graphData[i - 1] = steps
+        this.totalSteps += Number(steps)
+      }
+      addButton(480, 1030, 180, 70, color(26, 140, 216), 'ツイート', 'tweet', '【funget歩数シェア】私は1週間で' + this.totalSteps + '歩、歩きました！すごいでしょ！！')
+      this.start = millis()
+      this.isMsg = true
+      this.isLoaded = true
+    })
   }
 
   // 更新処理
   update() {
+    if (!this.isLoaded) {
+      loading('Fitbit API に接続中…')
+      return
+    }
     CPT.header('歩数')
     fill(0)
     textAlign(LEFT, CENTER)
@@ -1130,30 +1173,30 @@ class FitScene_class {
     text('今日の歩数', 25, 150)
     textAlign(CENTER, CENTER)
     textFont(FONT_jetbrains, 110)
-    text(fitbit.get(0), 300, 250)
+    text(this.fitbit[0], 300, 250)
     textFont(FONT_noto, 48)
     text('歩', 550, 250)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 40)
-    text('週合計: ' + totalSteps + '歩', 25, 1030)
+    text('週合計: ' + this.totalSteps + '歩', 25, 1030)
     for (var i = 1; i < 8; i++) {
-      drawSteps(i, fitbit.get(7 - i))
+      this.drawSteps(i, this.fitbit[7 - i])
     }
-    drawGraph()
+    this.drawGraph()
 
     // メッセージ
-    if (millis() - start < 5000 && isMsg) {
-      message()
+    if (millis() - this.start < 5000 && this.isMsg) {
+      this.message()
     }
   }
 
   // メッセージを描画
   message() {
-    msg
-    if (totalSteps > 50000) {
+    var msg
+    if (this.totalSteps > 50000) {
       msg = 'おめでとうございます！\n週間歩数50000歩を達成しました'
     } else {
-      msg = '目標まであと' + str(50000 - totalSteps) + '歩です\nがんばりましょう！'
+      msg = '目標まであと' + str(50000 - this.totalSteps) + '歩です\nがんばりましょう！'
     }
     fill(25, 100, 100)
     rect(0, 100, 600, 200)
@@ -1162,7 +1205,7 @@ class FitScene_class {
     textFont(FONT_noto, 36)
     text(msg, 300, 200)
     if (MANAGER_isMousePressed && MANAGER_mouseY > 100 && MANAGER_mouseY < 300) {
-      isMsg = false
+      this.isMsg = false
       MANAGER_isMousePressed = false
     }
   }
@@ -1186,7 +1229,7 @@ class FitScene_class {
     text('歩', (600 * (2 * i - 1)) / 14, 930)
     if (i < 7) {
       fill(0)
-      rect((600 * (2 * i + 2)) / 14 - 1, 720, 2, 230)
+      rect((600 * (2 * i)) / 14 - 1, 720, 2, 230)
     }
   }
 
@@ -1194,10 +1237,11 @@ class FitScene_class {
   drawGraph() {
     stroke(50, 200, 120)
     strokeWeight(5)
-    baseLineY = map(10000, 0, max(graphData), 800, 400)
+    var baseLineY = map(10000, 0, max(this.graphData), 800, 400)
     line(0, baseLineY, 600, baseLineY)
     textAlign(RIGHT, TOP)
     textFont(FONT_noto, 24)
+    noStroke()
     fill(50, 200, 120)
     text('10000歩', 590, baseLineY + 10)
     textAlign(LEFT, BOTTOM)
@@ -1210,7 +1254,7 @@ class FitScene_class {
     beginShape()
 
     for (var i = 0; i < 7; i++) {
-      graphShape(i)
+      this.graphShape(i)
     }
 
     endShape()
@@ -1220,7 +1264,7 @@ class FitScene_class {
   // グラフの折れ線を描画
   graphShape(i) {
     var x = (600 * (2 * i + 1)) / 14
-    var y = map(graphData[i], 0, max(graphData), 800, 400)
+    var y = map(this.graphData[i], 0, max(this.graphData), 800, 400)
     vertex(x, y)
 
     fill(80)
@@ -1235,21 +1279,28 @@ var DEMO_isLast = false
 class FunbusScene_class {
   funbus
   query
+  isLoaded = false
 
   // 初期化処理
   boot() {
+    this.isLoaded = false
     // APIを元に起点となるバス停を算出し、その文字列をクエリとしてAPIからデータを取得
     this.query = 'fromkmdtofun'
     API.solvedIsFUN().then(res => {
       if (res) this.query = 'fromfuntokmd'
+      this.funbus = API.getFunbus(this.query)
+      setTimeout(() => {
+        this.isLoaded = true
+      }, 500)
     })
-
-    this.funbus = API.getFunbus(this.query)
-    console.log(this.funbus)
   }
 
   // 更新処理
   update() {
+    if (!this.isLoaded) {
+      loading('更新中')
+      return
+    }
     CPT.header('バス')
 
     // メインUIの描画
@@ -1412,21 +1463,30 @@ class SleepScene_class {
   start = 0
   totalSleepMins = 0
   isMsg = true
+  isLoaded = false
 
   // 初期化処理
   boot() {
-    // APIからデータを取得
-    fitbit_sleep = API.getFitbitSleeps()
-    totalSleepMins = 0
-    for (var i = 0; i < 8; i++) {
-      totalSleepMins += fitbit_sleep.get(i).get('duration')
-    }
-    start = millis()
-    isMsg = true
+    this.isLoaded = false
+    API.getFitbitSleeps().then(res => {
+      this.fitbit_sleep = res
+      this.totalSleepMins = 0
+      for (var i = 0; i < 8; i++) {
+        this.totalSleepMins += Number(this.fitbit_sleep[i].duration)
+      }
+      this.start = millis()
+      this.isMsg = true
+      this.isLoaded = true
+    })
   }
 
   // 更新処理
   update() {
+    if (!this.isLoaded) {
+      loading('Fitbit API に接続中…')
+      return
+    }
+
     CPT.header('睡眠')
     // 今日のデータ
     fill(0)
@@ -1434,7 +1494,7 @@ class SleepScene_class {
     textFont(FONT_noto, 40)
     text('昨晩の睡眠時間（今日）', 25, 150)
     textAlign(CENTER, CENTER)
-    var lastSleepTime = fitbit_sleep.get(0).get('duration')
+    var lastSleepTime = this.fitbit_sleep[0].duration
     if (lastSleepTime == 0) {
       textFont(FONT_noto, 60)
       text('データがありません', 300, 250)
@@ -1443,31 +1503,31 @@ class SleepScene_class {
       text(minToTime(lastSleepTime, true), 300, 250)
     }
     // 背景を描画
-    drawBg()
+    this.drawBg()
     // それぞれの列のデータを取得
     for (var i = 0; i < 8; i++) {
       var c = color(20, 120, 120)
-      if (fitbit_sleep.get(i).get('duration') < 420) {
+      if (this.fitbit_sleep[i].duration < 420) {
         c = color(120, 20, 20)
       }
-      drawSleep(i, fitbit_sleep.get(i), c)
-      drawGraph(i, fitbit_sleep.get(i).get('start'), fitbit_sleep.get(i).get('end'), c)
+      this.drawSleep(i, this.fitbit_sleep[i], c)
+      this.drawGraph(i, this.fitbit_sleep[i].start, this.fitbit_sleep[i].end, c)
     }
 
     // メッセージ
-    if (millis() - start < 5000 && isMsg) {
-      message()
+    if (millis() - this.start < 5000 && this.isMsg) {
+      this.message()
     }
   }
 
   // メッセージを描画
   message() {
     var msg
-    if (totalSleepMins > 2940) {
+    if (this.totalSleepMins > 2940) {
       msg = 'おめでとうございます！\n8日で7日*7時間睡眠を達成しました'
     } else {
-      var remain = Math.round(float(2940 - totalSleepMins) / 6)
-      msg = 'あと1日' + str(remain / 10 / 7) + '時間は眠ろう！\n健康のために！'
+      var remain = Math.round(float(2940 - this.totalSleepMins) / 6 / 7)
+      msg = 'あと1日' + String(remain / 10) + '時間は眠ろう！\n健康のために！'
     }
     fill(25, 100, 100)
     rect(0, 100, 600, 200)
@@ -1476,24 +1536,24 @@ class SleepScene_class {
     textFont(FONT_noto, 36)
     text(msg, 300, 200)
     if (MANAGER_isMousePressed && MANAGER_mouseY > 100 && MANAGER_mouseY < 300) {
-      isMsg = false
+      this.isMsg = false
       MANAGER_isMousePressed = false
     }
   }
 
   // グラフを描画する
   drawGraph(i, start, end, c) {
-    var startHour = isotimeToHour(start)
+    var startHour = this.isotimeToHour(start)
     if (startHour < 0) return
     startHour -= 21
     if (startHour < 0) startHour += 24
-    var endHour = isotimeToHour(end)
+    var endHour = this.isotimeToHour(end)
     if (endHour < 0) return
     endHour -= 21
     if (endHour < 0) endHour += 24
     var i2 = 7 - i + 1
     var i3 = (600 * (2 * i2 + 1)) / 18
-    drawRoundedLine(i3, 350 + startHour * 35, i3, 350 + endHour * 35, c)
+    this.drawRoundedLine(i3, 350 + startHour * 35, i3, 350 + endHour * 35, c)
   }
 
   //下部分のテキスト表示
@@ -1501,20 +1561,20 @@ class SleepScene_class {
     fill(0)
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 18)
-    var _day = String.valueOf(i) + '日前'
+    var _day = i + '日前'
     if (i == 0) {
       _day = '今日'
     }
     var i2 = 7 - i + 1
     var i3 = (600 * (2 * i2 + 1)) / 18
     text(_day, i3, 950)
-    if (data.get('duration') == '0') {
+    if (data.duration == '0') {
       image(SVG_error, i3 - 25, 970, 50, 50)
     } else {
       image(SVG_check, i3 - 25, 970, 50, 50)
     }
     fill(c)
-    text(minToTime(data.get('duration'), false), i3, 1040)
+    text(this.minToTime(data.duration, false), i3, 1040)
     fill(0)
     rect((600 * (2 * i2)) / 18 - 1, 930, 2, 130)
   }
@@ -1533,22 +1593,20 @@ class SleepScene_class {
   drawBg() {
     // 背景の線
     fill(75)
-    stroke(2)
-    stroke(75)
-    strokeWeight(2)
     textFont(FONT_noto, 20)
     textAlign(RIGHT, CENTER)
     for (var i = 0; i < 16; i++) {
+      stroke(75)
+      strokeWeight(2)
       line(70, 350 + i * 35, 600, 350 + i * 35)
-      text(minToClock(1260 + i * 60), 60, 350 + i * 35)
+      noStroke()
+      text(this.minToClock(1260 + i * 60), 60, 350 + i * 35)
     }
-    noStroke()
   }
 
   // 分を ~ 時に変換する
   minToClock(min) {
     if (min > 1440) min -= 1440
-
     return str(int(min / 60)) + '時'
   }
 
@@ -1565,7 +1623,7 @@ class SleepScene_class {
 
   // ISO8601形式の時刻を時刻に変換する(APIレスポンスを変換する)
   isotimeToHour(date) {
-    if (date.matches('')) return -1
+    if (date == '') return -1
     var tIndex = date.indexOf('T')
     var timePart = date.substring(tIndex + 1, tIndex + 9)
 
