@@ -3,7 +3,11 @@ function elog(func, text, color) {
   console.log('%c' + func + '%c%c' + text, 'font-size: 12px; border-radius: 3px 0 0 3px; color: black; font-weight: 1000; padding: 1px 4px; background: ' + color + '; border: solid ' + color + ' 1px;', '', 'font-size: 12px; border-radius: 0 3px 3px 0; color: white; font-weight: 1000; padding: 1px 4px; background: black; border: solid ' + color + ' 1px;')
 }
 
-var DEV_MODE = 1
+var DEV_MODE = 4
+
+var WS = 0
+var WL = 0
+var WT = 0
 
 // function setup() {
 //   let width = window.innerWidth;
@@ -94,10 +98,30 @@ function setup() {
   noStroke()
   elog('boot', 'initializing... ', 'lime')
   // createCanvas(600, 1200) // Google Pixel 7 基準に指定
-  createCanvas(windowWidth, windowHeight) // TODO: windowWidth, windowHeight を使って気合で書く、たぶんこれが早い
+  calcWindowScale()
+  createCanvas(600 * WS, 1200 * WS)
   // scaleX = (float) width / originalWidth;
   // scaleY = (float) height / originalHeight;
   boot() // コードを読みやすくするために、managerでシーンを初期化(boot)しています
+}
+
+function windowResized() {
+  calcWindowScale()
+  resizeCanvas(600 * WS, 1200 * WS) // キャンバスサイズを再設定
+}
+
+function calcWindowScale() {
+  // WS は 600*WS (600) に対しての倍率
+  if (windowWidth * 2 - windowHeight > 0) {
+    // 横長
+    WL = (windowWidth - windowHeight / 2) / 2
+    WS = windowHeight / 1200
+  } else {
+    // 縦長
+    WT = (windowHeight - windowWidth * 2) / 2
+    WS = windowWidth / 600
+  }
+  elog('calcWindowScale', 'WS: ' + WS, 'yellow')
 }
 
 function draw() {
@@ -360,8 +384,8 @@ function cmodeAction(i) {
 function loading(i) {
   textAlign(CENTER, CENTER)
   fill(0)
-  textFont(FONT_noto, 30)
-  text(i, 300, 600)
+  textFont(FONT_noto, 30 * WS)
+  text(i, 300 * WS, 600 * WS)
 }
 
 // ボタンの追加
@@ -853,15 +877,15 @@ class Component_class {
   header(i) {
     // 表示部分
     fill(0, 75, 75)
-    rect(0, 0, 600, 100)
+    rect(0, 0, 600 * WS, 100 * WS)
     fill(255)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 48)
-    text(i, 30, 50)
-    image(SVG_settings, 525, 25, 50, 50)
+    textFont(FONT_noto, 48 * WS)
+    text(i, 30 * WS, 50 * WS)
+    image(SVG_settings, 525 * WS, 25 * WS, 50 * WS, 50 * WS)
 
     // ボタンの判定
-    if (MANAGER_isMousePressed && MANAGER_mouseY < 100 && MANAGER_mouseX > 500) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY < 100 * WS && MANAGER_mouseX > 500 * WS) {
       MANAGER_nextmotion = 'cmode,7'
       MANAGER_isMousePressed = false
     }
@@ -870,36 +894,36 @@ class Component_class {
   footer() {
     // 表示部分の枠
     fill(170, 255, 235)
-    rect(0, 1100, 600, 100)
+    rect(0, 1100 * WS, 600 * WS, 100 * WS)
     fill(0, 75, 75)
-    rect(0, 1095, 600, 5)
-    circle(300, 1150, 130)
+    rect(0, 1095 * WS, 600 * WS, 5 * WS)
+    circle(300 * WS, 1150 * WS, 130 * WS)
 
     // 表示部分のボタン
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 20)
+    textFont(FONT_noto, 20 * WS)
     fill(0)
-    text('天気', (600 * 1) / 10, 1180)
-    text('バス', (600 * 3) / 10, 1180)
-    text('歩数', (600 * 7) / 10, 1180)
-    text('睡眠', (600 * 9) / 10, 1180)
-    image(SVG_weather, (600 * 1) / 10 - 25, 1110, 50, 50)
-    image(SVG_funbus, (600 * 3) / 10 - 25, 1110, 50, 50)
-    image(SVG_fit, (600 * 7) / 10 - 25, 1110, 50, 50)
-    image(SVG_sleep, (600 * 9) / 10 - 25, 1110, 50, 50)
+    text('天気', ((600 * 1) / 10) * WS, 1180 * WS)
+    text('バス', ((600 * 3) / 10) * WS, 1180 * WS)
+    text('歩数', ((600 * 7) / 10) * WS, 1180 * WS)
+    text('睡眠', ((600 * 9) / 10) * WS, 1180 * WS)
+    image(SVG_weather, ((600 * 1) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
+    image(SVG_funbus, ((600 * 3) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
+    image(SVG_fit, ((600 * 7) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
+    image(SVG_sleep, ((600 * 9) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
     fill(170, 255, 235)
-    text('ホーム', (600 * 5) / 10, 1180)
-    image(SVG_home, (600 * 5) / 10 - 25, 1110, 50, 50)
+    text('ホーム', ((600 * 5) / 10) * WS, 1180 * WS)
+    image(SVG_home, ((600 * 5) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
 
     // ボタンの判定
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 1100) {
-      if (MANAGER_mouseX < (600 * 1) / 5) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 1100 * WS) {
+      if (MANAGER_mouseX < ((600 * 1) / 5) * WS) {
         MANAGER_nextmotion = 'cmode,2'
-      } else if (MANAGER_mouseX < (600 * 2) / 5) {
+      } else if (MANAGER_mouseX < ((600 * 2) / 5) * WS) {
         MANAGER_nextmotion = 'cmode,4'
-      } else if (MANAGER_mouseX < (600 * 3) / 5) {
+      } else if (MANAGER_mouseX < ((600 * 3) / 5) * WS) {
         MANAGER_nextmotion = 'cmode,1'
-      } else if (MANAGER_mouseX < (600 * 4) / 5) {
+      } else if (MANAGER_mouseX < ((600 * 4) / 5) * WS) {
         MANAGER_nextmotion = 'cmode,3'
       } else {
         MANAGER_nextmotion = 'cmode,6'
@@ -926,14 +950,14 @@ class TitleScene_class {
     // UI描画
     background(0)
     tint(150)
-    image(this.bg, 0, 0, master.width, master.height)
+    image(this.bg, 0, 0, 600 * WS, 1200 * WS)
     noTint()
     fill(255)
     textAlign(CENTER, CENTER)
-    textFont(FONT_jetbrains, 120)
-    text('funget', 300, 250)
-    textFont(FONT_noto, 40)
-    text('ようこそ ( > ω <)//', 300, 450)
+    textFont(FONT_jetbrains, 120 * WS)
+    text('funget', 300 * WS, 250 * WS)
+    textFont(FONT_noto, 40 * WS)
+    text('ようこそ ( > ω <)//', 300 * WS, 450 * WS)
     // 下部の読み込み表示バー
     var processing = (millis() - this.start) / 2
     var rectx
@@ -948,9 +972,9 @@ class TitleScene_class {
       rectx = 100
       _width = ((processing - 600) * 4) / 3
     }
-    rect(rectx, 800, _width, 20)
-    textFont(FONT_noto, 30)
-    text('2024 © famisics (https://uiro.dev)', 300, 1125)
+    rect(rectx * WS, 800 * WS, _width * WS, 20 * WS)
+    textFont(FONT_noto, 30 * WS)
+    text('2024 © famisics (https://uiro.dev)', 300 * WS, 1125 * WS)
     // 指定時間経過後、ページ遷移
     if (millis() > this.start + this.loadingTime - 100) {
       if (isFirstBus) {
@@ -997,29 +1021,29 @@ class HomeScene_class {
   // 更新処理
   update() {
     tint(255, 175)
-    image(this.bg, 0, 0, master.width, master.height)
+    image(this.bg, 0, 0, 600 * WS, 1200 * WS)
     noTint()
     fill(0)
     textAlign(CENTER, CENTER)
-    textFont(FONT_jetbrains, 96)
-    text(API.getTime(), 300, 100)
-    textFont(FONT_noto, 48)
+    textFont(FONT_jetbrains, 96 * WS)
+    text(API.getTime(), 300 * WS, 100 * WS)
+    textFont(FONT_noto, 48 * WS)
     // 時間帯に応じたメッセージ
     var time = API.getTime().substring(0, 2)
     if (time >= 18) {
-      text('こんばんは！', 300, 225)
+      text('こんばんは！', 300 * WS, 225 * WS)
     } else if (time >= 12) {
-      text('こんにちは！', 300, 225)
+      text('こんにちは！', 300 * WS, 225 * WS)
     } else if (time >= 5) {
-      text('おはようございます！', 300, 225)
+      text('おはようございます！', 300 * WS, 225 * WS)
     } else {
-      text('寝てください', 300, 225)
+      text('寝てください', 300 * WS, 225 * WS)
     }
-    textFont(FONT_noto, 30)
+    textFont(FONT_noto, 30 * WS)
     if (this.isRain) {
-      text('今日は雨が降るかもしれません', 300, 325)
+      text('今日は雨が降るかもしれません', 300 * WS, 325 * WS)
     } else {
-      text('今日は、雨は降らない予定です', 300, 325)
+      text('今日は、雨は降らない予定です', 300 * WS, 325 * WS)
     }
   }
 }
@@ -1064,22 +1088,22 @@ class WeatherScene_class {
       return
     }
     tint(255, 75)
-    image(this.bg, 0, 0, master.width, master.height)
+    image(this.bg, 0, 0, 600 * WS, 1200 * WS)
     noTint()
     CPT.header('天気')
 
     // 現在の天気を描画
     fill(0)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 40)
-    text('現在の天気', 25, 160)
+    textFont(FONT_noto, 40 * WS)
+    text('現在の天気', 25 * WS, 160 * WS)
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 96)
-    text(this.weatherNow.weather, 300, 270)
-    textFont(FONT_noto, 60)
-    image(this.SVG_now, 50, 250, 500, 500)
-    text(this.weatherNow.temp + '℃', 150, 700)
-    text(this.weatherNow.pressure + 'hPa', 450, 700)
+    textFont(FONT_noto, 96 * WS)
+    text(this.weatherNow.weather, 300 * WS, 270 * WS)
+    textFont(FONT_noto, 60 * WS)
+    image(this.SVG_now, 50 * WS, 250 * WS, 500 * WS, 500 * WS)
+    text(this.weatherNow.temp + '℃', 150 * WS, 700 * WS)
+    text(this.weatherNow.pressure + 'hPa', 450 * WS, 700 * WS)
     // 予報を描画
     for (var i = 0; i < 5; i++) {
       this.drawWeather((i + 1) * 3, this.weatherForecast[i].weather, this.weatherForecast[i].temp)
@@ -1109,19 +1133,19 @@ class WeatherScene_class {
   drawWeather(i, weather, temp) {
     fill(0)
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 24)
+    textFont(FONT_noto, 24 * WS)
     var i2 = (600 * (2 * (i / 3 - 1) + 1)) / 10
-    text(i + '時間後', i2, 830)
-    text(weather, i2, 900)
-    if (i == 3) image(this.SVG_forecast3, i2 - 60, 910, 120, 120)
-    if (i == 6) image(this.SVG_forecast6, i2 - 60, 910, 120, 120)
-    if (i == 9) image(this.SVG_forecast9, i2 - 60, 910, 120, 120)
-    if (i == 12) image(this.SVG_forecast12, i2 - 60, 910, 120, 120)
-    if (i == 15) image(this.SVG_forecast15, i2 - 60, 910, 120, 120)
-    text(temp + '℃', i2, 1040)
+    text(i + '時間後', i2 * WS, 830 * WS)
+    text(weather, i2 * WS, 900 * WS)
+    if (i == 3) image(this.SVG_forecast3, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
+    if (i == 6) image(this.SVG_forecast6, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
+    if (i == 9) image(this.SVG_forecast9, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
+    if (i == 12) image(this.SVG_forecast12, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
+    if (i == 15) image(this.SVG_forecast15, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
+    text(temp + '℃', i2 * WS, 1040 * WS)
     if (i < 15) {
       fill(0)
-      rect((600 * (2 * (i / 3 - 1) + 2)) / 10 - 1, 800, 2, 280)
+      rect(((600 * (2 * (i / 3 - 1) + 2)) / 10) * WS, 800 * WS, 2 * WS, 280 * WS)
     }
   }
 }
@@ -1164,16 +1188,16 @@ class FitScene_class {
     CPT.header('歩数')
     fill(0)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 40)
-    text('今日の歩数', 25, 150)
+    textFont(FONT_noto, 40 * WS)
+    text('今日の歩数', 25 * WS, 150 * WS)
     textAlign(CENTER, CENTER)
-    textFont(FONT_jetbrains, 110)
-    text(this.fitbit[0], 300, 250)
-    textFont(FONT_noto, 48)
-    text('歩', 550, 250)
+    textFont(FONT_jetbrains, 110 * WS)
+    text(this.fitbit[0], 300 * WS, 250 * WS)
+    textFont(FONT_noto, 48 * WS)
+    text('歩', 550 * WS, 250 * WS)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 40)
-    text('週合計: ' + this.totalSteps + '歩', 25, 1030)
+    textFont(FONT_noto, 40 * WS)
+    text('週合計: ' + this.totalSteps + '歩', 25 * WS, 1030 * WS)
     for (var i = 1; i < 8; i++) {
       this.drawSteps(i, this.fitbit[7 - i])
     }
@@ -1194,12 +1218,12 @@ class FitScene_class {
       msg = '目標まであと' + str(50000 - this.totalSteps) + '歩です\nがんばりましょう！'
     }
     fill(25, 100, 100)
-    rect(0, 100, 600, 200)
+    rect(0, 100 * WS, 600 * WS, 200 * WS)
     fill(255)
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 36)
-    text(msg, 300, 200)
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 && MANAGER_mouseY < 300) {
+    textFont(FONT_noto, 36 * WS)
+    text(msg, 300 * WS, 200 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 * WS && MANAGER_mouseY < 300 * WS) {
       this.isMsg = false
       MANAGER_isMousePressed = false
     }
@@ -1209,41 +1233,41 @@ class FitScene_class {
   drawSteps(i, steps) {
     fill(0)
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 24)
+    textFont(FONT_noto, 24 * WS)
     var _day = str(7 - i) + '日前'
     if (i == 7) {
       _day = '今日'
     }
-    text(_day, (600 * (2 * i - 1)) / 14, 750)
-    if (steps > 10000) {
-      image(SVG_check, (600 * (2 * i - 1)) / 14 - 30, 790, 60, 60)
+    text(_day, ((600 * (2 * i - 1)) / 14) * WS, 750 * WS)
+    if (steps > 7500) {
+      image(SVG_check, ((600 * (2 * i - 1)) / 14 - 30) * WS, 790 * WS, 60 * WS, 60 * WS)
     } else {
-      image(SVG_error, (600 * (2 * i - 1)) / 14 - 30, 790, 60, 60)
+      image(SVG_error, ((600 * (2 * i - 1)) / 14 - 30) * WS, 790 * WS, 60 * WS, 60 * WS)
     }
-    text(steps, (600 * (2 * i - 1)) / 14, 900)
-    text('歩', (600 * (2 * i - 1)) / 14, 930)
+    text(steps, ((600 * (2 * i - 1)) / 14) * WS, 900 * WS)
+    text('歩', ((600 * (2 * i - 1)) / 14) * WS, 930 * WS)
     if (i < 7) {
       fill(0)
-      rect((600 * (2 * i)) / 14 - 1, 720, 2, 230)
+      rect(((600 * (2 * i)) / 14) * WS, 720 * WS, 2 * WS, 230 * WS)
     }
   }
 
   // グラフの描画
   drawGraph() {
     stroke(50, 200, 120)
-    strokeWeight(5)
-    var baseLineY = map(10000, 0, max(this.graphData), 800, 400)
-    line(0, baseLineY, 600, baseLineY)
+    strokeWeight(5 * WS)
+    var baseLineY = map(7500, 0, max(this.graphData), 800, 400)
+    line(0, baseLineY * WS, 600 * WS, baseLineY * WS)
     textAlign(RIGHT, TOP)
-    textFont(FONT_noto, 24)
+    textFont(FONT_noto, 24 * WS)
     noStroke()
     fill(50, 200, 120)
-    text('10000歩', 590, baseLineY + 10)
+    text('7500歩', 590 * WS, (baseLineY + 10) * WS)
     textAlign(LEFT, BOTTOM)
-    text('10000歩', 10, baseLineY - 10)
+    text('7500歩', 10 * WS, (baseLineY - 10) * WS)
 
     stroke(80)
-    strokeWeight(5)
+    strokeWeight(5 * WS)
 
     noFill()
     beginShape()
@@ -1258,8 +1282,8 @@ class FitScene_class {
 
   // グラフの折れ線を描画
   graphShape(i) {
-    var x = (600 * (2 * i + 1)) / 14
-    var y = map(this.graphData[i], 0, max(this.graphData), 800, 400)
+    var x = ((600 * (2 * i + 1)) / 14) * WS
+    var y = map(this.graphData[i], 0, max(this.graphData), 800, 400) * WS
     vertex(x, y)
 
     fill(80)
@@ -1505,7 +1529,7 @@ class SleepScene_class {
       text('データがありません', 300, 250)
     } else {
       textFont(FONT_noto, 90)
-      text(minToTime(lastSleepTime, true), 300, 250)
+      text(this.minToTime(lastSleepTime, true), 300, 250)
     }
     // 背景を描画
     this.drawBg()
@@ -1712,16 +1736,16 @@ class Button_class {
   update() {
     if (this.isShow) {
       fill(this.bg)
-      rect(this.x - this.w / 2, this.y - this.h / 2, this.w, this.h)
-      textFont(FONT_noto, 36)
+      rect((this.x - this.w / 2) * WS, (this.y - this.h / 2) * WS, this.w * WS, this.h * WS)
+      textFont(FONT_noto, 36 * WS)
       fill(255)
       textAlign(CENTER, CENTER)
-      text(this.label, this.x, this.y)
+      text(this.label, this.x * WS, this.y * WS)
     }
   }
 
   checkClick(mouseX, mouseY) {
-    if (this.isShow && mouseX > this.x - this.w / 2 && mouseX < this.x + this.w / 2 && mouseY > this.y - this.h / 2 && mouseY < this.y + this.h / 2) {
+    if (this.isShow && mouseX > (this.x - this.w / 2) * WS && mouseX < (this.x + this.w / 2) * WS && mouseY > (this.y - this.h / 2) * WS && mouseY < (this.y + this.h / 2) * WS) {
       if (this.type === 'cmode') {
         MANAGER_nextmotion = this.type + ',' + this.id
         // モード切り替えの処理
