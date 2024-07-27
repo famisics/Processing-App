@@ -75,6 +75,12 @@ function preload() {
   JSON_endpoints = loadJSON('json/endpoints.json')
   JSON_apikeys = loadJSON('json/apikeys.json')
   JSON_funbus = loadJSON('json/funbus.json')
+
+  // フォントの初期化
+  FONT_meiryo = 'Meiryo UI'
+  FONT_jetbrains = loadFont('font/JetBrainsMono-Medium.ttf')
+  FONT_noto = loadFont('font/NotoSansJP-Medium.ttf')
+
   // モードアイコンの初期化
   SVG_home = loadImage('svg/mode/home.svg')
   SVG_weather = loadImage('svg/mode/weather.svg')
@@ -181,11 +187,6 @@ function boot() {
   IpinfoScene = new IpinfoScene_class()
   SleepScene = new SleepScene_class()
   SettingsScene = new SettingsScene_class()
-
-  // フォントの初期化
-  FONT_meiryo = textFont('Meiryo UI', 32)
-  FONT_jetbrains = textFont('font/JetBrainsMono-Medium.ttf', 32)
-  FONT_noto = textFont('font/NotoSansJP-Medium.ttf', 32)
 
   // config.json
   elog('boot', 'settings loading...', 'lime')
@@ -421,6 +422,7 @@ function changeBusMode() {
   }
   localStorage.setItem('settings/bus_mode', busMode)
   elog('json', '設定が保存されました busMode: ' + busMode, 'white')
+  cmode(mode)
 }
 
 // マウスが押された場合に、そのことと座標を記録する(それぞれのボタンを描画している場所で、条件にあたるかどうかを判定する(ここでは判定しない))
@@ -883,7 +885,7 @@ class Component_class {
     fill(255)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 48 * WS)
-    text(i, WL + 30 * WS, WT + 50 * WS)
+    text(i, WL + 30 * WS, WT + 40 * WS)
     image(SVG_settings, WL + 525 * WS, WT + 25 * WS, 50 * WS, 50 * WS)
 
     // ボタンの判定
@@ -961,7 +963,7 @@ class TitleScene_class {
     textFont(FONT_noto, 40 * WS)
     text('ようこそ ( > ω <)//', WL + 300 * WS, WT + 450 * WS)
     // 下部の読み込み表示バー
-    var processing = (millis() - this.start)
+    var processing = millis() - this.start
     var rectx
     var _width = 0
     if (processing < 300) {
@@ -1310,9 +1312,7 @@ class FunbusScene_class {
     API.solvedIsFUN().then(res => {
       if (res) this.query = 'fromfuntokmd'
       this.funbus = API.getFunbus(this.query)
-      setTimeout(() => {
-        this.isLoaded = true
-      }, 300)
+      this.isLoaded = true
     })
   }
 
