@@ -3,7 +3,7 @@ function elog(func, text, color) {
   console.log('%c' + func + '%c%c' + text, 'font-size: 12px; border-radius: 3px 0 0 3px; color: black; font-weight: 1000; padding: 1px 4px; background: ' + color + '; border: solid ' + color + ' 1px;', '', 'font-size: 12px; border-radius: 0 3px 3px 0; color: white; font-weight: 1000; padding: 1px 4px; background: black; border: solid ' + color + ' 1px;')
 }
 
-var DEV_MODE = 4
+var DEV_MODE = 1
 
 var WS = 0
 var WL = 0
@@ -14,8 +14,6 @@ var WT = 0
 //   let height = window.innerHeight-10;
 //   createCanvas(width, height);
 // }
-
-var master = { width: 600, height: 1200 }
 
 // ボタン管理用クラス
 
@@ -99,7 +97,7 @@ function setup() {
   elog('boot', 'initializing... ', 'lime')
   // createCanvas(600, 1200) // Google Pixel 7 基準に指定
   calcWindowScale()
-  createCanvas(600 * WS, 1200 * WS)
+  createCanvas(600 * WS + WL, 1200 * WS + WT)
   // scaleX = (float) width / originalWidth;
   // scaleY = (float) height / originalHeight;
   boot() // コードを読みやすくするために、managerでシーンを初期化(boot)しています
@@ -107,21 +105,23 @@ function setup() {
 
 function windowResized() {
   calcWindowScale()
-  resizeCanvas(600 * WS, 1200 * WS) // キャンバスサイズを再設定
+  resizeCanvas(600 * WS + WL, 1200 * WS + WT) // キャンバスサイズを再設定
 }
 
 function calcWindowScale() {
   // WS は 600*WS (600) に対しての倍率
   if (windowWidth * 2 - windowHeight > 0) {
     // 横長
+    WT = 0
     WL = (windowWidth - windowHeight / 2) / 2
     WS = windowHeight / 1200
   } else {
     // 縦長
     WT = (windowHeight - windowWidth * 2) / 2
+    WL = 0
     WS = windowWidth / 600
   }
-  elog('calcWindowScale', 'WS: ' + WS, 'yellow')
+  elog('calcWindowScale', 'WS: ' + WS + ' WL: ' + WL + ' WT: ' + WT, 'yellow')
 }
 
 function draw() {
@@ -266,7 +266,9 @@ function update() {
     }
   } else {
     // シーン描画処理
-    background(255)
+    background(0)
+    fill(255)
+    rect(WL, WT, 600 * WS, 1200 * WS)
     switch (mode) {
       case 0: // タイトル
         TitleScene.update()
@@ -465,7 +467,7 @@ class API_class {
   // ! ---------------- ローカル変数の定義 ----------------
 
   // キャッシュの有効期限(ミリ秒)
-  timeout = 120000 // 2分
+  timeout = 5 * 60 * 1000 // 5分
 
   // それぞれのキャッシュの起点となる時間を記憶する変数
   CASHTIME_weatherNow = 0
@@ -573,7 +575,7 @@ class API_class {
     //elog('API',getFunbus: returning CASHED_DATA... done with " + funbus.size() + " items at " + this.getTime() + ", キャッシュ期限: " + Math.floor((this.timeout - timediff) / 1000) + "秒", 'aqua');
     //return funbus;
     // }
-    elog('API', 'getFunbus: FETCHING... ', 'lavender')
+    elog('API', 'getFunbus: FETCHING... ', 'OrangeRed')
     // 取得した JSON データ (data) を処理
     var data = JSON_funbus
     var date = new Date()
@@ -599,7 +601,7 @@ class API_class {
 
     var thisId = 0 // バスのID
 
-    elog('API', 'getFunbus: ' + query, 'lavender')
+    elog('API', 'getFunbus: ' + query, 'OrangeRed')
     for (var i = 0; i < table.length; i++) {
       // 次に出発するバスを探索
       thisId = i
@@ -630,7 +632,7 @@ class API_class {
         res.next_end = ''
         res.next_destination = ''
         this.funbus = res
-        elog('API', 'getFunbus: FETCHING... done at ' + this.getTime(), 'lavender')
+        elog('API', 'getFunbus: FETCHING... done at ' + this.getTime(), 'OrangeRed')
         return this.funbus
       }
     }
@@ -658,7 +660,7 @@ class API_class {
 
     this.funbus = res
     this.CASHTIME_funbus = millis()
-    elog('API', 'getFunbus: done at ' + this.getTime(), 'lavender')
+    elog('API', 'getFunbus: done at ' + this.getTime(), 'OrangeRed')
     return this.funbus // * 返す内容 this_{系統, 出発時刻, 到着時刻, 行き先(算出する), 次のバスまで(APIから取得)} next_{系統, 出発時刻, 到着時刻, 行き先(算出する)}
   }
 
@@ -738,11 +740,11 @@ class API_class {
   // ipinfoを用いて、ipアドレスに関する情報を取得する
   // 接続先のプロバイダを取得して、未来大からアクセスしているか、それ以外からアクセスしているかを特定できる
   async getIpinfo() {
-    //!バスのAPIに関連するAPIであり、最新のデータをすぐに取得する必要があるため、キャッシュ期限を独自(1秒)にしている→s5でAPIを2回呼ぶから、その時に1秒のキャッシュを読む(リクエスト数の削減)
+    //!バスのAPIに関連するAPIであり、最新のデータをすぐに取得する必要があるため、キャッシュ期限を独自(5秒)にしている→s5でAPIを2回呼ぶから、その時に5秒のキャッシュを読む(リクエスト数の削減)
     var timediff = millis() - this.CASHTIME_ipinfo
-    if (this.ipinfo != 0 && timediff < 1000) {
+    if (this.ipinfo != 0 && timediff < 5000) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
-      elog('API', 'getIpinfo: returning CASHED_DATA... done at ' + this.getTime() + ', キャッシュ期限: 1秒', 'royalblue')
+      elog('API', 'getIpinfo: returning CASHED_DATA... done at ' + this.getTime() + ', キャッシュ期限: ' + Math.floor((5000 - timediff) / 1000) + '秒', 'royalblue')
       return Promise.resolve(this.ipinfo)
     }
     elog('API', 'getIpinfo: FETCHING... ', 'royalblue')
@@ -773,16 +775,16 @@ class API_class {
 
   // 手動切替を考慮した、未来大モードかどうかの判定
   async solvedIsFUN() {
-    elog('API', 'solvedIsFUN', 'firebrick')
+    elog('API', 'solvedIsFUN', 'Turquoise')
     if (busMode == 'auto') {
       const res = await this.isFUN()
-      elog('API', 'solvedIsFUN: done with' + res, 'firebrick')
+      elog('API', 'solvedIsFUN: done with' + res, 'Turquoise')
       return res
     } else if (busMode == 'fromfuntokmd') {
-      elog('API', 'solvedIsFUN: done with true', 'firebrick')
+      elog('API', 'solvedIsFUN: done with true', 'Turquoise')
       return Promise.resolve(true)
     } else {
-      elog('API', 'solvedIsFUN: done with false', 'firebrick')
+      elog('API', 'solvedIsFUN: done with false', 'Turquoise')
       return Promise.resolve(false)
     }
   }
@@ -825,12 +827,12 @@ class API_class {
 
   // 未来大からアクセスしているかを判定(APIのみの判定、solvedIsFUNでwrapする)
   async isFUN() {
-    elog('API', 'isFUN', 'firebrick')
+    elog('API', 'isFUN', 'Turquoise')
     const res = await this.getIpinfo()
     var org = res.org
     // ipinfo の org が "AS2907 Research Organization of Information and Systems, National Institute" である場合、未来大からのアクセスと判定 (VPNを使っている場合は判定できない)
     let _is = org.indexOf('AS13335 C') !== -1 || (org.indexOf('AS4713 N') !== -1 && !isFreeWifiNotContain) || org.indexOf('AS2907 R') !== -1
-    elog('API', 'isFUN: ' + _is, 'firebrick')
+    elog('API', 'isFUN: ' + _is, 'Turquoise')
     return _is
 
     // 一時的にCloudflareVPNで未来大かどうかを切り替えている(デモ用)
@@ -839,7 +841,7 @@ class API_class {
 
   // バスの行き先を算出
   busDestination(code, query) {
-    elog('API', 'busDestination', 'lavender')
+    elog('API', 'busDestination', 'OrangeRed')
     if (query == 'fromkmdtofun') return '赤川'
 
     var result
@@ -877,15 +879,15 @@ class Component_class {
   header(i) {
     // 表示部分
     fill(0, 75, 75)
-    rect(0, 0, 600 * WS, 100 * WS)
+    rect(WL + 0, WT + 0, 600 * WS, 100 * WS)
     fill(255)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 48 * WS)
-    text(i, 30 * WS, 50 * WS)
-    image(SVG_settings, 525 * WS, 25 * WS, 50 * WS, 50 * WS)
+    text(i, WL + 30 * WS, WT + 50 * WS)
+    image(SVG_settings, WL + 525 * WS, WT + 25 * WS, 50 * WS, 50 * WS)
 
     // ボタンの判定
-    if (MANAGER_isMousePressed && MANAGER_mouseY < 100 * WS && MANAGER_mouseX > 500 * WS) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY < WT + 100 * WS && MANAGER_mouseX > WL + 500 * WS) {
       MANAGER_nextmotion = 'cmode,7'
       MANAGER_isMousePressed = false
     }
@@ -894,36 +896,36 @@ class Component_class {
   footer() {
     // 表示部分の枠
     fill(170, 255, 235)
-    rect(0, 1100 * WS, 600 * WS, 100 * WS)
+    rect(WL + 0, WT + 1100 * WS, 600 * WS, 100 * WS)
     fill(0, 75, 75)
-    rect(0, 1095 * WS, 600 * WS, 5 * WS)
-    circle(300 * WS, 1150 * WS, 130 * WS)
+    rect(WL + 0, WT + 1095 * WS, 600 * WS, 5 * WS)
+    circle(WL + 300 * WS, WT + 1150 * WS, 130 * WS)
 
     // 表示部分のボタン
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 20 * WS)
     fill(0)
-    text('天気', ((600 * 1) / 10) * WS, 1180 * WS)
-    text('バス', ((600 * 3) / 10) * WS, 1180 * WS)
-    text('歩数', ((600 * 7) / 10) * WS, 1180 * WS)
-    text('睡眠', ((600 * 9) / 10) * WS, 1180 * WS)
-    image(SVG_weather, ((600 * 1) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
-    image(SVG_funbus, ((600 * 3) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
-    image(SVG_fit, ((600 * 7) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
-    image(SVG_sleep, ((600 * 9) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
+    text('天気', WL + ((600 * 1) / 10) * WS, WT + 1180 * WS)
+    text('バス', WL + ((600 * 3) / 10) * WS, WT + 1180 * WS)
+    text('歩数', WL + ((600 * 7) / 10) * WS, WT + 1180 * WS)
+    text('睡眠', WL + ((600 * 9) / 10) * WS, WT + 1180 * WS)
+    image(SVG_weather, WL + ((600 * 1) / 10 - 25) * WS, WT + 1110 * WS, 50 * WS, 50 * WS)
+    image(SVG_funbus, WL + ((600 * 3) / 10 - 25) * WS, WT + 1110 * WS, 50 * WS, 50 * WS)
+    image(SVG_fit, WL + ((600 * 7) / 10 - 25) * WS, WT + 1110 * WS, 50 * WS, 50 * WS)
+    image(SVG_sleep, WL + ((600 * 9) / 10 - 25) * WS, WT + 1110 * WS, 50 * WS, 50 * WS)
     fill(170, 255, 235)
-    text('ホーム', ((600 * 5) / 10) * WS, 1180 * WS)
-    image(SVG_home, ((600 * 5) / 10 - 25) * WS, 1110 * WS, 50 * WS, 50 * WS)
+    text('ホーム', WL + ((600 * 5) / 10) * WS, WT + 1180 * WS)
+    image(SVG_home, WL + ((600 * 5) / 10 - 25) * WS, WT + 1110 * WS, 50 * WS, 50 * WS)
 
     // ボタンの判定
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 1100 * WS) {
-      if (MANAGER_mouseX < ((600 * 1) / 5) * WS) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 1100 * WS && MANAGER_mouseY < WT + 1200 * WS) {
+      if (MANAGER_mouseX < WL + ((600 * 1) / 5) * WS) {
         MANAGER_nextmotion = 'cmode,2'
-      } else if (MANAGER_mouseX < ((600 * 2) / 5) * WS) {
+      } else if (MANAGER_mouseX < WL + ((600 * 2) / 5) * WS) {
         MANAGER_nextmotion = 'cmode,4'
-      } else if (MANAGER_mouseX < ((600 * 3) / 5) * WS) {
+      } else if (MANAGER_mouseX < WL + ((600 * 3) / 5) * WS) {
         MANAGER_nextmotion = 'cmode,1'
-      } else if (MANAGER_mouseX < ((600 * 4) / 5) * WS) {
+      } else if (MANAGER_mouseX < WL + ((600 * 4) / 5) * WS) {
         MANAGER_nextmotion = 'cmode,3'
       } else {
         MANAGER_nextmotion = 'cmode,6'
@@ -934,7 +936,7 @@ class Component_class {
 }
 
 class TitleScene_class {
-  loadingTime = 180 // TODO:時間を早めている、元は1800
+  loadingTime = 1800 // TODO:時間を早めている、元は1800
   bg
 
   start = 0
@@ -950,14 +952,14 @@ class TitleScene_class {
     // UI描画
     background(0)
     tint(150)
-    image(this.bg, 0, 0, 600 * WS, 1200 * WS)
+    image(this.bg, WL + 0, WT + 0, 600 * WS, 1200 * WS)
     noTint()
     fill(255)
     textAlign(CENTER, CENTER)
     textFont(FONT_jetbrains, 120 * WS)
-    text('funget', 300 * WS, 250 * WS)
+    text('funget', WL + 300 * WS, WT + 250 * WS)
     textFont(FONT_noto, 40 * WS)
-    text('ようこそ ( > ω <)//', 300 * WS, 450 * WS)
+    text('ようこそ ( > ω <)//', WL + 300 * WS, WT + 450 * WS)
     // 下部の読み込み表示バー
     var processing = (millis() - this.start) / 2
     var rectx
@@ -972,9 +974,9 @@ class TitleScene_class {
       rectx = 100
       _width = ((processing - 600) * 4) / 3
     }
-    rect(rectx * WS, 800 * WS, _width * WS, 20 * WS)
+    rect(WL + rectx * WS, WT + 800 * WS, _width * WS, 20 * WS)
     textFont(FONT_noto, 30 * WS)
-    text('2024 © famisics (https://uiro.dev)', 300 * WS, 1125 * WS)
+    text('2024 © famisics (https://uiro.dev)', WL + 300 * WS, WT + 1125 * WS)
     // 指定時間経過後、ページ遷移
     if (millis() > this.start + this.loadingTime - 100) {
       if (isFirstBus) {
@@ -1021,29 +1023,29 @@ class HomeScene_class {
   // 更新処理
   update() {
     tint(255, 175)
-    image(this.bg, 0, 0, 600 * WS, 1200 * WS)
+    image(this.bg, WL + 0, WT + 0, 600 * WS, 1200 * WS)
     noTint()
     fill(0)
     textAlign(CENTER, CENTER)
     textFont(FONT_jetbrains, 96 * WS)
-    text(API.getTime(), 300 * WS, 100 * WS)
+    text(API.getTime(), WL + 300 * WS, WT + 100 * WS)
     textFont(FONT_noto, 48 * WS)
     // 時間帯に応じたメッセージ
     var time = API.getTime().substring(0, 2)
     if (time >= 18) {
-      text('こんばんは！', 300 * WS, 225 * WS)
+      text('こんばんは！', WL + 300 * WS, WT + 225 * WS)
     } else if (time >= 12) {
-      text('こんにちは！', 300 * WS, 225 * WS)
+      text('こんにちは！', WL + 300 * WS, WT + 225 * WS)
     } else if (time >= 5) {
-      text('おはようございます！', 300 * WS, 225 * WS)
+      text('おはようございます！', WL + 300 * WS, WT + 225 * WS)
     } else {
-      text('寝てください', 300 * WS, 225 * WS)
+      text('寝てください', WL + 300 * WS, WT + 225 * WS)
     }
     textFont(FONT_noto, 30 * WS)
     if (this.isRain) {
-      text('今日は雨が降るかもしれません', 300 * WS, 325 * WS)
+      text('今日は雨が降るかもしれません', WL + 300 * WS, WT + 325 * WS)
     } else {
-      text('今日は、雨は降らない予定です', 300 * WS, 325 * WS)
+      text('今日は、雨は降らない予定です', WL + 300 * WS, WT + 325 * WS)
     }
   }
 }
@@ -1204,7 +1206,7 @@ class FitScene_class {
     this.drawGraph()
 
     // メッセージ
-    if (millis() - this.start < 5000 && this.isMsg) {
+    if (millis() - this.start < 3000 && this.isMsg) {
       this.message()
     }
   }
@@ -1325,42 +1327,42 @@ class FunbusScene_class {
     // メインUIの描画
     fill(0)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 32)
+    textFont(FONT_noto, 32 * WS)
     if (this.query == 'fromkmdtofun') {
-      text('亀田支所前→未来大のバスを表示中', 25, 150)
+      text('亀田支所前→未来大のバスを表示中', 25 * WS, 150 * WS)
     } else {
-      text('未来大→亀田支所前のバスを表示中', 25, 150)
+      text('未来大→亀田支所前のバスを表示中', 25 * WS, 150 * WS)
     }
     if (!(this.funbus.this_code == '終バス済')) {
       this.busCard(this.funbus.this_code, this.funbus.this_start, this.funbus.this_end, this.funbus.this_destination, this.remain(this.funbus.this_start), this.funbus.this_untilnext, 260)
       if (this.funbus.this_untilnext == 'last' || DEMO_isLast) {
         fill(200, 0, 0)
-        rect(50, 700, 500, 200)
+        rect(50 * WS, 700 * WS, 500 * WS, 200 * WS)
         fill(255, 255, 0)
-        rect(58, 708, 484, 184)
+        rect(58 * WS, 708 * WS, 484 * WS, 184 * WS)
         fill(200, 0, 0)
         textAlign(CENTER, CENTER)
-        textFont(FONT_noto, 48)
-        text('今日最後のバスです', 300, 800)
+        textFont(FONT_noto, 48 * WS)
+        text('今日最後のバスです', 300 * WS, 800 * WS)
       } else {
         this.busCard(this.funbus.next_code, this.funbus.next_start, this.funbus.next_end, this.funbus.next_destination, this.remain(this.funbus.next_start), this.funbus.this_untilnext, 660)
       }
     } else {
       textAlign(CENTER, CENTER)
-      textFont(FONT_noto, 42)
-      text('本日の運行は終了しました', 300, 550)
+      textFont(FONT_noto, 42 * WS)
+      text('本日の運行は終了しました', 300 * WS, 550 * WS)
     }
 
     // ボタンの描画
     fill(0)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 20)
+    textFont(FONT_noto, 20 * WS)
     var d = '自動'
     if (busMode == 'fromfuntokmd') d = '未来大モード'
     if (busMode == 'fromkmdtofun') d = '亀田支所前モード'
-    text('バスモードを切り替える　現在: ' + d, 110, 1025)
-    image(SVG_change, 50, 1000, 50, 50)
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 && MANAGER_mouseY < 1050 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+    text('バスモードを切り替える　現在: ' + d, 110 * WS, 1025 * WS)
+    image(SVG_change, 50 * WS, 1000 * WS, 50 * WS, 50 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 * WS && MANAGER_mouseY < 1050 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
       changeBusMode()
       MANAGER_isMousePressed = false
     }
@@ -1374,23 +1376,23 @@ class FunbusScene_class {
       fill(90, 90, 255)
     }
 
-    rect(50, yPoition - 50, 500, 350)
+    rect(50 * WS, (yPoition - 50) * WS, 500 * WS, 350 * WS)
     fill(255)
-    textFont(FONT_noto, 30)
+    textFont(FONT_noto, 30 * WS)
     textAlign(LEFT, CENTER)
-    text(code + '系統　' + destination + '行き', 75, yPoition)
-    textFont(FONT_noto, 24)
-    text('出発', 105, yPoition + 90)
-    text('到着', 335, yPoition + 90)
+    text(code + '系統　' + destination + '行き', 75 * WS, yPoition * WS)
+    textFont(FONT_noto, 24 * WS)
+    text('出発', 105 * WS, (yPoition + 90) * WS)
+    text('到着', 335 * WS, (yPoition + 90) * WS)
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 64)
-    text(start + '　' + end, 300, yPoition + 140)
-    textFont(FONT_noto, 40)
+    textFont(FONT_noto, 64 * WS)
+    text(start + '　' + end, 300 * WS, (yPoition + 140) * WS)
+    textFont(FONT_noto, 40 * WS)
     textAlign(CENTER, CENTER)
     if (yPoition != 260 && !untilNext == '0') {
-      text('さらに' + untilNext + '後に出発', 300, yPoition + 250)
+      text('さらに' + untilNext + '後に出発', 300 * WS, (yPoition + 250) * WS)
     } else {
-      text(remain, 300, yPoition + 250)
+      text(remain, 300 * WS, (yPoition + 250) * WS)
     }
   }
 
@@ -1447,38 +1449,38 @@ class IpinfoScene_class {
     // UIの描画
     fill(0)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 24)
-    text('IPアドレス', 50, 150)
+    textFont(FONT_noto, 24 * WS)
+    text('IPアドレス', 50 * WS, 150 * WS)
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 64)
-    text(this.ipinfo.ip, 300, 240)
+    textFont(FONT_noto, 64 * WS)
+    text(this.ipinfo.ip, 300 * WS, 240 * WS)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 24)
-    text('地域：' + this.ipinfo.region, 50, 350)
-    text('座標：' + this.ipinfo.loc, 50, 400)
+    textFont(FONT_noto, 24 * WS)
+    text('地域：' + this.ipinfo.region, 50 * WS, 350 * WS)
+    text('座標：' + this.ipinfo.loc, 50 * WS, 400 * WS)
     var org = this.ipinfo.org
     if (org.indexOf('AS2907 R') !== -1) org = 'AS2907 SINET6 by 国立情報学研究所'
     if (org.length > 32) {
       org = org.substring(0, 32) + '...'
     }
-    text('組織：' + org, 50, 450)
+    text('組織：' + org, 50 * WS, 450 * WS)
     if (this.isFUN) {
-      text('バスモード：未来大モード', 50, 500)
+      text('バスモード：未来大モード', 50 * WS, 500 * WS)
     } else {
-      text('バスモード：亀田支所前モード', 50, 500)
+      text('バスモード：亀田支所前モード', 50 * WS, 500 * WS)
     }
-    text('バスの行き先が自動で変わります\n学内LAN, fun-wifi, free-wifi, eduroam\nに接続時、未来大モードが有効になります\n自宅の回線がフレッツ光の場合は、\n未来大として検出されます', 50, 700)
+    text('バスの行き先が自動で変わります\n学内LAN, fun-wifi, free-wifi, eduroam\nに接続時、未来大モードが有効になります\n自宅の回線がフレッツ光の場合は、\n未来大として検出されます', 50 * WS, 700 * WS)
     // ボタンの描画
     fill(0)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 20)
-    text('フレッツ光(free-wifi)を未来大モードから除外する', 110, 1025)
+    textFont(FONT_noto, 20 * WS)
+    text('フレッツ光(free-wifi)を未来大モードから除外する', 110 * WS, 1025 * WS)
     if (isFreeWifiNotContain) {
-      image(SVG_on, 50, 1000, 50, 50)
+      image(SVG_on, 50 * WS, 1000 * WS, 50 * WS, 50 * WS)
     } else {
-      image(SVG_off, 50, 1000, 50, 50)
+      image(SVG_off, 50 * WS, 1000 * WS, 50 * WS, 50 * WS)
     }
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 && MANAGER_mouseY < 1050 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 * WS && MANAGER_mouseY < 1050 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
       changeFreeWifiContain()
       MANAGER_isMousePressed = false
     }
@@ -1520,16 +1522,16 @@ class SleepScene_class {
     // 今日のデータ
     fill(0)
     textAlign(LEFT, CENTER)
-    textFont(FONT_noto, 40)
-    text('昨晩の睡眠時間（今日）', 25, 150)
+    textFont(FONT_noto, 40 * WS)
+    text('昨晩の睡眠時間（今日）', 25 * WS, 150 * WS)
     textAlign(CENTER, CENTER)
     var lastSleepTime = this.fitbit_sleep[0].duration
     if (lastSleepTime == 0) {
-      textFont(FONT_noto, 60)
-      text('データがありません', 300, 250)
+      textFont(FONT_noto, 60 * WS)
+      text('データがありません', 300 * WS, 250 * WS)
     } else {
-      textFont(FONT_noto, 90)
-      text(this.minToTime(lastSleepTime, true), 300, 250)
+      textFont(FONT_noto, 90 * WS)
+      text(this.minToTime(lastSleepTime, true), 300 * WS, 250 * WS)
     }
     // 背景を描画
     this.drawBg()
@@ -1544,7 +1546,7 @@ class SleepScene_class {
     }
 
     // メッセージ
-    if (millis() - this.start < 5000 && this.isMsg) {
+    if (millis() - this.start < 3000 && this.isMsg) {
       this.message()
     }
   }
@@ -1559,12 +1561,12 @@ class SleepScene_class {
       msg = 'あと1日' + String(remain / 10) + '時間は眠ろう！\n健康のために！'
     }
     fill(25, 100, 100)
-    rect(0, 100, 600, 200)
+    rect(0, 100 * WS, 600 * WS, 200 * WS)
     fill(255)
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 36)
-    text(msg, 300, 200)
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 && MANAGER_mouseY < 300) {
+    textFont(FONT_noto, 36 * WS)
+    text(msg, 300 * WS, 200 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 * WS && MANAGER_mouseY < 300 * WS) {
       this.isMsg = false
       MANAGER_isMousePressed = false
     }
@@ -1589,31 +1591,31 @@ class SleepScene_class {
   drawSleep(i, data, c) {
     fill(0)
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 18)
+    textFont(FONT_noto, 18 * WS)
     var _day = i + '日前'
     if (i == 0) {
       _day = '今日'
     }
     var i2 = 7 - i + 1
     var i3 = (600 * (2 * i2 + 1)) / 18
-    text(_day, i3, 950)
+    text(_day, i3 * WS, 950 * WS)
     if (data.duration == '0') {
-      image(SVG_error, i3 - 25, 970, 50, 50)
+      image(SVG_error, (i3 - 25) * WS, 970 * WS, 50 * WS, 50 * WS)
     } else {
-      image(SVG_check, i3 - 25, 970, 50, 50)
+      image(SVG_check, (i3 - 25) * WS, 970 * WS, 50 * WS, 50 * WS)
     }
     fill(c)
-    text(this.minToTime(data.duration, false), i3, 1040)
+    text(this.minToTime(data.duration, false), i3 * WS, 1040 * WS)
     fill(0)
-    rect((600 * (2 * i2)) / 18 - 1, 930, 2, 130)
+    rect(((600 * (2 * i2)) / 18) * WS, 930 * WS, 2 * WS, 130 * WS)
   }
 
   // 端が丸い線を描画する
   drawRoundedLine(x1, y1, x2, y2, c) {
     stroke(c)
-    strokeWeight(20)
+    strokeWeight(20 * WS)
     strokeCap(ROUND)
-    line(x1, y1, x2, y2)
+    line(x1 * WS, y1 * WS, x2 * WS, y2 * WS)
     strokeCap(SQUARE)
     noStroke()
   }
@@ -1622,12 +1624,12 @@ class SleepScene_class {
   drawBg() {
     // 背景の線
     fill(75)
-    textFont(FONT_noto, 20)
+    textFont(FONT_noto, 20 * WS)
     textAlign(RIGHT, CENTER)
     for (var i = 0; i < 16; i++) {
-      stroke(75)
-      strokeWeight(2)
-      line(70, 350 + i * 35, 600, 350 + i * 35)
+      stroke(75 * WS)
+      strokeWeight(2 * WS)
+      line(70 * WS, (350 + i * 35) * WS, 600 * WS, (350 + i * 35) * WS)
       noStroke()
       text(this.minToClock(1260 + i * 60), 60, 350 + i * 35)
     }
@@ -1677,44 +1679,44 @@ class SettingsScene_class {
   update() {
     CPT.header('設定')
     fill(0)
-    textFont(FONT_noto, 20)
+    textFont(FONT_noto, 20 * WS)
     textAlign(LEFT, CENTER)
     // ボタンの描画
-    text('アプリの起動時に、バスを表示する', 110, 175)
-    text('→朝バスの時間ぎりぎり使う人におすすめです', 110, 225)
+    text('アプリの起動時に、バスを表示する', 110 * WS, 175 * WS)
+    text('→朝バスの時間ぎりぎり使う人におすすめです', 110 * WS, 225 * WS)
     if (isFirstBus) {
-      image(SVG_on, 50, 150, 50, 50)
+      image(SVG_on, 50 * WS, 150 * WS, 50 * WS, 50 * WS)
     } else {
-      image(SVG_off, 50, 150, 50, 50)
+      image(SVG_off, 50 * WS, 150 * WS, 50 * WS, 50 * WS)
     }
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 150 && MANAGER_mouseY < 200 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 150 * WS && MANAGER_mouseY < 200 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
       changeFirstBus()
       MANAGER_isMousePressed = false
     }
-    text('フレッツ光(free-wifi)を未来大モードから除外する', 110, 375)
-    text('→自宅がフレッツ光の人は有効にしてください', 110, 425)
+    text('フレッツ光(free-wifi)を未来大モードから除外する', 110 * WS, 375 * WS)
+    text('→自宅がフレッツ光の人は有効にしてください', 110 * WS, 425 * WS)
     if (isFreeWifiNotContain) {
-      image(SVG_on, 50, 350, 50, 50)
+      image(SVG_on, 50 * WS, 350 * WS, 50 * WS, 50 * WS)
     } else {
-      image(SVG_off, 50, 350, 50, 50)
+      image(SVG_off, 50 * WS, 350 * WS, 50 * WS, 50 * WS)
     }
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 350 && MANAGER_mouseY < 400 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 350 * WS && MANAGER_mouseY < 400 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
       changeFreeWifiContain()
       MANAGER_isMousePressed = false
     }
     var d = '自動'
     if (busMode == 'fromfuntokmd') d = '未来大モード'
     if (busMode == 'fromkmdtofun') d = '亀田支所前モード'
-    text('バスモードを切り替える　現在: ' + d, 110, 575)
-    text('→位置情報を無視して特定のモードに固定します', 110, 625)
-    image(SVG_change, 50, 550, 50, 50)
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 550 && MANAGER_mouseY < 600 && MANAGER_mouseX > 50 && MANAGER_mouseX < 550) {
+    text('バスモードを切り替える　現在: ' + d, 110 * WS, 575 * WS)
+    text('→位置情報を無視して特定のモードに固定します', 110 * WS, 625 * WS)
+    image(SVG_change, 50 * WS, 550 * WS, 50 * WS, 50 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > 550 * WS && MANAGER_mouseY < 600 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
       changeBusMode()
       MANAGER_isMousePressed = false
     }
     textAlign(CENTER, CENTER)
-    textFont(FONT_noto, 30)
-    text('2024 © famisics (https://uiro.dev)', 300, 1025)
+    textFont(FONT_noto, 30 * WS)
+    text('2024 © famisics (https://uiro.dev)', 300 * WS, 1025 * WS)
   }
 }
 
@@ -1736,16 +1738,16 @@ class Button_class {
   update() {
     if (this.isShow) {
       fill(this.bg)
-      rect((this.x - this.w / 2) * WS, (this.y - this.h / 2) * WS, this.w * WS, this.h * WS)
+      rect(WL + (this.x - this.w / 2) * WS, WT + (this.y - this.h / 2) * WS, this.w * WS, this.h * WS)
       textFont(FONT_noto, 36 * WS)
       fill(255)
       textAlign(CENTER, CENTER)
-      text(this.label, this.x * WS, this.y * WS)
+      text(this.label, WL + this.x * WS, WT + this.y * WS)
     }
   }
 
   checkClick(mouseX, mouseY) {
-    if (this.isShow && mouseX > (this.x - this.w / 2) * WS && mouseX < (this.x + this.w / 2) * WS && mouseY > (this.y - this.h / 2) * WS && mouseY < (this.y + this.h / 2) * WS) {
+    if (this.isShow && mouseX > WL + (this.x - this.w / 2) * WS && mouseX < WL + (this.x + this.w / 2) * WS && mouseY > WT + (this.y - this.h / 2) * WS && mouseY < WT + (this.y + this.h / 2) * WS) {
       if (this.type === 'cmode') {
         MANAGER_nextmotion = this.type + ',' + this.id
         // モード切り替えの処理
