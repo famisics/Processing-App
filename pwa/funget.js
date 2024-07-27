@@ -387,7 +387,7 @@ function loading(i) {
   textAlign(CENTER, CENTER)
   fill(0)
   textFont(FONT_noto, 30 * WS)
-  text(i, 300 * WS, 600 * WS)
+  text(i, WL + 300 * WS, WT + 600 * WS)
 }
 
 // ボタンの追加
@@ -936,7 +936,7 @@ class Component_class {
 }
 
 class TitleScene_class {
-  loadingTime = 1800 // TODO:時間を早めている、元は1800
+  loadingTime = 900 // TODO:時間を早めている、元は1800
   bg
 
   start = 0
@@ -961,7 +961,7 @@ class TitleScene_class {
     textFont(FONT_noto, 40 * WS)
     text('ようこそ ( > ω <)//', WL + 300 * WS, WT + 450 * WS)
     // 下部の読み込み表示バー
-    var processing = (millis() - this.start) / 2
+    var processing = (millis() - this.start)
     var rectx
     var _width = 0
     if (processing < 300) {
@@ -1090,7 +1090,7 @@ class WeatherScene_class {
       return
     }
     tint(255, 75)
-    image(this.bg, 0, 0, 600 * WS, 1200 * WS)
+    image(this.bg, WL + 0, WT + 0, 600 * WS, 1200 * WS)
     noTint()
     CPT.header('天気')
 
@@ -1098,14 +1098,14 @@ class WeatherScene_class {
     fill(0)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 40 * WS)
-    text('現在の天気', 25 * WS, 160 * WS)
+    text('現在の天気', WL + 25 * WS, WT + 160 * WS)
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 96 * WS)
-    text(this.weatherNow.weather, 300 * WS, 270 * WS)
+    text(this.weatherNow.weather, WL + 300 * WS, WT + 270 * WS)
     textFont(FONT_noto, 60 * WS)
-    image(this.SVG_now, 50 * WS, 250 * WS, 500 * WS, 500 * WS)
-    text(this.weatherNow.temp + '℃', 150 * WS, 700 * WS)
-    text(this.weatherNow.pressure + 'hPa', 450 * WS, 700 * WS)
+    image(this.SVG_now, WL + 50 * WS, WT + 250 * WS, 500 * WS, 500 * WS)
+    text(this.weatherNow.temp + '℃', WL + 150 * WS, WT + 700 * WS)
+    text(this.weatherNow.pressure + 'hPa', WL + 450 * WS, WT + 700 * WS)
     // 予報を描画
     for (var i = 0; i < 5; i++) {
       this.drawWeather((i + 1) * 3, this.weatherForecast[i].weather, this.weatherForecast[i].temp)
@@ -1137,17 +1137,17 @@ class WeatherScene_class {
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 24 * WS)
     var i2 = (600 * (2 * (i / 3 - 1) + 1)) / 10
-    text(i + '時間後', i2 * WS, 830 * WS)
-    text(weather, i2 * WS, 900 * WS)
-    if (i == 3) image(this.SVG_forecast3, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
-    if (i == 6) image(this.SVG_forecast6, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
-    if (i == 9) image(this.SVG_forecast9, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
-    if (i == 12) image(this.SVG_forecast12, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
-    if (i == 15) image(this.SVG_forecast15, (i2 - 60) * WS, 910 * WS, 120 * WS, 120 * WS)
-    text(temp + '℃', i2 * WS, 1040 * WS)
+    text(i + '時間後', WL + i2 * WS, WT + 830 * WS)
+    text(weather, WL + i2 * WS, WT + 900 * WS)
+    if (i == 3) image(this.SVG_forecast3, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
+    if (i == 6) image(this.SVG_forecast6, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
+    if (i == 9) image(this.SVG_forecast9, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
+    if (i == 12) image(this.SVG_forecast12, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
+    if (i == 15) image(this.SVG_forecast15, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
+    text(temp + '℃', WL + i2 * WS, WT + 1040 * WS)
     if (i < 15) {
       fill(0)
-      rect(((600 * (2 * (i / 3 - 1) + 2)) / 10) * WS, 800 * WS, 2 * WS, 280 * WS)
+      rect(WL + ((600 * (2 * (i / 3 - 1) + 2)) / 10) * WS, WT + 800 * WS, 2 * WS, 280 * WS)
     }
   }
 }
@@ -1319,7 +1319,7 @@ class FunbusScene_class {
   // 更新処理
   update() {
     if (!this.isLoaded) {
-      loading('更新中')
+      loading('更新中…')
       return
     }
     CPT.header('バス')
@@ -1329,28 +1329,28 @@ class FunbusScene_class {
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 32 * WS)
     if (this.query == 'fromkmdtofun') {
-      text('亀田支所前→未来大のバスを表示中', 25 * WS, 150 * WS)
+      text('亀田支所前→未来大のバスを表示中', WL + 25 * WS, WT + 150 * WS)
     } else {
-      text('未来大→亀田支所前のバスを表示中', 25 * WS, 150 * WS)
+      text('未来大→亀田支所前のバスを表示中', WL + 25 * WS, WT + 150 * WS)
     }
     if (!(this.funbus.this_code == '終バス済')) {
       this.busCard(this.funbus.this_code, this.funbus.this_start, this.funbus.this_end, this.funbus.this_destination, this.remain(this.funbus.this_start), this.funbus.this_untilnext, 260)
       if (this.funbus.this_untilnext == 'last' || DEMO_isLast) {
         fill(200, 0, 0)
-        rect(50 * WS, 700 * WS, 500 * WS, 200 * WS)
+        rect(WL + 50 * WS, WT + 700 * WS, 500 * WS, 200 * WS)
         fill(255, 255, 0)
-        rect(58 * WS, 708 * WS, 484 * WS, 184 * WS)
+        rect(WL + 58 * WS, WT + 708 * WS, 484 * WS, 184 * WS)
         fill(200, 0, 0)
         textAlign(CENTER, CENTER)
         textFont(FONT_noto, 48 * WS)
-        text('今日最後のバスです', 300 * WS, 800 * WS)
+        text('今日最後のバスです', WL + 300 * WS, WT + 800 * WS)
       } else {
         this.busCard(this.funbus.next_code, this.funbus.next_start, this.funbus.next_end, this.funbus.next_destination, this.remain(this.funbus.next_start), this.funbus.this_untilnext, 660)
       }
     } else {
       textAlign(CENTER, CENTER)
       textFont(FONT_noto, 42 * WS)
-      text('本日の運行は終了しました', 300 * WS, 550 * WS)
+      text('本日の運行は終了しました', WL + 300 * WS, WT + 550 * WS)
     }
 
     // ボタンの描画
@@ -1360,9 +1360,9 @@ class FunbusScene_class {
     var d = '自動'
     if (busMode == 'fromfuntokmd') d = '未来大モード'
     if (busMode == 'fromkmdtofun') d = '亀田支所前モード'
-    text('バスモードを切り替える　現在: ' + d, 110 * WS, 1025 * WS)
-    image(SVG_change, 50 * WS, 1000 * WS, 50 * WS, 50 * WS)
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 * WS && MANAGER_mouseY < 1050 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
+    text('バスモードを切り替える　現在: ' + d, WL + 110 * WS, WT + 1025 * WS)
+    image(SVG_change, WL + 50 * WS, WT + 1000 * WS, 50 * WS, 50 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 1000 * WS && MANAGER_mouseY < WT + 1050 * WS && MANAGER_mouseX > WL + 50 * WS && MANAGER_mouseX < WL + 550 * WS) {
       changeBusMode()
       MANAGER_isMousePressed = false
     }
@@ -1376,23 +1376,23 @@ class FunbusScene_class {
       fill(90, 90, 255)
     }
 
-    rect(50 * WS, (yPoition - 50) * WS, 500 * WS, 350 * WS)
+    rect(WL + 50 * WS, WT + (yPoition - 50) * WS, 500 * WS, 350 * WS)
     fill(255)
     textFont(FONT_noto, 30 * WS)
     textAlign(LEFT, CENTER)
-    text(code + '系統　' + destination + '行き', 75 * WS, yPoition * WS)
+    text(code + '系統　' + destination + '行き', WL + 75 * WS, WT + yPoition * WS)
     textFont(FONT_noto, 24 * WS)
-    text('出発', 105 * WS, (yPoition + 90) * WS)
-    text('到着', 335 * WS, (yPoition + 90) * WS)
+    text('出発', WL + 105 * WS, WT + (yPoition + 90) * WS)
+    text('到着', WL + 335 * WS, WT + (yPoition + 90) * WS)
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 64 * WS)
-    text(start + '　' + end, 300 * WS, (yPoition + 140) * WS)
+    text(start + '　' + end, WL + 300 * WS, WT + (yPoition + 140) * WS)
     textFont(FONT_noto, 40 * WS)
     textAlign(CENTER, CENTER)
     if (yPoition != 260 && !untilNext == '0') {
-      text('さらに' + untilNext + '後に出発', 300 * WS, (yPoition + 250) * WS)
+      text('さらに' + untilNext + '後に出発', WL + 300 * WS, WT + (yPoition + 250) * WS)
     } else {
-      text(remain, 300 * WS, (yPoition + 250) * WS)
+      text(remain, WL + 300 * WS, WT + (yPoition + 250) * WS)
     }
   }
 
