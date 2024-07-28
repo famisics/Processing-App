@@ -4,6 +4,7 @@ function elog(func, text, color) {
 }
 
 var DEV_MODE = 1
+var ERROR_CODE = ''
 
 var WS = 0
 var WL = 0
@@ -40,6 +41,7 @@ var mode = 0 // モード0で初期化
 var isFirstBus = false
 var isFreeWifiNotContain = true
 var busMode = 'auto'
+var isFirstLoad = true
 
 // 素材
 
@@ -210,6 +212,11 @@ function boot() {
     isFreeWifiNotContain = false
     localStorage.setItem('settings/is_free_wifi_not_contain', isFreeWifiNotContain ? 1 : 0)
   }
+  if (localStorage.getItem('settings/is_first_load') == 'done') {
+    isFirstLoad = false
+  } else {
+    isFirstLoad = true
+  }
   if (localStorage.getItem('settings/bus_mode')) {
     busMode = localStorage.getItem('settings/bus_mode')
   } else {
@@ -266,43 +273,49 @@ function update() {
       cmodeAction(cmodeTarget)
     }
   } else {
-    // シーン描画処理
     background(0)
-    fill(255)
-    rect(WL, WT, 600 * WS, 1200 * WS)
-    switch (mode) {
-      case 0: // タイトル
-        TitleScene.update()
-        break
-      case 1: // ホーム
-        HomeScene.update()
-        break
-      case 2: // 天気
-        WeatherScene.update()
-        break
-      case 3: // Fit
-        FitScene.update()
-        break
-      case 4: // Funbus
-        FunbusScene.update()
-        break
-      case 5: // IP情報
-        IpinfoScene.update()
-        break
-      case 6: // 睡眠
-        SleepScene.update()
-        break
-      case 7: // 設定
-        SettingsScene.update()
-        break
+    if (!(ERROR_CODE == 0)) {
+      // エラー処理
+      errorWindow()
+    } else {
+      // 初期化
+      fill(255)
+      rect(WL, WT, 600 * WS, 1200 * WS)
+      // シーン描画処理
+      switch (mode) {
+        case 0: // タイトル
+          TitleScene.update()
+          break
+        case 1: // ホーム
+          HomeScene.update()
+          break
+        case 2: // 天気
+          WeatherScene.update()
+          break
+        case 3: // Fit
+          FitScene.update()
+          break
+        case 4: // Funbus
+          FunbusScene.update()
+          break
+        case 5: // IP情報
+          IpinfoScene.update()
+          break
+        case 6: // 睡眠
+          SleepScene.update()
+          break
+        case 7: // 設定
+          SettingsScene.update()
+          break
+      }
+      if (LIST_Button != []) {
+        for (let b of LIST_Button) {
+          b.update()
+        }
+      }
     }
     if (!(mode == 0)) {
       CPT.footer()
-    }
-    if (LIST_Button != []) {
-      for (let b of LIST_Button) {
-        b.update()
-      }
     }
   }
   // つぎに行う動作がある場合、実行
@@ -389,6 +402,51 @@ function loading(i) {
   fill(0)
   textFont(FONT_noto, 30 * WS)
   text(i, WL + 300 * WS, WT + 600 * WS)
+  var processing = millis() % 600
+  var rectx
+  var _width = 0
+  if (processing < 300) {
+    rectx = 200
+    _width = (processing * 4) / 6
+  } else if (processing < 600) {
+    rectx = 200 + ((processing - 300) * 4) / 6
+    _width = 200 - ((processing - 300) * 4) / 6
+  }
+  rect(WL + rectx * WS, WT + 800 * WS, _width * WS, 20 * WS)
+}
+
+// エラー画面(p5.js用)
+function errorWindow() {
+  fill(255, 255, 0)
+  rect(WL, WT, 600 * WS, 1200 * WS)
+  textAlign(CENTER, CENTER)
+  fill(0)
+  textFont(FONT_noto, 48 * WS)
+  text('エラーが発生しました', WL + 300 * WS, WT + 400 * WS)
+  textFont(FONT_noto, 30 * WS)
+  if (ERROR_CODE == 1) {
+    text('Fitbit APIに接続できません', WL + 300 * WS, WT + 600 * WS)
+    text('Fitbit APIのトークンが', WL + 300 * WS, WT + 700 * WS)
+    text('正しく設定されていない可能性があります', WL + 300 * WS, WT + 750 * WS)
+    text('タップしてトークン設定画面に移動します', WL + 300 * WS, WT + 850 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT && MANAGER_mouseY < WT + 1100 * WS) {
+      ERROR_CODE = 0
+      location.href = 'fitbit.html'
+    } else if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 1100 * WS && MANAGER_mouseY < WT + 1200 * WS) {
+      ERROR_CODE = 0
+    }
+  } else if (ERROR_CODE == 2) {
+    text('データの取得に失敗しました', WL + 300 * WS, WT + 600 * WS)
+    text('タップしてホームに戻ります', WL + 300 * WS, WT + 900 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT && MANAGER_mouseY < WT + 1100 * WS) {
+      ERROR_CODE = 0
+      cmode(0)
+      location.href = 'fitbit.html'
+    } else if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 1100 * WS && MANAGER_mouseY < WT + 1200 * WS) {
+      ERROR_CODE = 0
+    }
+  }
+  elog('error', ERROR_CODE, 'red')
 }
 
 // ボタンの追加
@@ -401,14 +459,14 @@ function addButton(x, y, w, h, bg, label, type, id) {
 function changeFirstBus() {
   isFirstBus = !isFirstBus
   localStorage.setItem('settings/is_first_bus', isFirstBus ? 1 : 0)
-  elog('json', '設定が保存されました isFirstBus: ' + isFirstBus, 'white')
+  elog('json', '設定が保存されました isFirstBus: ' + isFirstBus, 'lime')
 }
 
 // フレッツ光を含むかどうかの設定を変更
 function changeFreeWifiContain() {
   isFreeWifiNotContain = !isFreeWifiNotContain
   localStorage.setItem('settings/is_free_wifi_contain', isFreeWifiNotContain ? 1 : 0)
-  elog('json', '設定が保存されました isFreeWifiNotContain: ' + isFreeWifiNotContain, 'white')
+  elog('json', '設定が保存されました isFreeWifiNotContain: ' + isFreeWifiNotContain, 'lime')
 }
 
 // バスモードを変更
@@ -421,8 +479,15 @@ function changeBusMode() {
     busMode = 'fromkmdtofun'
   }
   localStorage.setItem('settings/bus_mode', busMode)
-  elog('json', '設定が保存されました busMode: ' + busMode, 'white')
+  elog('json', '設定が保存されました busMode: ' + busMode, 'lime')
   cmode(mode)
+}
+
+// firstloadを解除
+function changeFirstLoad() {
+  isFirstLoad = false
+  localStorage.setItem('settings/is_first_load', 'done')
+  elog('json', '設定が保存されました isFirstLoad: ' + isFirstLoad, 'lime')
 }
 
 // マウスが押された場合に、そのことと座標を記録する(それぞれのボタンを描画している場所で、条件にあたるかどうかを判定する(ここでは判定しない))
@@ -448,6 +513,13 @@ async function funfetch(query) {
     const data = await response.json()
     return data
   } catch (error) {
+    if (error.message == 'Failed to fetch') {
+      if (mode == 3 || mode == 6) {
+        ERROR_CODE = 1
+      } else {
+        ERROR_CODE = 2
+      }
+    }
     console.error('Error fetching data:', error)
     throw error // エラーを再スロー
   }
@@ -682,10 +754,14 @@ class API_class {
         var _data = data[i]
         res[7 - i] = _data.steps
       }
-      this.fitbit = res
-      this.CASHTIME_fitbit = millis()
-      elog('API', 'getFitbitSteps: done at ' + this.getTime(), 'aqua')
-      return this.fitbit // * 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
+      if (ERROR_CODE == 0) {
+        this.fitbit = res
+        this.CASHTIME_fitbit = millis()
+        elog('API', 'getFitbitSteps: done at ' + this.getTime(), 'aqua')
+        return this.fitbit // * 返す内容 7,6,5,4,3,2,1日前の歩数{日, 歩数}
+      } else {
+        return false
+      }
     } catch (error) {
       console.error(error)
       return false
@@ -714,10 +790,14 @@ class API_class {
         res.push(_res)
       }
       res = res.reverse()
-      this.fitbit_sleep = res
-      this.CASHTIME_fitbitSleep = millis()
-      elog('API', 'getFitbitSteps: FETCHING... done at ' + this.getTime(), 'aqua')
-      return this.fitbit_sleep // * 返す内容 {日付, 睡眠データ{睡眠時間、睡眠開始、睡眠終了}}
+      if (ERROR_CODE == 0) {
+        this.fitbit_sleep = res
+        this.CASHTIME_fitbitSleep = millis()
+        elog('API', 'getFitbitSteps: FETCHING... done at ' + this.getTime(), 'aqua')
+        return this.fitbit_sleep // * 返す内容 {日付, 睡眠データ{睡眠時間、睡眠開始、睡眠終了}}
+      } else {
+        return false
+      }
     } catch (error) {
       console.error(error)
       return false
@@ -938,7 +1018,7 @@ class Component_class {
 }
 
 class TitleScene_class {
-  loadingTime = 900 // TODO:時間を早めている、元は1800
+  loadingTime = 300 // TODO:時間を早めている、元は1800
   bg
 
   start = 0
@@ -963,7 +1043,7 @@ class TitleScene_class {
     textFont(FONT_noto, 40 * WS)
     text('ようこそ ( > ω <)//', WL + 300 * WS, WT + 450 * WS)
     // 下部の読み込み表示バー
-    var processing = millis() - this.start
+    var processing = (millis() - this.start) % 600
     var rectx
     var _width = 0
     if (processing < 300) {
@@ -972,15 +1052,13 @@ class TitleScene_class {
     } else if (processing < 600) {
       rectx = 100 + ((processing - 300) * 4) / 3
       _width = 400 - ((processing - 300) * 4) / 3
-    } else {
-      rectx = 100
-      _width = ((processing - 600) * 4) / 3
     }
     rect(WL + rectx * WS, WT + 800 * WS, _width * WS, 20 * WS)
     textFont(FONT_noto, 30 * WS)
     text('2024 © famisics (https://uiro.dev)', WL + 300 * WS, WT + 1125 * WS)
     // 指定時間経過後、ページ遷移
-    if (millis() > this.start + this.loadingTime - 100) {
+    if ((millis() > this.start + this.loadingTime && !isFirstLoad) || (millis() > this.start + this.loadingTime * 6 - 100 && isFirstLoad)) {
+      changeFirstLoad()
       if (isFirstBus) {
         cmode(4)
       } else {
@@ -1672,7 +1750,7 @@ class SettingsScene_class {
   // 初期化処理
   boot() {
     addButton(300, 750, 500, 100, color(0, 150, 75), 'ホームへ戻る', 'cmode', '1')
-    addButton(300, 900, 500, 100, color(0, 125, 175), 'Fitbit API 設定', 'link', 'key.html')
+    addButton(300, 900, 500, 100, color(0, 125, 175), 'Fitbit API トークン 設定', 'link', 'fitbit.html')
   }
 
   // 更新処理
@@ -1742,7 +1820,7 @@ class Button_class {
       textFont(FONT_noto, 36 * WS)
       fill(255)
       textAlign(CENTER, CENTER)
-      text(this.label, WL + this.x * WS, WT + this.y * WS)
+      text(this.label, WL + this.x * WS, WT + this.y * WS - 5)
     }
   }
 

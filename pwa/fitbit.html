@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-CJGRVF45YV"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);};gtag('js', new Date());gtag('config', 'G-CJGRVF45YV');</script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CJGRVF45YV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-CJGRVF45YV')
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>funget</title>
@@ -18,7 +27,7 @@
         access_token_value: localStorage.getItem('fitbit/access_token') || '',
         refresh_token: 'fitbit/refresh_token',
         refresh_token_value: localStorage.getItem('fitbit/refresh_token') || '',
-        msg: '必要な値を設定して、更新をクリックしてください',
+        msg: 'APIトークン を入力して、保存をクリックしてください',
         link: false,
         updateValue() {
           if(this.client_id_value && this.client_secret_value && this.access_token_value && this.refresh_token_value) {
@@ -27,11 +36,11 @@
             localStorage.setItem(this.access_token, this.access_token_value);
             localStorage.setItem(this.refresh_token, this.refresh_token_value);
             setTimeout(() => {
-              this.msg = '保存しました、アプリに移動できます';
+              this.msg = 'APIトークン を保存しました、アプリに移動できます';
               this.link = true;
             }, 100);
           } else {
-            this.msg = '保存できませんでした、全ての値を入力してください';
+            this.msg = 'APIトークン を保存できませんでした、全ての値を入力してください';
           }
         },
         clear() {
@@ -43,62 +52,52 @@
           this.client_secret_value = '';
           this.access_token_value = '';
           this.refresh_token_value = '';
-          setTimeout(() => {
-            alert('削除しました');
-          }, 100);
+          this.msg = '全ての APIトークン を削除しました';
         }
       }">
       <div class="content">
-        <h1>funget - API設定</h1>
+        <h1>Fitbit API トークン設定</h1>
+        <div><p class="message" x-text="msg"></p></div>
         <div class="wrapper">
-          <p x-text="client_id"></p>
+          <p x-text="client_id.slice(7)"></p>
           <input type="text" x-model="client_id_value" placeholder="入力してください" />
         </div>
         <div class="wrapper">
-          <p x-text="client_secret"></p>
+          <p x-text="client_secret.slice(7)"></p>
           <input type="text" x-model="client_secret_value" placeholder="入力してください" />
         </div>
         <div class="wrapper">
-          <p x-text="access_token"></p>
+          <p x-text="access_token.slice(7)"></p>
           <input type="text" x-model="access_token_value" placeholder="入力してください" />
         </div>
         <div class="wrapper">
-          <p x-text="refresh_token"></p>
+          <p x-text="refresh_token.slice(7)"></p>
           <input type="text" x-model="refresh_token_value" placeholder="入力してください" />
         </div>
-        <div><p x-text="msg"></p></div>
       </div>
-      <div class="button-box">
-        <button x-on:click="updateValue">更新</button>
-        <button x-on:click="clear">削除</button>
-      </div>
-      <a class="link" href="index.html" x-show="link">アプリに移動する</a>
-      <br />
-      <h2>説明リンク</h2>
-      <p>分かる人だけ操作してください</p>
       <div class="links">
-        <a href="index.html">index.html</a>
-        <a href="key.html">key.html</a>
-        <a href="https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/">getting-started | fitbit developer</a>
+        <a href="#" @click="updateValue">保存</a>
+        <a href="#" @click="clear">削除</a>
+        <a href="index.html">アプリに戻る</a>
       </div>
+      <a href="https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/">Fitbit API ドキュメント | fitbit developer</a>
     </main>
     <style>
+      h1 {
+        margin-bottom: 0;
+        font-size: 26px;
+      }
       .wrapper {
         display: flex;
         margin: 10px 0;
         height: 30px;
       }
       .wrapper p {
-        width: 160px;
+        width: 120px;
         line-height: 0;
       }
       .wrapper input {
-        width: 200px;
-      }
-      .button-box {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
+        width: calc(100% - 120px);
       }
       button {
         width: calc(50% - 5px);
@@ -110,9 +109,30 @@
         margin-top: 20px;
         font-size: 26px;
       }
+      .links {
+        margin: 20px 0;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
       .links a {
-        font-size: 20px;
+        color: #000;
+        text-decoration: none;
+        padding: 10px 0 10px;
+        height: 20px;
+        font-size: 16px;
         display: block;
+        width: calc((100% / 3) - 10px);
+        text-align: center;
+        border: 2px solid black;
+      }
+      .message {
+        font-size: 20px;
+        font-weight: bold;
+        background: #ff0;
+        padding: 10px 10px 5px 10px;
+        margin-top: 10px;
+        border: 2px solid #000;
       }
     </style>
   </body>
