@@ -101,14 +101,15 @@ function preload() {
 
 function setup() {
   background(0)
+  calcWindowScale()
   noStroke()
   elog('boot', 'initializing... ', 'lime')
   // createCanvas(600, 1200) // Google Pixel 7 基準に指定
-  calcWindowScale()
   createCanvas(600 * WS + WL, 1200 * WS + WT)
   // scaleX = (float) width / originalWidth;
   // scaleY = (float) height / originalHeight;
   boot() // コードを読みやすくするために、managerでシーンを初期化(boot)しています
+  calcWindowScale() // 一応画面サイズを再適用
 }
 
 function windowResized() {
