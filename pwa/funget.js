@@ -84,19 +84,19 @@ function preload() {
   FONT_noto = loadFont('font/NotoSansJP-Medium.ttf')
 
   // モードアイコンの初期化
-  SVG_home = loadImage('svg/mode/home.svg')
-  SVG_weather = loadImage('svg/mode/weather.svg')
-  SVG_fit = loadImage('svg/mode/fit.svg')
-  SVG_funbus = loadImage('svg/mode/bus.svg')
-  SVG_sleep = loadImage('svg/mode/sleep.svg')
+  SVG_home = loadImage('svg/mode/home.png')
+  SVG_weather = loadImage('svg/mode/weather.png')
+  SVG_fit = loadImage('svg/mode/fit.png')
+  SVG_funbus = loadImage('svg/mode/bus.png')
+  SVG_sleep = loadImage('svg/mode/sleep.png')
 
   // ステータスアイコンの初期化
-  SVG_check = loadImage('svg/status/check.svg')
-  SVG_error = loadImage('svg/status/error.svg')
-  SVG_on = loadImage('svg/status/on.svg')
-  SVG_off = loadImage('svg/status/off.svg')
-  SVG_change = loadImage('svg/status/change.svg')
-  SVG_settings = loadImage('svg/status/settings.svg')
+  SVG_check = loadImage('svg/status/check.png')
+  SVG_error = loadImage('svg/status/error.png')
+  SVG_on = loadImage('svg/status/on.png')
+  SVG_off = loadImage('svg/status/off.png')
+  SVG_change = loadImage('svg/status/change.png')
+  SVG_settings = loadImage('svg/status/settings.png')
 }
 
 function setup() {
@@ -581,6 +581,8 @@ class API_class {
       var res = { weather: '', icon: '', temp: '', pressure: '', city: '' }
       res.weather = data_1.weather[0].description
       res.icon = data_1.weather[0].icon.substring(0, 2) + 'd'
+      if (this.isNight() && res.icon == '01d') res.icon = '01n'
+      if (this.isNight() && res.icon == '02d') res.icon = '02n'
       res.temp = Math.round(10 * (data_1.main.temp - 273.15)) / 10
       res.pressure = Math.round(data_1.main.pressure)
       res.city = data_1.name
@@ -626,6 +628,8 @@ class API_class {
         forecastData.weather = forecast.weather[0].description
         forecastData.temp = Math.round(10 * (forecast.main.temp - 273.15)) / 10
         forecastData.icon = forecast.weather[0].icon.substring(0, 2) + 'd'
+        if (this.isNight() && forecastData.icon == '01d') forecastData.icon = '01n'
+        if (this.isNight() && forecastData.icon == '02d') forecastData.icon = '02n'
         forecastData.pressure = Math.round(forecast.main.pressure)
         this.weatherForecast.push(forecastData)
 
@@ -951,6 +955,10 @@ class API_class {
     return result
   }
 
+  isNight() {
+    return hour() >= 19 || hour() < 6
+  }
+
   // 時間を取得するコード
   getTime() {
     return nf(hour(), 2) + ':' + nf(minute(), 2) + ':' + nf(second(), 2)
@@ -1083,7 +1091,7 @@ class HomeScene_class {
       this.bg = loadImage('img/home/night.jpg')
     } else if (time >= 15) {
       this.bg = loadImage('img/home/sunset.jpg')
-    } else if (time >= 5) {
+    } else if (time >= 6) {
       this.bg = loadImage('img/home/noon.jpg')
     } else {
       this.bg = loadImage('img/home/midnight.jpg')
@@ -1184,7 +1192,7 @@ class WeatherScene_class {
     textFont(FONT_noto, 96 * WS)
     text(this.weatherNow.weather, WL + 300 * WS, WT + 270 * WS)
     textFont(FONT_noto, 60 * WS)
-    image(this.SVG_now, WL + 50 * WS, WT + 250 * WS, 500 * WS, 500 * WS)
+    image(this.SVG_now, WL + 150 * WS, WT + 350 * WS, 300 * WS, 300 * WS)
     text(this.weatherNow.temp + '℃', WL + 150 * WS, WT + 700 * WS)
     text(this.weatherNow.pressure + 'hPa', WL + 450 * WS, WT + 700 * WS)
     // 予報を描画
@@ -1200,16 +1208,16 @@ class WeatherScene_class {
 
   // 現在の天気のアイコンに合わせた背景画像を取得
   nowBg(name) {
-    this.SVG_now = loadImage('svg/weather/' + name + '.svg')
+    this.SVG_now = loadImage('svg/weather/' + name + '.png')
   }
 
   // 予報の天気のアイコンを取得
   forecastIcon(name3, name6, name9, name12, name15) {
-    this.SVG_forecast3 = loadImage('svg/weather/' + name3 + '.svg')
-    this.SVG_forecast6 = loadImage('svg/weather/' + name6 + '.svg')
-    this.SVG_forecast9 = loadImage('svg/weather/' + name9 + '.svg')
-    this.SVG_forecast12 = loadImage('svg/weather/' + name12 + '.svg')
-    this.SVG_forecast15 = loadImage('svg/weather/' + name15 + '.svg')
+    this.SVG_forecast3 = loadImage('svg/weather/' + name3 + '.png')
+    this.SVG_forecast6 = loadImage('svg/weather/' + name6 + '.png')
+    this.SVG_forecast9 = loadImage('svg/weather/' + name9 + '.png')
+    this.SVG_forecast12 = loadImage('svg/weather/' + name12 + '.png')
+    this.SVG_forecast15 = loadImage('svg/weather/' + name15 + '.png')
   }
 
   // 予報の天気を描画
@@ -1220,11 +1228,11 @@ class WeatherScene_class {
     var i2 = (600 * (2 * (i / 3 - 1) + 1)) / 10
     text(i + '時間後', WL + i2 * WS, WT + 830 * WS)
     text(weather, WL + i2 * WS, WT + 900 * WS)
-    if (i == 3) image(this.SVG_forecast3, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
-    if (i == 6) image(this.SVG_forecast6, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
-    if (i == 9) image(this.SVG_forecast9, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
-    if (i == 12) image(this.SVG_forecast12, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
-    if (i == 15) image(this.SVG_forecast15, WL + (i2 - 60) * WS, WT + 910 * WS, 120 * WS, 120 * WS)
+    if (i == 3) image(this.SVG_forecast3, WL + (i2 - 40) * WS, WT + 930 * WS, 80 * WS, 80 * WS)
+    if (i == 6) image(this.SVG_forecast6, WL + (i2 - 40) * WS, WT + 930 * WS, 80 * WS, 80 * WS)
+    if (i == 9) image(this.SVG_forecast9, WL + (i2 - 40) * WS, WT + 930 * WS, 80 * WS, 80 * WS)
+    if (i == 12) image(this.SVG_forecast12, WL + (i2 - 40) * WS, WT + 930 * WS, 80 * WS, 80 * WS)
+    if (i == 15) image(this.SVG_forecast15, WL + (i2 - 40) * WS, WT + 930 * WS, 80 * WS, 80 * WS)
     text(temp + '℃', WL + i2 * WS, WT + 1040 * WS)
     if (i < 15) {
       fill(0)
