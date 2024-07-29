@@ -582,6 +582,8 @@ class API_class {
       res.icon = data_1.weather[0].icon.substring(0, 2) + 'd'
       if (this.isNight() && res.icon == '01d') res.icon = '01n'
       if (this.isNight() && res.icon == '02d') res.icon = '02n'
+      if (this.isNight() && res.icon == '03d') res.icon = '03n'
+      if (this.isNight() && res.icon == '04d') res.icon = '04n'
       res.temp = Math.round(10 * (data_1.main.temp - 273.15)) / 10
       res.pressure = Math.round(data_1.main.pressure)
       res.city = data_1.name
@@ -629,6 +631,8 @@ class API_class {
         forecastData.icon = forecast.weather[0].icon.substring(0, 2) + 'd'
         if (this.isNight() && forecastData.icon == '01d') forecastData.icon = '01n'
         if (this.isNight() && forecastData.icon == '02d') forecastData.icon = '02n'
+        if (this.isNight() && forecastData.icon == '03d') forecastData.icon = '03n'
+        if (this.isNight() && forecastData.icon == '04d') forecastData.icon = '04n'
         forecastData.pressure = Math.round(forecast.main.pressure)
         this.weatherForecast.push(forecastData)
 
