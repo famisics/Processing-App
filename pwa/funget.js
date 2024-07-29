@@ -572,7 +572,6 @@ class API_class {
     if (this.weatherNow != 0 && timediff < this.timeout) {
       // 既に取得済みの場合は、キャッシュされたデータを用いる(無駄なリクエストを防止する)
       elog('API', 'getWeatherNow: CASH... done at ' + this.getTime() + ', キャッシュ期限: ' + Math.floor((this.timeout - timediff) / 1000) + '秒', 'LightSkyBlue')
-      console.log(this.weatherNow)
       return Promise.resolve(this.weatherNow)
     }
     elog('API', 'getWeatherNow: FETCHING... ', 'LightSkyBlue')
@@ -1390,6 +1389,7 @@ class FunbusScene_class {
   funbus
   query
   isLoaded = false
+  isFUN = false
 
   // 初期化処理
   boot() {
@@ -1399,6 +1399,7 @@ class FunbusScene_class {
     API.solvedIsFUN().then(res => {
       if (res) this.query = 'fromfuntokmd'
       this.funbus = API.getFunbus(this.query)
+      this.isFUN = res
       this.isLoaded = true
     })
   }
@@ -1464,6 +1465,14 @@ class FunbusScene_class {
     }
 
     rect(WL + 50 * WS, WT + (yPoition - 50) * WS, 500 * WS, 350 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + (yPoition - 50) * WS && MANAGER_mouseY < WT + (yPoition + 300) * WS && MANAGER_mouseX > WL + 50 * WS && MANAGER_mouseX < WL + 550 * WS) {
+      if (this.isFUN) {
+        location.href = 'https://hakobus.bus-navigation.jp/wgsys/wgs/bus.htm?tabName=searchTab&from=%E3%81%AF%E3%81%93%E3%81%A0%E3%81%A6%E6%9C%AA%E6%9D%A5%E5%A4%A7%E5%AD%A6&to=%E4%BA%80%E7%94%B0%E6%94%AF%E6%89%80%E5%89%8D&sortBy=3&locale=ja'
+      } else {
+        location.href = 'https://hakobus.bus-navigation.jp/wgsys/wgs/bus.htm?tabName=searchTab&from=%E4%BA%80%E7%94%B0%E6%94%AF%E6%89%80%E5%89%8D&to=%E3%81%AF%E3%81%93%E3%81%A0%E3%81%A6%E6%9C%AA%E6%9D%A5%E5%A4%A7%E5%AD%A6&sortBy=3&locale=ja'
+      }
+      MANAGER_isMousePressed = false
+    }
     fill(255)
     textFont(FONT_noto, 30 * WS)
     textAlign(LEFT, CENTER)
@@ -1843,6 +1852,7 @@ class Button_class {
       } else if (this.type === 'link') {
         location.href = this.id
       }
+      MANAGER_isMousePressed = false
     }
   }
 }
