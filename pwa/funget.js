@@ -74,29 +74,29 @@ var JSON_funbus
 
 function preload() {
   // jsonのロード
-  JSON_endpoints = loadJSON('json/endpoints.json')
-  JSON_apikeys = loadJSON('json/apikeys.json')
-  JSON_funbus = loadJSON('json/funbus.json')
+  JSON_endpoints = loadJSON('./src/json/endpoints.json')
+  JSON_apikeys = loadJSON('./src/json/apikeys.json')
+  JSON_funbus = loadJSON('./src/json/funbus.json')
 
   // フォントの初期化
   FONT_meiryo = 'Meiryo UI'
-  FONT_jetbrains = loadFont('font/JetBrainsMono-Medium.ttf')
-  FONT_noto = loadFont('font/NotoSansJP-Medium.ttf')
+  FONT_jetbrains = loadFont('./src/font/JetBrainsMono-Medium.ttf')
+  FONT_noto = loadFont('./src/font/NotoSansJP-Medium.ttf')
 
   // モードアイコンの初期化
-  SVG_home = loadImage('svg/mode/home.png')
-  SVG_weather = loadImage('svg/mode/weather.png')
-  SVG_fit = loadImage('svg/mode/fit.png')
-  SVG_funbus = loadImage('svg/mode/bus.png')
-  SVG_sleep = loadImage('svg/mode/sleep.png')
+  SVG_home = loadImage('./src/svg/mode/home.png')
+  SVG_weather = loadImage('./src/svg/mode/weather.png')
+  SVG_fit = loadImage('./src/svg/mode/fit.png')
+  SVG_funbus = loadImage('./src/svg/mode/bus.png')
+  SVG_sleep = loadImage('./src/svg/mode/sleep.png')
 
   // ステータスアイコンの初期化
-  SVG_check = loadImage('svg/status/check.png')
-  SVG_error = loadImage('svg/status/error.png')
-  SVG_on = loadImage('svg/status/on.png')
-  SVG_off = loadImage('svg/status/off.png')
-  SVG_change = loadImage('svg/status/change.png')
-  SVG_settings = loadImage('svg/status/settings.png')
+  SVG_check = loadImage('./src/svg/status/check.png')
+  SVG_error = loadImage('./src/svg/status/error.png')
+  SVG_on = loadImage('./src/svg/status/on.png')
+  SVG_off = loadImage('./src/svg/status/off.png')
+  SVG_change = loadImage('./src/svg/status/change.png')
+  SVG_settings = loadImage('./src/svg/status/settings.png')
 }
 
 function setup() {
@@ -1038,7 +1038,7 @@ class TitleScene_class {
   // 初期化処理
   boot() {
     this.start = millis() // 基準となる時間を更新
-    this.bg = loadImage('img/title.jpg')
+    this.bg = loadImage('./src/img/title.jpg')
   }
 
   // 更新処理
@@ -1091,13 +1091,13 @@ class HomeScene_class {
     // 時間帯に応じた背景画像
     var time = API.getTime().substring(0, 2)
     if (time >= 19) {
-      this.bg = loadImage('img/home/night.jpg')
+      this.bg = loadImage('./src/img/home/night.jpg')
     } else if (time >= 15) {
-      this.bg = loadImage('img/home/sunset.jpg')
+      this.bg = loadImage('./src/img/home/sunset.jpg')
     } else if (time >= 6) {
-      this.bg = loadImage('img/home/noon.jpg')
+      this.bg = loadImage('./src/img/home/noon.jpg')
     } else {
-      this.bg = loadImage('img/home/midnight.jpg')
+      this.bg = loadImage('./src/img/home/midnight.jpg')
     }
 
     // 雨が降るかどうか
@@ -1206,21 +1206,21 @@ class WeatherScene_class {
 
   // 現在の天気のアイコンを取得
   nowIcon(name) {
-    this.bg = loadImage('img/weather/' + name + '.jpg')
+    this.bg = loadImage('./src/img/weather/' + name + '.jpg')
   }
 
   // 現在の天気のアイコンに合わせた背景画像を取得
   nowBg(name) {
-    this.SVG_now = loadImage('svg/weather/' + name + '.png')
+    this.SVG_now = loadImage('./src/svg/weather/' + name + '.png')
   }
 
   // 予報の天気のアイコンを取得
   forecastIcon(name3, name6, name9, name12, name15) {
-    this.SVG_forecast3 = loadImage('svg/weather/' + name3 + '.png')
-    this.SVG_forecast6 = loadImage('svg/weather/' + name6 + '.png')
-    this.SVG_forecast9 = loadImage('svg/weather/' + name9 + '.png')
-    this.SVG_forecast12 = loadImage('svg/weather/' + name12 + '.png')
-    this.SVG_forecast15 = loadImage('svg/weather/' + name15 + '.png')
+    this.SVG_forecast3 = loadImage('./src/svg/weather/' + name3 + '.png')
+    this.SVG_forecast6 = loadImage('./src/svg/weather/' + name6 + '.png')
+    this.SVG_forecast9 = loadImage('./src/svg/weather/' + name9 + '.png')
+    this.SVG_forecast12 = loadImage('./src/svg/weather/' + name12 + '.png')
+    this.SVG_forecast15 = loadImage('./src/svg/weather/' + name15 + '.png')
   }
 
   // 予報の天気を描画
