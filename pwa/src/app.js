@@ -4,7 +4,7 @@ function elog(func, text, color) {
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
-    .register('./sw.js')
+    .register('./src/sw.js')
     .then(res => {
       elog('PWA Service Worker', 'registered successfully ✨️', 'PaleTurquoise')
       console.log(res)
