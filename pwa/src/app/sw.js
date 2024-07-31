@@ -8,7 +8,6 @@ const urlsToCache = [
   '/src/funget.js',
   '/src/app/app.css',
   '/src/app/app.js',
-  '/src/app/elog.js',
   '/src/app/p5.min.js',
   '/src/app/sw.js',
   '/src/font/JetBrainsMono-Medium.ttf',
@@ -90,16 +89,16 @@ const urlsToCache = [
 
 // インストール
 self.addEventListener('install', event => {
-  elog('Service Worker', 'Installing...', 'CadetBlue')
+  console.log('Service Worker', 'Installing...', 'CadetBlue')
   event.waitUntil(
     caches
       .open(CURRENT_CACHE)
       .then(cache => {
-        elog('Service Worker', 'Caching files...', 'CadetBlue')
+        console.log('Service Worker', 'Caching files...', 'CadetBlue')
         return cache.addAll(urlsToCache)
       })
       .then(() => {
-        elog('Service Worker', 'Install completed.', 'CadetBlue')
+        console.log('Service Worker', 'Install completed.', 'CadetBlue')
         self.skipWaiting()
       })
   )
@@ -107,7 +106,7 @@ self.addEventListener('install', event => {
 
 // アクティブ化
 self.addEventListener('activate', event => {
-  elog('Service Worker', 'Activating...', 'CadetBlue')
+  console.log('Service Worker', 'Activating...', 'CadetBlue')
   event.waitUntil(
     caches
       .keys()
@@ -117,27 +116,27 @@ self.addEventListener('activate', event => {
           cacheNames
             .filter(cacheName => cacheName !== CURRENT_CACHE)
             .map(cacheName => {
-              elog('Service Worker', `Deletingoldcache${cacheName}`, 'CadetBlue')
+              console.log('Service Worker', `Deletingoldcache${cacheName}`, 'CadetBlue')
               return caches.delete(cacheName)
             })
         )
       })
       .then(() => {
-        elog('Service Worker', 'Activatecompleted.', 'CadetBlue')
+        console.log('Service Worker', 'Activatecompleted.', 'CadetBlue')
       })
   )
 })
 
 // fetch
 self.addEventListener('fetch', event => {
-  elog('Service Worker', `Fetching${event.request.url}`, 'CadetBlue')
+  console.log('Service Worker', `Fetching${event.request.url}`, 'CadetBlue')
   event.respondWith(
     caches.match(event.request).then(response => {
       if (response) {
-        elog('Service Worker', `Returningcachedresponsefor${event.request.url}`, 'CadetBlue')
+        console.log('Service Worker', `Returningcachedresponsefor${event.request.url}`, 'CadetBlue')
         return response
       } else {
-        elog('Service Worker', `Fetching${event.request.url}fromnetwork`, 'CadetBlue')
+        console.log('Service Worker', `Fetching${event.request.url}fromnetwork`, 'CadetBlue')
         return fetch(event.request)
       }
     })
