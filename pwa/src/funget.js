@@ -1849,7 +1849,7 @@ class Button_class {
         MANAGER_nextmotion = this.type + ',' + this.id
         // モード切り替えの処理
       } else if (this.type === 'tweet') {
-        window.open('https://x.com/intent/post?text=' + this.id)
+        location.href = 'https://x.com/intent/post?text=' + this.id
       } else if (this.type === 'link') {
         location.href = this.id
       }
