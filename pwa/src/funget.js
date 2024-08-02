@@ -1350,7 +1350,7 @@ class FitScene_class {
     stroke(50, 200, 120)
     strokeWeight(5 * WS)
     var baseLineY = map(10000, 0, max(this.graphData), 800, 400)
-    ;(line(WL + 0, WT + baseLineY * WS, WL + 600 * WS, WT + baseLineY * WS) * 5) / 6
+    (line(WL + 0, WT + baseLineY * WS, WL + 600 * WS, WT + baseLineY * WS) * 5) / 6
     textAlign(RIGHT, TOP)
     textFont(FONT_noto, 24 * WS)
     noStroke()
