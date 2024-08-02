@@ -908,7 +908,7 @@ class API_class {
     localStorage.setItem('endpoints/openweathermap_weather', json.openweathermap_weather)
     localStorage.setItem('endpoints/openweathermap_forecast', json.openweathermap_forecast)
     localStorage.setItem('endpoints/gas_funbus', json.gas_funbus)
-    localStorage.setItem('endpoints/gas_fit', json.gasfit)
+    localStorage.setItem('endpoints/gas_fit', json.gas_fit)
     localStorage.setItem('endpoints/ipinfo', json.ipinfo)
   }
 
