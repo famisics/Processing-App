@@ -31,10 +31,10 @@
         link: false,
         updateValue() {
           if(this.client_id_value && this.client_secret_value && this.access_token_value && this.refresh_token_value) {
-            localStorage.setItem(this.client_id, this.client_id_value);
-            localStorage.setItem(this.client_secret, this.client_secret_value);
-            localStorage.setItem(this.access_token, this.access_token_value);
-            localStorage.setItem(this.refresh_token, this.refresh_token_value);
+            localStorage.setItem(this.client_id, btoa(this.client_id_value));
+            localStorage.setItem(this.client_secret, btoa(this.client_secret_value));
+            localStorage.setItem(this.access_token, btoa(this.access_token_value));
+            localStorage.setItem(this.refresh_token, btoa(this.refresh_token_value));
             setTimeout(() => {
               this.msg = 'APIトークン を保存しました、アプリに移動できます';
               this.link = true;
