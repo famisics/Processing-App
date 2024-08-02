@@ -812,12 +812,13 @@ class API_class {
   }
 
   async fetchFitbit(query) {
-    let url = localStorage.getItem('endpoints/gas_fit')
+    let url = decode(localStorage.getItem('endpoints/gas_fit'))
     let client_id = localStorage.getItem('fitbit/client_id')
     let client_secret = localStorage.getItem('fitbit/client_secret')
     let access_token = localStorage.getItem('fitbit/access_token')
     let refresh_token = localStorage.getItem('fitbit/refresh_token')
     let query_url = `${url}?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
+    console.log(query_url)
     try {
       const data = await funfetch(query_url)
       return data
