@@ -1,4 +1,6 @@
-function elog(func, text, color) { console.log('%c' + func + '%c%c' + text, 'font-size: 12px; border-radius: 3px 0 0 3px; color: black; font-weight: 1000; padding: 1px 4px; background: ' + color + '; border: solid ' + color + ' 1px;', '', 'font-size: 12px; border-radius: 0 3px 3px 0; color: white; font-weight: 1000; padding: 1px 4px; background: black; border: solid ' + color + ' 1px;')} // super tsuyotusyo command line logging tool!
+function elog(func, text, color) {
+  console.log('%c' + func + '%c%c' + text, 'font-size: 12px; border-radius: 3px 0 0 3px; color: black; font-weight: 1000; padding: 1px 4px; background: ' + color + '; border: solid ' + color + ' 1px;', '', 'font-size: 12px; border-radius: 0 3px 3px 0; color: white; font-weight: 1000; padding: 1px 4px; background: black; border: solid ' + color + ' 1px;')
+} // super tsuyotusyo command line logging tool!
 
 var DEV_MODE = 1
 var ERROR_CODE = ''
@@ -503,7 +505,7 @@ function mousePressed() {
 
 async function funfetch(query) {
   try {
-    const response = await fetch(query.toString()) // URL 文字列に変換して fetch
+    var response = await fetch(query.toString()) // URL 文字列に変換して fetch
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -1280,15 +1282,15 @@ class FitScene_class {
     fill(0)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 40 * WS)
-    text('今日の歩数', 25 * WS, 150 * WS)
+    text('今日の歩数', WL + 25 * WS, WT + 150 * WS)
     textAlign(CENTER, CENTER)
     textFont(FONT_jetbrains, 110 * WS)
-    text(this.fitbit[0], 300 * WS, 250 * WS)
+    text(this.fitbit[0], WL + 300 * WS, WT + 250 * WS)
     textFont(FONT_noto, 48 * WS)
-    text('歩', 550 * WS, 250 * WS)
+    text('歩', WL + 550 * WS, WT + 250 * WS)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 40 * WS)
-    text('週合計: ' + this.totalSteps + '歩', 25 * WS, 1030 * WS)
+    text('週合計: ' + this.totalSteps + '歩', WL + 25 * WS, WT + 1030 * WS)
     for (var i = 1; i < 8; i++) {
       this.drawSteps(i, this.fitbit[7 - i])
     }
@@ -1309,12 +1311,12 @@ class FitScene_class {
       msg = '目標まであと' + str(50000 - this.totalSteps) + '歩です\nがんばりましょう！'
     }
     fill(25, 100, 100)
-    rect(0, 100 * WS, 600 * WS, 200 * WS)
+    rect(WL + 0, WT + 100 * WS, 600 * WS, 200 * WS)
     fill(255)
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 36 * WS)
-    text(msg, 300 * WS, 200 * WS)
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 * WS && MANAGER_mouseY < 300 * WS) {
+    text(msg, WL + 300 * WS, WT + 200 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 100 * WS && MANAGER_mouseY < WT + 300 * WS) {
       this.isMsg = false
       MANAGER_isMousePressed = false
     }
@@ -1329,17 +1331,17 @@ class FitScene_class {
     if (i == 7) {
       _day = '今日'
     }
-    text(_day, ((600 * (2 * i - 1)) / 14) * WS, 750 * WS)
+    text(_day, WL + ((600 * (2 * i - 1)) / 14) * WS, WT + 750 * WS)
     if (steps > 7500) {
-      image(SVG_check, ((600 * (2 * i - 1)) / 14 - 30) * WS, 790 * WS, 60 * WS, 60 * WS)
+      image(SVG_check, WL + ((600 * (2 * i - 1)) / 14 - 30) * WS, WT + 790 * WS, 60 * WS, 60 * WS)
     } else {
-      image(SVG_error, ((600 * (2 * i - 1)) / 14 - 30) * WS, 790 * WS, 60 * WS, 60 * WS)
+      image(SVG_error, WL + ((600 * (2 * i - 1)) / 14 - 30) * WS, WT + 790 * WS, 60 * WS, 60 * WS)
     }
-    text(steps, ((600 * (2 * i - 1)) / 14) * WS, 900 * WS)
-    text('歩', ((600 * (2 * i - 1)) / 14) * WS, 930 * WS)
+    text(steps, WL + ((600 * (2 * i - 1)) / 14) * WS, WT + 900 * WS)
+    text('歩', WL + ((600 * (2 * i - 1)) / 14) * WS, WT + 930 * WS)
     if (i < 7) {
       fill(0)
-      rect(((600 * (2 * i)) / 14) * WS, 720 * WS, 2 * WS, 230 * WS)
+      rect(WL + ((600 * (2 * i)) / 14) * WS, WT + 720 * WS, 2 * WS, 230 * WS)
     }
   }
 
@@ -1348,14 +1350,14 @@ class FitScene_class {
     stroke(50, 200, 120)
     strokeWeight(5 * WS)
     var baseLineY = map(7500, 0, max(this.graphData), 800, 400)
-    line(0, baseLineY * WS, 600 * WS, baseLineY * WS)
+    line(WL + 0, WT + baseLineY * WS, WL + 600 * WS, WT + baseLineY * WS)
     textAlign(RIGHT, TOP)
     textFont(FONT_noto, 24 * WS)
     noStroke()
     fill(50, 200, 120)
-    text('7500歩', 590 * WS, (baseLineY + 10) * WS)
+    text('7500歩', WL + 590 * WS, WT + (baseLineY + 10) * WS)
     textAlign(LEFT, BOTTOM)
-    text('7500歩', 10 * WS, (baseLineY - 10) * WS)
+    text('7500歩', WL + 10 * WS, WT + (baseLineY - 10) * WS)
 
     stroke(80)
     strokeWeight(5 * WS)
@@ -1375,10 +1377,10 @@ class FitScene_class {
   graphShape(i) {
     var x = ((600 * (2 * i + 1)) / 14) * WS
     var y = map(this.graphData[i], 0, max(this.graphData), 800, 400) * WS
-    vertex(x, y)
+    vertex(WL + x, WT + y)
 
     fill(80)
-    circle(x, y, 10)
+    circle(WL + x, WT + y, 10)
     noFill()
   }
 }
@@ -1620,15 +1622,15 @@ class SleepScene_class {
     fill(0)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 40 * WS)
-    text('昨晩の睡眠時間（今日）', 25 * WS, 150 * WS)
+    text('昨晩の睡眠時間（今日）', WL + 25 * WS, WT + 150 * WS)
     textAlign(CENTER, CENTER)
     var lastSleepTime = this.fitbit_sleep[0].duration
     if (lastSleepTime == 0) {
       textFont(FONT_noto, 60 * WS)
-      text('データがありません', 300 * WS, 250 * WS)
+      text('データがありません', WL + 300 * WS, WT + 250 * WS)
     } else {
       textFont(FONT_noto, 90 * WS)
-      text(this.minToTime(lastSleepTime, true), 300 * WS, 250 * WS)
+      text(this.minToTime(lastSleepTime, true), WL + 300 * WS, WT + 250 * WS)
     }
     // 背景を描画
     this.drawBg()
@@ -1658,12 +1660,12 @@ class SleepScene_class {
       msg = 'あと1日' + String(remain / 10) + '時間は眠ろう！\n健康のために！'
     }
     fill(25, 100, 100)
-    rect(0, 100 * WS, 600 * WS, 200 * WS)
+    rect(WL + 0, WT + 100 * WS, 600 * WS, 200 * WS)
     fill(255)
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 36 * WS)
-    text(msg, 300 * WS, 200 * WS)
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 100 * WS && MANAGER_mouseY < 300 * WS) {
+    text(msg, WL + 300 * WS, WT + 200 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 100 * WS && MANAGER_mouseY < WT + 300 * WS) {
       this.isMsg = false
       MANAGER_isMousePressed = false
     }
@@ -1695,16 +1697,16 @@ class SleepScene_class {
     }
     var i2 = 7 - i + 1
     var i3 = (600 * (2 * i2 + 1)) / 18
-    text(_day, i3 * WS, 950 * WS)
+    text(_day, WL + i3 * WS, WT + 950 * WS)
     if (data.duration == '0') {
-      image(SVG_error, (i3 - 25) * WS, 970 * WS, 50 * WS, 50 * WS)
+      image(SVG_error, WL + (i3 - 25) * WS, WT + 970 * WS, 50 * WS, 50 * WS)
     } else {
-      image(SVG_check, (i3 - 25) * WS, 970 * WS, 50 * WS, 50 * WS)
+      image(SVG_check, WL + (i3 - 25) * WS, WT + 970 * WS, 50 * WS, 50 * WS)
     }
     fill(c)
-    text(this.minToTime(data.duration, false), i3 * WS, 1040 * WS)
+    text(this.minToTime(data.duration, false), WL + i3 * WS, WT + 1040 * WS)
     fill(0)
-    rect(((600 * (2 * i2)) / 18) * WS, 930 * WS, 2 * WS, 130 * WS)
+    rect(WL + ((600 * (2 * i2)) / 18) * WS, WT + 930 * WS, 2 * WS, 130 * WS)
   }
 
   // 端が丸い線を描画する
@@ -1712,7 +1714,7 @@ class SleepScene_class {
     stroke(c)
     strokeWeight(20 * WS)
     strokeCap(ROUND)
-    line(x1 * WS, y1 * WS, x2 * WS, y2 * WS)
+    line(WL + x1 * WS, WT + y1 * WS, WL + x2 * WS, WT + y2 * WS)
     strokeCap(SQUARE)
     noStroke()
   }
@@ -1726,9 +1728,9 @@ class SleepScene_class {
     for (var i = 0; i < 16; i++) {
       stroke(75 * WS)
       strokeWeight(2 * WS)
-      line(70 * WS, (350 + i * 35) * WS, 600 * WS, (350 + i * 35) * WS)
+      line(WL + 70 * WS, WT + (350 + i * 35) * WS, WL + 600 * WS, WT + (350 + i * 35) * WS)
       noStroke()
-      text(this.minToClock(1260 + i * 60), 60, 350 + i * 35)
+      text(this.minToClock(1260 + i * 60), WL + 60, WT + 350 + i * 35)
     }
   }
 
@@ -1779,41 +1781,41 @@ class SettingsScene_class {
     textFont(FONT_noto, 20 * WS)
     textAlign(LEFT, CENTER)
     // ボタンの描画
-    text('アプリの起動時に、バスを表示する', 110 * WS, 175 * WS)
-    text('→朝バスの時間ぎりぎり使う人におすすめです', 110 * WS, 225 * WS)
+    text('アプリの起動時に、バスを表示する', WL + 110 * WS, WT + 175 * WS)
+    text('→朝バスの時間ぎりぎり使う人におすすめです', WL + 110 * WS, WT + 225 * WS)
     if (isFirstBus) {
-      image(SVG_on, 50 * WS, 150 * WS, 50 * WS, 50 * WS)
+      image(SVG_on, WL + 50 * WS, WT + 150 * WS, 50 * WS, 50 * WS)
     } else {
-      image(SVG_off, 50 * WS, 150 * WS, 50 * WS, 50 * WS)
+      image(SVG_off, WL + 50 * WS, WT + 150 * WS, 50 * WS, 50 * WS)
     }
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 150 * WS && MANAGER_mouseY < 200 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 150 * WS && MANAGER_mouseY < WT + 200 * WS && MANAGER_mouseX > WL + 50 * WS && MANAGER_mouseX < WL + 550 * WS) {
       changeFirstBus()
       MANAGER_isMousePressed = false
     }
-    text('フレッツ光(free-wifi)を未来大モードから除外する', 110 * WS, 375 * WS)
-    text('→自宅がフレッツ光の人は有効にしてください', 110 * WS, 425 * WS)
+    text('フレッツ光(free-wifi)を未来大モードから除外する', WL + 110 * WS, WT + 375 * WS)
+    text('→自宅がフレッツ光の人は有効にしてください', WL + 110 * WS, WT + 425 * WS)
     if (isFreeWifiNotContain) {
-      image(SVG_on, 50 * WS, 350 * WS, 50 * WS, 50 * WS)
+      image(SVG_on, WL + 50 * WS, WT + 350 * WS, 50 * WS, 50 * WS)
     } else {
-      image(SVG_off, 50 * WS, 350 * WS, 50 * WS, 50 * WS)
+      image(SVG_off, WL + 50 * WS, WT + 350 * WS, 50 * WS, 50 * WS)
     }
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 350 * WS && MANAGER_mouseY < 400 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 350 * WS && MANAGER_mouseY < WT + 400 * WS && MANAGER_mouseX > WL + 50 * WS && MANAGER_mouseX < WL + 550 * WS) {
       changeFreeWifiContain()
       MANAGER_isMousePressed = false
     }
     var d = '自動'
     if (busMode == 'fromfuntokmd') d = '未来大モード'
     if (busMode == 'fromkmdtofun') d = '亀田支所前モード'
-    text('バスモードを切り替える　現在: ' + d, 110 * WS, 575 * WS)
-    text('→位置情報を無視して特定のモードに固定します', 110 * WS, 625 * WS)
-    image(SVG_change, 50 * WS, 550 * WS, 50 * WS, 50 * WS)
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 550 * WS && MANAGER_mouseY < 600 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
+    text('バスモードを切り替える　現在: ' + d, WL + 110 * WS, WT + 575 * WS)
+    text('→位置情報を無視して特定のモードに固定します', WL + 110 * WS, WT + 625 * WS)
+    image(SVG_change, WL + 50 * WS, WT + 550 * WS, 50 * WS, 50 * WS)
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 550 * WS && MANAGER_mouseY < WT + 600 * WS && MANAGER_mouseX > WL + 50 * WS && MANAGER_mouseX < WL + 550 * WS) {
       changeBusMode()
       MANAGER_isMousePressed = false
     }
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 30 * WS)
-    text('2024 © famisics (https://uiro.dev)', 300 * WS, 1025 * WS)
+    text('2024 © famisics (https://uiro.dev)', WL + 300 * WS, WT + 1025 * WS)
   }
 }
 
