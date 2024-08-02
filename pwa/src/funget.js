@@ -812,11 +812,12 @@ class API_class {
   }
 
   async fetchFitbit(query) {
+    let url = localStorage.getItem('endpoints/gas_fit')
     let client_id = localStorage.getItem('fitbit/client_id')
     let client_secret = localStorage.getItem('fitbit/client_secret')
     let access_token = localStorage.getItem('fitbit/access_token')
     let refresh_token = localStorage.getItem('fitbit/refresh_token')
-    let query_url = `https://script.google.com/macros/s/AKfycbwaVMxMfZHS7ZgLc9-HBUaur1YUDt0ZOsT5fcAqd7WqTN_ZFGgQat968b-DxQSsagcM/exec?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
+    let query_url = `${url}?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
     try {
       const data = await funfetch(query_url)
       return data
@@ -907,8 +908,7 @@ class API_class {
     localStorage.setItem('endpoints/openweathermap_weather', json.openweathermap_weather)
     localStorage.setItem('endpoints/openweathermap_forecast', json.openweathermap_forecast)
     localStorage.setItem('endpoints/gas_funbus', json.gas_funbus)
-    localStorage.setItem('endpoints/gas_steps', json.gas_steps)
-    localStorage.setItem('endpoints/gas_sleeps', json.gas_sleeps)
+    localStorage.setItem('endpoints/gas_fit', json.gasfit)
     localStorage.setItem('endpoints/ipinfo', json.ipinfo)
   }
 
