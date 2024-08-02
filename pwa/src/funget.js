@@ -1350,7 +1350,7 @@ class FitScene_class {
     stroke(50, 200, 120)
     strokeWeight(5 * WS)
     var baseLineY = map(7500, 0, max(this.graphData), 800, 400)
-    line(WL + 0, WT + baseLineY * WS, WL + 600 * WS, WT + baseLineY * WS)
+    ;(line(WL + 0, WT + baseLineY * WS, WL + 600 * WS, WT + baseLineY * WS) * 5) / 6
     textAlign(RIGHT, TOP)
     textFont(FONT_noto, 24 * WS)
     noStroke()
@@ -1376,7 +1376,7 @@ class FitScene_class {
   // グラフの折れ線を描画
   graphShape(i) {
     var x = ((600 * (2 * i + 1)) / 14) * WS
-    var y = map(this.graphData[i], 0, max(this.graphData), 800, 400) * WS
+    var y = (map(this.graphData[i], 0, max(this.graphData), 800, 400) * WS * 5) / 6
     vertex(WL + x, WT + y)
 
     fill(80)

@@ -96,7 +96,7 @@ class FitScene {
   void drawGraph() {
     stroke(50, 200, 120);
     strokeWeight(5);
-    float baseLineY = map(10000, 0, max(graphData), 800, 400);
+    float baseLineY = map(10000, 0, max(graphData), 800, 400) * 5 / 6;
     line(0, baseLineY, 600, baseLineY);
     textAlign(RIGHT, TOP);
     textFont(FONT_noto, 24);
@@ -122,7 +122,7 @@ class FitScene {
   // グラフの折れ線を描画
   void graphShape(int i) {
     float x = 600 * (2 * i + 1) / 14;
-    float y = map(graphData[i], 0, max(graphData), 800, 400);
+    float y = map(graphData[i], 0, max(graphData), 800, 400) * 75 / 6;
     vertex(x, y);
     
     fill(80);

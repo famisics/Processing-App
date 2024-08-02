@@ -59,8 +59,8 @@ class SleepScene {
     if (totalSleepMins > 2940) {
       msg = "おめでとうございます！\n8日で7日*7時間睡眠を達成しました";
     } else {
-      float remain = Math.round((float)(2940 - totalSleepMins) / 6);
-      msg = "あと1日" + str(remain/10/7) + "時間は眠ろう！\n健康のために！";
+      float remain = Math.round((float)(2940 - totalSleepMins) / 6 / 7);
+      msg = "あと1日" + str(remain / 10) + "時間は眠ろう！\n健康のために！";
     }
     fill(25, 100, 100);
     rect(0, 100, 600, 200);
@@ -86,7 +86,7 @@ class SleepScene {
     if (endHour < 0) endHour += 24;
     int i2 = 7 - i + 1;
     int i3 = 600 * (2 * i2 + 1) / 18;
-    drawRoundedLine(i3, 350 + (startHour * 35), i3, 350 + (endHour * 35), c);
+    drawRoundedLine(i3, 350 + (startHour * 30), i3, 350 + (endHour * 30), c);
   }
   
   //下部分のテキスト表示
@@ -130,9 +130,9 @@ class SleepScene {
     strokeWeight(2);
     textFont(FONT_noto, 20);
     textAlign(RIGHT, CENTER);
-    for (int i = 0; i < 16; i++) {
-      line(70, 350 + (i * 35), 600, 350 + (i * 35));
-      text(minToClock(1260 + (i * 60)), 60, 350 + (i * 35));
+    for (int i = 0; i < 19; i++) {
+      line(70, 350 + (i * 30), 600, 350 + (i * 30));
+      text(minToClock(1260 + (i * 60)), 60, 350 + (i * 30));
     }
     noStroke();
   }
