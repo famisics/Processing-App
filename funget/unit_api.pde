@@ -155,8 +155,8 @@ class API {
     }
     print("[API] getFitbitSteps: FETCHING... ");
     println("");
-    println(endpoints.get("gas_steps") + solveFitQuery("steps"));
-    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_steps") + solveFitQuery("steps"));
+    println(endpoints.get("gas_fit") + solveFitQuery("steps"));
+    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_fit") + solveFitQuery("steps"));
     for (int i = 0; i < JSON_response.size(); i++) {
       JSONObject data = JSON_response.getJSONObject(i);
       fitbit.put((7 - i), int(data.getString("steps")));
@@ -175,7 +175,7 @@ class API {
       return fitbit_sleep;
     }
     print("[API] getFitbitSleeps: FETCHING... ");
-    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_sleeps") + solveFitQuery("sleeps"));
+    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_fit") + solveFitQuery("sleeps"));
     for (int i = 0; i < JSON_response.size(); i++) {
       JSONObject data = JSON_response.getJSONObject(i);
       HashMap<String, String> _data = new HashMap<String, String>();
@@ -247,8 +247,7 @@ class API {
     endpoints.put("openweathermap_weather", dcd(json.getString("openweathermap_weather")));
     endpoints.put("openweathermap_forecast", dcd(json.getString("openweathermap_forecast")));
     endpoints.put("gas_funbus", dcd(json.getString("gas_funbus")));
-    endpoints.put("gas_steps", dcd(json.getString("gas_steps")));
-    endpoints.put("gas_sleeps", dcd(json.getString("gas_sleeps")));
+    endpoints.put("gas_fit", dcd(json.getString("gas_fit")));
     endpoints.put("ipinfo", dcd(json.getString("ipinfo")));
   }
   
