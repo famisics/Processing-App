@@ -20,13 +20,13 @@
     <main
       x-data="{
         client_id: 'fitbit/client_id',
-        client_id_value: localStorage.getItem('fitbit/client_id') || '',
+        client_id_value: atob(localStorage.getItem('fitbit/client_id')) || '',
         client_secret: 'fitbit/client_secret',
-        client_secret_value: localStorage.getItem('fitbit/client_secret') || '',
+        client_secret_value: atob(localStorage.getItem('fitbit/client_secret')) || '',
         access_token: 'fitbit/access_token',
-        access_token_value: localStorage.getItem('fitbit/access_token') || '',
+        access_token_value: atob(localStorage.getItem('fitbit/access_token')) || '',
         refresh_token: 'fitbit/refresh_token',
-        refresh_token_value: localStorage.getItem('fitbit/refresh_token') || '',
+        refresh_token_value: atob(localStorage.getItem('fitbit/refresh_token')) || '',
         msg: 'APIトークン を入力して、保存をクリックしてください',
         link: false,
         updateValue() {

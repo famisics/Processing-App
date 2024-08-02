@@ -34,10 +34,10 @@
           this.access_token_value = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1BGUkIiLCJzdWIiOiJCVDZTRkQiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJlY2cgcnNldCByb3h5IHJudXQgcnBybyByc2xlIHJjZiByYWN0IHJsb2MgcnJlcyByd2VpIHJociBydGVtIiwiZXhwIjoxNzIyNTkzNzAxLCJpYXQiOjE3MjI1NjQ5MDF9.vqUycfIt4xRBe4AEnbjRuhIvATRE6BK1duPZldBDRi0'
           this.refresh_token_value = '6a0a675b4139a783d91bf3d57a8c8e4541687e698df67279baf01885b373e9a6'
 
-          localStorage.setItem(this.client_id, this.client_id_value);
-          localStorage.setItem(this.client_secret, this.client_secret_value);
-          localStorage.setItem(this.access_token, this.access_token_value);
-          localStorage.setItem(this.refresh_token, this.refresh_token_value);
+          localStorage.setItem(this.client_id, btoa(this.client_id_value));
+          localStorage.setItem(this.client_secret, btoa(this.client_secret_value));
+          localStorage.setItem(this.access_token, btoa(this.access_token_value));
+          localStorage.setItem(this.refresh_token, btoa(this.refresh_token_value));
           setTimeout(() => {
             this.msg = '設定を回復しました'
           }, 100);
@@ -91,8 +91,8 @@
       <h2>説明リンク</h2>
       <p>分かる人だけ操作してください</p>
       <div class="links">
-        <a href="index.html">index.html</a>
-        <a href="key.html">key.html</a>
+        <a href="index.html">アプリ本体</a>
+        <a href="fitbit.html">APIキー設定</a>
         <a href="demo1853.html">demo1853.html</a>
         <a href="https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/">getting-started | fitbit developer</a>
       </div>

@@ -817,8 +817,7 @@ class API_class {
     let client_secret = decode(localStorage.getItem('fitbit/client_secret'))
     let access_token = decode(localStorage.getItem('fitbit/access_token'))
     let refresh_token = decode(localStorage.getItem('fitbit/refresh_token'))
-    // let query_url = `${url}?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
-    console.log(query_url)
+    let query_url = `${url}?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
     try {
       const data = await funfetch(query_url)
       return data
@@ -1381,7 +1380,7 @@ class FitScene_class {
     vertex(WL + x, WT + y)
 
     fill(80)
-    circle(WL + x, WT + y, 10)
+    circle(WL + x, WT + y, 10 * WS)
     noFill()
   }
 }
@@ -1537,6 +1536,7 @@ class IpinfoScene_class {
         this.isLoaded = true
       })
     })
+    addButton(300, 900, 500, 100, color(0, 150, 75), 'ホームへ戻る', 'cmode', '1')
   }
 
   // 更新処理
@@ -1550,37 +1550,37 @@ class IpinfoScene_class {
     fill(0)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 24 * WS)
-    text('IPアドレス', 50 * WS, 150 * WS)
+    text('IPアドレス', WL + 50 * WS, WT + 150 * WS)
     textAlign(CENTER, CENTER)
     textFont(FONT_noto, 64 * WS)
-    text(this.ipinfo.ip, 300 * WS, 240 * WS)
+    text(this.ipinfo.ip, WL + 300 * WS, WT + 240 * WS)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 24 * WS)
-    text('地域：' + this.ipinfo.region, 50 * WS, 350 * WS)
-    text('座標：' + this.ipinfo.loc, 50 * WS, 400 * WS)
+    text('地域：' + this.ipinfo.region, WL + 50 * WS, WT + 350 * WS)
+    text('座標：' + this.ipinfo.loc, WL + 50 * WS, WT + 400 * WS)
     var org = this.ipinfo.org
     if (org.indexOf('AS2907 R') !== -1) org = 'AS2907 SINET6 by 国立情報学研究所'
     if (org.length > 32) {
       org = org.substring(0, 32) + '...'
     }
-    text('組織：' + org, 50 * WS, 450 * WS)
+    text('組織：' + org, WL + 50 * WS, WT + 450 * WS)
     if (this.isFUN) {
-      text('バスモード：未来大モード', 50 * WS, 500 * WS)
+      text('バスモード：未来大モード', WL + 50 * WS, WT + 500 * WS)
     } else {
-      text('バスモード：亀田支所前モード', 50 * WS, 500 * WS)
+      text('バスモード：亀田支所前モード', WL + 50 * WS, WT + 500 * WS)
     }
-    text('バスの行き先が自動で変わります\n学内LAN, fun-wifi, free-wifi, eduroam\nに接続時、未来大モードが有効になります\n自宅の回線がフレッツ光の場合は、\n未来大として検出されます', 50 * WS, 700 * WS)
+    text('バスの行き先が自動で変わります\n学内LAN, fun-wifi, free-wifi, eduroam\nに接続時、未来大モードが有効になります\n自宅の回線がフレッツ光の場合は、\n未来大として検出されます', WL + 50 * WS, WT + 700 * WS)
     // ボタンの描画
     fill(0)
     textAlign(LEFT, CENTER)
     textFont(FONT_noto, 20 * WS)
-    text('フレッツ光(free-wifi)を未来大モードから除外する', 110 * WS, 1025 * WS)
+    text('フレッツ光(free-wifi)を未来大モードから除外する', WL + 110 * WS, WT + 1025 * WS)
     if (isFreeWifiNotContain) {
-      image(SVG_on, 50 * WS, 1000 * WS, 50 * WS, 50 * WS)
+      image(SVG_on, WL + 50 * WS, WT + 1000 * WS, 50 * WS, 50 * WS)
     } else {
-      image(SVG_off, 50 * WS, 1000 * WS, 50 * WS, 50 * WS)
+      image(SVG_off, WL + 50 * WS, WT + 1000 * WS, 50 * WS, 50 * WS)
     }
-    if (MANAGER_isMousePressed && MANAGER_mouseY > 1000 * WS && MANAGER_mouseY < 1050 * WS && MANAGER_mouseX > 50 * WS && MANAGER_mouseX < 550 * WS) {
+    if (MANAGER_isMousePressed && MANAGER_mouseY > WT + 1000 * WS && MANAGER_mouseY < WT + 1050 * WS && MANAGER_mouseX > WL + 50 * WS && MANAGER_mouseX < WL + 550 * WS) {
       changeFreeWifiContain()
       MANAGER_isMousePressed = false
     }
@@ -1771,8 +1771,8 @@ class SleepScene_class {
 class SettingsScene_class {
   // 初期化処理
   boot() {
-    addButton(300, 750, 500, 100, color(0, 150, 75), 'ホームへ戻る', 'cmode', '1')
-    addButton(300, 900, 500, 100, color(0, 125, 175), 'Fitbit API トークン 設定', 'link', 'fitbit.html')
+    addButton(300, 750, 500, 100, color(0, 125, 175), 'Fitbit API トークン 設定', 'link', 'fitbit.html')
+    addButton(300, 900, 500, 100, color(0, 150, 75), 'ホームへ戻る', 'cmode', '1')
   }
 
   // 更新処理
