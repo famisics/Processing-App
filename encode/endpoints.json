@@ -2,6 +2,6 @@
   "openweathermap_weather": "https://api.openweathermap.org/data/2.5/weather?id=2130188&lang=ja&appid=",
   "openweathermap_forecast": "https://api.openweathermap.org/data/2.5/forecast?id=2130188&lang=ja&appid=",
   "gas_funbus": "https://script.google.com/macros/s/AKfycbxiZdc5U1ZC6rH3l1NnK89j9EIgf8M4VW48nU34dXAYfVpv3Z7QMv_nz9TcQRpMOmGmcg/exec?query=",
-  "gas_fit": "https://script.google.com/macros/s/AKfycbwWCuZBnwalfbbbINmmva5Mt3vqDx7feBJ5Ki9T1L1boAkXrMW8TTRUkZG5KoLVFafP/exec",
+  "gas_fit": "https://script.google.com/macros/s/AKfycbxPx8vYo-QzGMs3MtS2RzJfwb8pUwNrGF51rkAjCPvYsyRpjMsD4Zdkd-oedvGZPCD_/exec",
   "ipinfo": "https://ipinfo.io/?token="
 }
