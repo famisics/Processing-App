@@ -817,11 +817,11 @@ class API_class {
     let client_secret = localStorage.getItem('fitbit/client_secret')
     let access_token = localStorage.getItem('fitbit/access_token')
     let refresh_token = localStorage.getItem('fitbit/refresh_token')
-    let query_url = `${url}?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
+    let query_url = `https://script.google.com/macros/s/AKfycbzP-QeI5XtwbE3IMbxcfxoWtrk96WmL4I34q9EDh4xge2aAivENM-exSk8KlELNMn8p/exec?query=${query}&client_id=${client_id}&client_secret=${client_secret}&access_token=${access_token}&refresh_token=${refresh_token}`
     console.log(query_url)
     try {
       const data = await funfetch(query_url)
-      return data
+      return data.content
     } catch (error) {
       console.error(error)
       return false
