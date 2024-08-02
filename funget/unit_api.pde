@@ -126,14 +126,14 @@ class API {
     funbus.put("this_code", JSON_response.getJSONObject(thisId).getString("code")); // 系統
     funbus.put("this_start", JSON_response.getJSONObject(thisId).getString("start")); // 出発時刻
     funbus.put("this_end", JSON_response.getJSONObject(thisId).getString("end")); // 到着時刻
-    funbus.put("this_destination", busDestination(JSON_response.getJSONObject(thisId).getString("code"), query)); // 行き先
+    funbus.put("this_destination", solveBusDestination(JSON_response.getJSONObject(thisId).getString("code"), query)); // 行き先
     funbus.put("this_untilnext", JSON_response.getJSONObject(thisId).getString("until_next")); // 次のバスまでの時間
     
     if (!(JSON_response.getJSONObject(thisId).getString("until_next").equals("last"))) { // 最終バスのとき、APIは0を返すため、そうでない場合「さらに次のバス」を取得する
       funbus.put("next_code", JSON_response.getJSONObject(thisId + 1).getString("code"));
       funbus.put("next_start", JSON_response.getJSONObject(thisId + 1).getString("start"));
       funbus.put("next_end", JSON_response.getJSONObject(thisId + 1).getString("end"));
-      funbus.put("next_destination", busDestination(JSON_response.getJSONObject(thisId + 1).getString("code"), query));
+      funbus.put("next_destination", solveBusDestination(JSON_response.getJSONObject(thisId + 1).getString("code"), query));
     } else { // 次のバスが最終バスのとき、終バスの表記を返す
       funbus.put("next_code", "終バス");
       funbus.put("next_start", "00:00");
@@ -154,7 +154,9 @@ class API {
       return fitbit;
     }
     print("[API] getFitbitSteps: FETCHING... ");
-    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_steps"));
+    println("");
+    println(endpoints.get("gas_steps") + solveFitQuery("steps"));
+    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_steps") + solveFitQuery("steps"));
     for (int i = 0; i < JSON_response.size(); i++) {
       JSONObject data = JSON_response.getJSONObject(i);
       fitbit.put((7 - i), int(data.getString("steps")));
@@ -173,7 +175,7 @@ class API {
       return fitbit_sleep;
     }
     print("[API] getFitbitSleeps: FETCHING... ");
-    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_sleeps"));
+    JSONArray JSON_response = loadJSONArray(endpoints.get("gas_sleeps") + solveFitQuery("sleeps"));
     for (int i = 0; i < JSON_response.size(); i++) {
       JSONObject data = JSON_response.getJSONObject(i);
       HashMap<String, String> _data = new HashMap<String, String>();
@@ -237,6 +239,7 @@ class API {
   void setApikeys(JSONObject json) {
     apikeys.put("openweathermap", dcd(json.getString("openweathermap")));
     apikeys.put("ipinfo", dcd(json.getString("ipinfo")));
+    apikeys.put("fittemp", json.getString("fittemp"));
   }
   
   // エンドポイントをjsonファイルから取得するコード
@@ -261,8 +264,14 @@ class API {
     // VPNのスイッチをON/OFFするだけで、未来大モードと亀田支所前モードを切り替えることができる
   }
   
+  // クエリーを作成
+  String solveFitQuery(String query) {
+    String[] _fitbitapikeys = split(apikeys.get("fittemp"), ",");
+    return "?query=" + query + "&client_id=" + _fitbitapikeys[0] + "&client_secret=" + _fitbitapikeys[1] + "&access_token=" + _fitbitapikeys[2] + "&refresh_token=" + _fitbitapikeys[3];
+  }
+  
   // バスの行き先を算出
-  String busDestination(String code, String query) { 
+  String solveBusDestination(String code, String query) { 
     
     if (query.equals("fromkmdtofun")) return "赤川";
     
