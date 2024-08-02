@@ -1349,15 +1349,15 @@ class FitScene_class {
   drawGraph() {
     stroke(50, 200, 120)
     strokeWeight(5 * WS)
-    var baseLineY = map(7500, 0, max(this.graphData), 800, 400)
+    var baseLineY = map(10000, 0, max(this.graphData), 800, 400)
     ;(line(WL + 0, WT + baseLineY * WS, WL + 600 * WS, WT + baseLineY * WS) * 5) / 6
     textAlign(RIGHT, TOP)
     textFont(FONT_noto, 24 * WS)
     noStroke()
     fill(50, 200, 120)
-    text('7500歩', WL + 590 * WS, WT + (baseLineY + 10) * WS)
+    text('10000歩', WL + 590 * WS, WT + (baseLineY + 10) * WS)
     textAlign(LEFT, BOTTOM)
-    text('7500歩', WL + 10 * WS, WT + (baseLineY - 10) * WS)
+    text('10000歩', WL + 10 * WS, WT + (baseLineY - 10) * WS)
 
     stroke(80)
     strokeWeight(5 * WS)
