@@ -122,7 +122,7 @@ class FitScene {
   // グラフの折れ線を描画
   void graphShape(int i) {
     float x = 600 * (2 * i + 1) / 14;
-    float y = map(graphData[i], 0, max(graphData), 800, 400) * 75 / 6;
+    float y = map(graphData[i], 0, max(graphData), 800, 400) * 5 / 6;
     vertex(x, y);
     
     fill(80);
